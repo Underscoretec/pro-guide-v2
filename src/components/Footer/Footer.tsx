@@ -13,7 +13,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
     { label: 'Buy Now', url: '/products.html' },
     { label: 'Cart', url: 'https://pro-guide.in/' },
     { label: 'Resources', url: '/resources' },
-    { label: 'Get Your Own Customized Model', url: '/customized-model.html' },
+    { label: 'Get Your Own Customized Model', url: '/customized-model' },
     { label: 'Login/Register', url: 'https://pro-guide.in/' },
   ]
   const quickLinks = footer?.quickLinks && footer.quickLinks.length > 0 ? footer.quickLinks : defaultQuickLinks

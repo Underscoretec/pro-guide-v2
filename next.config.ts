@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
         source: '/resources.html',
         destination: '/resources',
       },
+      {
+        source: '/contact.html',
+        destination: '/contact',
+      },
+      {
+        source: '/customized-model.html',
+        destination: '/customized-model',
+      },
     ]
   },
 }

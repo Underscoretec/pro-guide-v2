@@ -36,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
       dropdownItems: [
         { label: 'About Faculty & Training', url: '/training-courses.html' },
         { label: 'Otolaryngology Video Library', url: '/videos.html' },
-        { label: 'Why 3D Simulation Models', url: '/resources.html' },
+        { label: 'Why 3D Simulation Models', url: '/resources' },
       ],
     },
     {
@@ -49,9 +49,9 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
         { label: 'Types of Training Courses Conducted', url: '/training-courses.html' },
       ],
     },
-    { label: 'Resources', url: '/resources.html' },
-    { label: 'Get Your Own Customized Model', url: '/customized-model.html' },
-    { label: 'Contact Us', url: '/contact.html' },
+    { label: 'Resources', url: '/resources' },
+    { label: 'Get Your Own Customized Model', url: '/customized-model' },
+    { label: 'Contact Us', url: '/contact' },
   ]
 
   const navItems = data?.navItems && data.navItems.length > 0 ? data.navItems : defaultNavItems
