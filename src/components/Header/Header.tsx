@@ -90,7 +90,7 @@ export const Header: React.FC = () => {
                   Otolaryngology Video Library
                 </Link>
                 <Link
-                  href="/resources.html"
+                  href="/resources"
                   className="block px-4 py-[9px] text-[13.5px] text-ink hover:bg-tint hover:text-purple"
                 >
                   Why 3D Simulation Models
@@ -143,7 +143,7 @@ export const Header: React.FC = () => {
             </div>
 
             <Link
-              href="/resources.html"
+              href="/resources"
               className="text-ink font-semibold text-[13.5px] px-[9px] py-2 rounded hover:text-purple hover:bg-tint transition-colors"
             >
               Resources
@@ -251,7 +251,7 @@ export const Header: React.FC = () => {
                 Otolaryngology Video Library
               </Link>
               <Link
-                href="/resources.html"
+                href="/resources"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-ink py-1 pl-3 text-[13.5px] hover:text-purple"
               >
@@ -290,7 +290,7 @@ export const Header: React.FC = () => {
               </Link>
             </div>
             <Link
-              href="/resources.html"
+              href="/resources"
               onClick={() => setMobileMenuOpen(false)}
               className="block text-ink font-semibold text-[14px] py-1 hover:text-purple"
             >

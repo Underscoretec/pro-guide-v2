@@ -24,7 +24,7 @@ export const Footer: React.FC = () => {
               >
                 Cart
               </a>
-              <Link href="/resources.html" className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors">
+              <Link href="/resources" className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors">
                 Resources
               </Link>
               <Link
