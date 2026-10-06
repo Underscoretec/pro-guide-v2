@@ -67,14 +67,14 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
       {/* Top Announcement Bar */}
       <div className="bg-purple-bar text-white text-center text-[13.5px] py-2 px-4 font-semibold">
         {announcementText}&nbsp;
-        <Link href={announcementLinkUrl} className="text-[#FFD9A8] underline hover:text-white transition-colors">
+        <Link href={announcementLinkUrl} className="!text-[#FFD9A8] underline hover:text-white transition-colors">
           {announcementLinkText}
         </Link>
       </div>
 
       {/* Main Sticky Header */}
       <header className="sticky top-0 z-50 bg-white border-b border-line shadow-sm">
-        <div className="max-w-[1200px] mx-auto px-6 min-h-[64px] py-2 flex items-center gap-[18px] flex-wrap justify-between">
+        <div className="max-w-full mx-auto px-6 min-h-[64px] py-2 flex items-center gap-[18px] justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -85,21 +85,8 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
             />
           </Link>
 
-          {/* Search Box */}
-          <div className="hidden sm:flex items-center bg-[#F6F7F8] border border-line rounded-[6px] px-3 py-2 min-w-[200px] flex-initial md:flex-[0_1_240px] gap-2">
-            <span className="text-muted text-sm">&#128269;</span>
-            <input
-              type="text"
-              placeholder={searchPlaceholder}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleSearchKeyDown}
-              className="bg-transparent border-0 outline-none text-[13.5px] w-full text-ink placeholder:text-muted"
-            />
-          </div>
-
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1 ml-auto flex-wrap">
+          <nav className="hidden lg:flex items-center gap-1 ml-auto">
             {navItems.map((item: any, idx: number) => {
               if (item.hasDropdown) {
                 const isOpen = openDropdownIndex === idx

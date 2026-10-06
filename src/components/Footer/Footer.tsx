@@ -77,7 +77,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors"
+                      className="block text-white hover:text-white hover:underline transition-colors"
                     >
                       {item.label}
                     </a>
@@ -87,7 +87,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
                   <Link
                     key={idx}
                     href={item.url || '/'}
-                    className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors"
+                    className="block text-white hover:text-white hover:underline transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -107,7 +107,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
               Email :{' '}
               <a
                 href={`mailto:${indianEmail}`}
-                className="inline text-[#E7D8EE] hover:text-white hover:underline"
+                className="inline text-white hover:text-white hover:underline"
               >
                 {indianEmail}
               </a>
@@ -127,7 +127,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
               Email:{' '}
               <a
                 href={`mailto:${intlEmail}`}
-                className="inline text-[#E7D8EE] hover:text-white hover:underline"
+                className="inline text-white hover:text-white hover:underline"
               >
                 {intlEmail}
               </a>
