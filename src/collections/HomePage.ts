@@ -73,6 +73,26 @@ export const HeroBlock: Block = {
       type: 'text',
       defaultValue: '/images/prod3.jpg',
     },
+    {
+      name: 'carouselImages',
+      type: 'array',
+      label: 'Bottom Carousel Images (2 by 2 Auto Scroll)',
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+        },
+        {
+          name: 'imageUrl',
+          type: 'text',
+        },
+        {
+          name: 'alt',
+          type: 'text',
+        },
+      ],
+    },
   ],
 }
 

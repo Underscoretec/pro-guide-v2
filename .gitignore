@@ -38,6 +38,15 @@ yarn-error.log*
 *.db-shm
 *.db-wal
 
+# payload uploads & media
+/media/
+media/
+
+# lockfiles and yaml
+*.yaml
+*.yml
+pnpm-lock.yaml
+
 # vercel
 .vercel
 

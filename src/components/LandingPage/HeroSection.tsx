@@ -1,9 +1,18 @@
-import React from 'react'
+'use client'
+
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 interface HeroSectionProps {
   data?: any
 }
+
+const defaultCarousel = [
+  { imageUrl: '/images/prod1.jpg', alt: '3D temporal bone model' },
+  { imageUrl: '/images/prod2.jpg', alt: 'Paranasal Model with Bassettes' },
+  { imageUrl: '/images/prod3.jpg', alt: 'Paranasal sinus model' },
+  { imageUrl: '/images/prod4.jpg', alt: 'Larynx Model' },
+]
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
   const headline = data?.headline || 'Otolaryngology Head & Neck 3D Simulation Models'
@@ -27,9 +36,45 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
   const secondaryText = data?.secondaryCTA?.text || 'Explore Workshops'
   const secondaryLink = data?.secondaryCTA?.link || '#workshops'
 
+  // Top image remains still (static)
   const mainImage = data?.mainImage?.url || data?.mainImageUrl || '/images/ws_guide2.jpg'
-  const cardImage1 = data?.cardImage1?.url || data?.cardImage1Url || '/images/prod1.jpg'
-  const cardImage2 = data?.cardImage2?.url || data?.cardImage2Url || '/images/prod3.jpg'
+
+  // Bottom images for 2-by-2 auto-scroll carousel
+  const rawCarousel = data?.carouselImages && data.carouselImages.length > 0
+    ? data.carouselImages
+    : (data?.cardImage1 || data?.cardImage2
+        ? [
+            { imageUrl: data?.cardImage1?.url || data?.cardImage1Url || '/images/prod1.jpg', alt: '3D temporal bone model' },
+            { imageUrl: data?.cardImage2?.url || data?.cardImage2Url || '/images/prod3.jpg', alt: 'Paranasal sinus model' },
+            { imageUrl: '/images/prod2.jpg', alt: 'Paranasal Model with Bassettes' },
+            { imageUrl: '/images/prod4.jpg', alt: 'Larynx Model' },
+          ]
+        : defaultCarousel)
+
+  // Chunk carousel items into pairs (2 images per slide)
+  const pairs: any[][] = []
+  for (let i = 0; i < rawCarousel.length; i += 2) {
+    const pair = [rawCarousel[i]]
+    if (rawCarousel[i + 1]) {
+      pair.push(rawCarousel[i + 1])
+    } else if (rawCarousel.length > 1) {
+      pair.push(rawCarousel[0]) // wrap to keep 2-by-2 layout balanced
+    }
+    pairs.push(pair)
+  }
+
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+
+  useEffect(() => {
+    if (pairs.length <= 1 || isPaused) return
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % pairs.length)
+    }, 3500)
+
+    return () => clearInterval(interval)
+  }, [pairs.length, isPaused])
 
   return (
     <div className="bg-gradient-to-b from-[#FBF9FD] to-[#F1EBF9] border-b border-line">
@@ -70,9 +115,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
           </div>
         </div>
 
-        {/* Right Column Grid Images */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="col-span-2 rounded-[10px] overflow-hidden shadow-[0_20px_44px_rgba(76,21,96,0.22)] relative aspect-[16/10]">
+        {/* Right Column Images Section */}
+        <div className="flex flex-col gap-3">
+          {/* Top Image: Still & Static */}
+          <div className="w-full rounded-[10px] overflow-hidden shadow-[0_20px_44px_rgba(76,21,96,0.22)] relative aspect-[16/10]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={mainImage}
@@ -80,21 +126,82 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="rounded-[10px] overflow-hidden shadow-[0_20px_44px_rgba(76,21,96,0.22)] relative aspect-[4/3] bg-card flex items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={cardImage1}
-              alt="3D temporal bone model"
-              className="w-full h-full object-contain mix-blend-multiply"
-            />
-          </div>
-          <div className="rounded-[10px] overflow-hidden shadow-[0_20px_44px_rgba(76,21,96,0.22)] relative aspect-[4/3] bg-card flex items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={cardImage2}
-              alt="Paranasal sinus model"
-              className="w-full h-full object-contain mix-blend-multiply"
-            />
+
+          {/* Bottom Images: 2-by-2 Auto-Scroll Carousel */}
+          <div
+            className="relative group w-full"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            <div className="overflow-hidden w-full rounded-[10px]">
+              <div
+                className="flex transition-transform duration-700 ease-in-out"
+                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              >
+                {pairs.map((pair, slideIdx) => (
+                  <div key={slideIdx} className="w-full shrink-0 grid grid-cols-2 gap-3">
+                    {pair.map((item, itemIdx) => {
+                      const src = item.image?.url || item.imageUrl || item
+                      const alt = item.alt || 'Medical simulation model'
+
+                      return (
+                        <div
+                          key={itemIdx}
+                          className="rounded-[10px] overflow-hidden shadow-[0_20px_44px_rgba(76,21,96,0.22)] relative aspect-[4/3] bg-card flex items-center justify-center p-2 group/card"
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={src}
+                            alt={alt}
+                            className="w-full h-full object-contain mix-blend-multiply transition-transform duration-300 group-hover/card:scale-105"
+                          />
+                        </div>
+                      )
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Carousel Navigation Arrows (appear on hover) */}
+            {pairs.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setCurrentIndex((prev) => (prev === 0 ? pairs.length - 1 : prev - 1))}
+                  aria-label="Previous images"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-purple shadow-md flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-pointer"
+                >
+                  &#10094;
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setCurrentIndex((prev) => (prev + 1) % pairs.length)}
+                  aria-label="Next images"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-purple shadow-md flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-pointer"
+                >
+                  &#10095;
+                </button>
+
+                {/* Dots Pagination */}
+                <div className="flex justify-center gap-1.5 mt-2.5">
+                  {pairs.map((_, dotIdx) => (
+                    <button
+                      key={dotIdx}
+                      type="button"
+                      onClick={() => setCurrentIndex(dotIdx)}
+                      aria-label={`Go to slide ${dotIdx + 1}`}
+                      className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                        currentIndex === dotIdx
+                          ? 'w-6 bg-purple'
+                          : 'w-2 bg-[#C9CDD3] hover:bg-purple/50'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

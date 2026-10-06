@@ -381,6 +381,12 @@ export async function seed() {
         mainImageUrl: '/images/ws_guide2.jpg',
         cardImage1Url: '/images/prod1.jpg',
         cardImage2Url: '/images/prod3.jpg',
+        carouselImages: [
+          { imageUrl: '/images/prod1.jpg', alt: '3D temporal bone model' },
+          { imageUrl: '/images/prod2.jpg', alt: 'Paranasal Model with Bassettes' },
+          { imageUrl: '/images/prod3.jpg', alt: 'Paranasal sinus model' },
+          { imageUrl: '/images/prod4.jpg', alt: 'Larynx Model' },
+        ],
       },
       {
         blockType: 'partners' as const,
