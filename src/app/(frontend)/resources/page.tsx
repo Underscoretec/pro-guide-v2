@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default function ResourcesPage() {
   return (
     <>
-      <Header />
+    
       <main className="flex-1">
         <ResourcesHero />
         <WhySimulationSection />
@@ -33,7 +33,7 @@ export default function ResourcesPage() {
         <VariantsSection />
         <DoctorAcknowledgmentSection />
       </main>
-      <Footer />
+     
     </>
   )
 }
