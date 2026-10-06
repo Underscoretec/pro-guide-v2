@@ -1,6 +1,11 @@
 import React from 'react'
 
-const feedbackQuotes = [
+interface TestimonialsSectionProps {
+  data?: any
+  testimonials?: any[]
+}
+
+const defaultFeedback = [
   {
     quote:
       '\u201CFor the first time I have operated on a 3D-printed temporal bone and I got what I was looking for in a cadaver bone.\u201D',
@@ -33,36 +38,51 @@ const feedbackQuotes = [
   },
 ]
 
-const learnerStories = [
+const defaultStories = [
   {
-    text: 'The hands-on format changed how I approach mastoid surgery. Drilling my own model at every station \u2014 with faculty beside me \u2014 did what years of observation could not.',
+    quote:
+      'The hands-on format changed how I approach mastoid surgery. Drilling my own model at every station \u2014 with faculty beside me \u2014 did what years of observation could not.',
     author: 'Resident delegate \u2014 Temporal Bone Workshop',
   },
   {
-    text: "The sinus model's landmarks under the endoscope are remarkably true to life. I returned to my department and asked them to equip our skills lab with these models.",
+    quote:
+      "The sinus model's landmarks under the endoscope are remarkably true to life. I returned to my department and asked them to equip our skills lab with these models.",
     author: 'Consultant delegate \u2014 Paranasal Sinus Workshop',
   },
   {
-    text: 'From registration to certificate, everything was organised. The models, the stations, the teaching \u2014 it is the most practice I have packed into two days.',
+    quote:
+      'From registration to certificate, everything was organised. The models, the stations, the teaching \u2014 it is the most practice I have packed into two days.',
     author: 'Fellow delegate \u2014 Skull Base Workshop',
   },
 ]
 
-export const TestimonialsSection: React.FC = () => {
+export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ data, testimonials }) => {
+  const feedbackTitle = data?.feedbackTitle || 'Temporal Bone Dissection Workshop Feedback'
+  const storiesTitle = data?.storiesTitle || 'What Our Learners Are Saying'
+
+  let feedbackChips = data?.feedbackList || []
+  let learnerStories = data?.storiesList || []
+
+  if (feedbackChips.length === 0 && testimonials && testimonials.length > 0) {
+    feedbackChips = testimonials.filter((t: any) => t.type === 'feedback')
+    learnerStories = testimonials.filter((t: any) => t.type === 'story')
+  }
+
+  if (feedbackChips.length === 0) feedbackChips = defaultFeedback
+  if (learnerStories.length === 0) learnerStories = defaultStories
+
   return (
     <>
       {/* Feedback Chips Section */}
       <section className="py-[52px] bg-[#F8F8FA] border-t border-b border-line">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="sechead">
-            <h2 className="font-bold text-ink">
-              Temporal Bone Dissection Workshop Feedback
-            </h2>
+            <h2 className="font-bold text-ink">{feedbackTitle}</h2>
             <div className="rule" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {feedbackQuotes.map((item, idx) => (
+            {feedbackChips.map((item: any, idx: number) => (
               <div
                 key={idx}
                 className="bg-white border border-line border-l-4 border-l-purple rounded-[6px] p-[16px_18px] text-[14px] text-[#3A4048] flex flex-col justify-between shadow-sm"
@@ -81,12 +101,12 @@ export const TestimonialsSection: React.FC = () => {
       <section className="py-[52px]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="sechead">
-            <h2 className="font-bold text-ink">What Our Learners Are Saying</h2>
+            <h2 className="font-bold text-ink">{storiesTitle}</h2>
             <div className="rule" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
-            {learnerStories.map((story, idx) => (
+            {learnerStories.map((story: any, idx: number) => (
               <div
                 key={idx}
                 className="bg-gradient-to-br from-[#4A148C] to-[#673AB7] rounded-[10px] text-[#F2E8F6] p-6 relative text-[14.5px] leading-relaxed shadow-md flex flex-col justify-between"
@@ -97,7 +117,7 @@ export const TestimonialsSection: React.FC = () => {
                 >
                   &ldquo;
                 </div>
-                <p className="relative z-10">{story.text}</p>
+                <p className="relative z-10">{story.quote || story.text}</p>
                 <span className="relative z-10 block mt-[14px] font-bold text-white text-[13px]">
                   {story.author}
                 </span>

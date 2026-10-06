@@ -1,6 +1,10 @@
 import React from 'react'
 
-const checkItems = [
+interface WhyArtificialBoneProps {
+  data?: any
+}
+
+const defaultCheckItems = [
   {
     title: 'Essential Skills for Surgical Procedures',
     description:
@@ -23,7 +27,7 @@ const checkItems = [
   },
 ]
 
-const stats = [
+const defaultStats = [
   { value: '100%', label: 'Safety in temporal bone laboratory' },
   { value: '90%', label: 'Value for surgical experience' },
   { value: '94%', label: 'External anatomical features' },
@@ -31,12 +35,18 @@ const stats = [
   { value: '92%', label: 'Drill response vs cadaver temporal bone' },
 ]
 
-export const WhyArtificialBoneSection: React.FC = () => {
+export const WhyArtificialBoneSection: React.FC<WhyArtificialBoneProps> = ({ data }) => {
+  const title = data?.title || 'Why Artificial Bone'
+  const image = data?.image?.url || data?.imageUrl || '/images/detail_macro.jpg'
+  const checkItems =
+    data?.checkList && data.checkList.length > 0 ? data.checkList : defaultCheckItems
+  const stats = data?.stats && data.stats.length > 0 ? data.stats : defaultStats
+
   return (
     <section className="py-[52px] bg-[#F8F8FA] border-t border-b border-line">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="sechead">
-          <h2 className="font-bold text-ink">Why Artificial Bone</h2>
+          <h2 className="font-bold text-ink">{title}</h2>
           <div className="rule" />
         </div>
 
@@ -46,15 +56,15 @@ export const WhyArtificialBoneSection: React.FC = () => {
           <div className="rounded-[10px] overflow-hidden shadow-[0_16px_36px_rgba(31,35,40,0.16)] border-t-[6px] border-purple">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/detail_macro.jpg"
-              alt="Macro detail of the ear canal and middle ear on the OSSA+ temporal bone model"
+              src={image}
+              alt={title}
               className="w-full h-auto object-cover"
             />
           </div>
 
           {/* Checks List */}
           <ul className="list-none space-y-2">
-            {checkItems.map((item, idx) => (
+            {checkItems.map((item: any, idx: number) => (
               <li key={idx} className="relative pl-[34px] py-[10px]">
                 <span className="absolute left-1 top-3 text-purple font-extrabold bg-tint w-[22px] h-[22px] rounded-full flex items-center justify-center text-[12px]">
                   &#10003;
@@ -72,7 +82,7 @@ export const WhyArtificialBoneSection: React.FC = () => {
 
         {/* Stat Band */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-[2px] bg-line border border-line rounded-[8px] overflow-hidden mt-[34px]">
-          {stats.map((st, idx) => (
+          {stats.map((st: any, idx: number) => (
             <div key={idx} className="bg-[#F8F8FA] text-center py-[22px] px-[14px]">
               <div className="text-[30px] font-extrabold text-purple leading-tight">
                 {st.value}

@@ -1,6 +1,23 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
+
+  --color-purple: #673AB7;
+  --color-purple-d: #4A148C;
+  --color-purple-dd: #38106E;
+  --color-purple-bar: #4A148C;
+  --color-tint: #F2ECFA;
+  --color-ink: #1F2328;
+  --color-muted: #5F6670;
+  --color-line: #E3E5E9;
+  --color-card: #F4F4F6;
+  --color-green: #17A05E;
+  --color-orange: #E67E22;
+  --color-orange-d: #D35400;
+  --color-lav: #9C82BE;
+  --color-lav-l: #D2C4E3;
+}
 
 :root {
   --background: #ffffff;
