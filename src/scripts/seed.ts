@@ -557,6 +557,145 @@ export async function seed() {
     console.log('  = Updated existing HomePage document with 12 blocks')
   }
 
+  // Seed Resources Page
+  const existingResources = await payload.find({
+    collection: 'resources',
+    limit: 1,
+  })
+
+  const resourcesData = {
+    title: 'Resources Page',
+    sections: [
+      {
+        blockType: 'resources-hero' as const,
+        crumbHomeText: 'Home',
+        crumbCurrentText: 'Resources',
+        title: 'Why 3D Simulation Models',
+        description:
+          "Everything surgeons ask us about the models — why they work, what they're made of, and every procedure that can be performed on them.",
+      },
+      {
+        blockType: 'why-simulation' as const,
+        title: 'Why 3D Simulation Models',
+        points: [
+          {
+            num: '01',
+            text: 'Anatomy of the temporal bone and paranasal sinuses mandates attaining proper skills before venturing for surgical procedures.',
+          },
+          {
+            num: '02',
+            text: 'Though cadaveric dissection is ideal, 3D simulation models offer a practical alternative when cadaveric bones are unavailable or limited.',
+          },
+          {
+            num: '03',
+            text: 'Artificial temporal bones replicate internal and external anatomy, enabling mastoid, facial nerve and cochlear implant practice.',
+          },
+          {
+            num: '04',
+            text: '3D sinus models offer 90%+ anatomical accuracy, replicating ethmoid cells, turbinates, sphenoid, uncinate process and bulla.',
+          },
+        ],
+      },
+      {
+        blockType: 'model-features' as const,
+        title: '3D Simulation Bone Model Features',
+        features: [
+          { num: '01', text: 'No need for chemical preservations' },
+          { num: '02', text: 'Bone-similar and soft tissue like material' },
+          { num: '03', text: '14/12/4 surgeries can be practiced on temporal, sinus and larynx models respectively' },
+          { num: '04', text: 'Made with eco-friendly material' },
+          { num: '05', text: 'Models of disease pathology available' },
+        ],
+      },
+      {
+        blockType: 'temporal-bone-procedures' as const,
+        title: 'Procedures That Can Be Performed Using the Temporal Bone Model',
+        procedures: [
+          { name: 'Cortical Mastoidectomy' },
+          { name: 'Posterior Tympanotomy' },
+          { name: 'Cochleostomy' },
+          { name: 'Cochlear Implant Dummy Electrode Insertion' },
+          { name: 'Labyrinthectomy' },
+          { name: 'Facial Nerve Decompression' },
+          { name: 'Endolymphatic Sac Approach' },
+          { name: "Bill's Island" },
+          { name: 'Atticotomy' },
+          { name: 'Modified Radical Mastoidectomy' },
+          { name: 'Translab Approach to IAC' },
+          { name: 'Stapedotomy' },
+          { name: 'Incus Transposition Demo' },
+          { name: 'Radical Mastoidectomy' },
+        ],
+        imageUrl: '/images/photo_lab1.jpg',
+      },
+      {
+        blockType: 'sinus-procedures' as const,
+        title: 'Procedures on the Paranasal Sinus Model',
+        procedures: [
+          { name: 'Identification of Endoscopic Anatomical Landmarks' },
+          { name: 'Uncinate Process Resection' },
+          { name: 'Middle Meatal Antrostomy' },
+          { name: 'Anterior Ethmoidectomy' },
+          { name: 'Posterior Ethmoidectomy' },
+          { name: 'Transethmoid Sphenoidotomy' },
+          { name: 'Inferior and Middle Turbinectomy' },
+          { name: 'Agar Cell Decapping' },
+          { name: 'Medial Maxillectomy' },
+          { name: 'Frontoethmoid Recess Approach' },
+          { name: 'Bulla Ethmoidalis Opening' },
+          { name: 'Transsphenoidal Approach to Pituitary' },
+        ],
+        imageUrl: '/images/photo_lab2.jpg',
+      },
+      {
+        blockType: 'larynx-procedures' as const,
+        title: 'Procedures on the Larynx Model',
+        procedures: [
+          { name: 'Vocal Nodule Excision' },
+          { name: 'Vocal Cord Polypectomy' },
+          { name: 'Partial Cordectomy' },
+          { name: 'Laryngeal Web Excision' },
+        ],
+        imageUrl: '/images/photo_micro.jpg',
+      },
+      {
+        blockType: 'variants' as const,
+        title: 'Temporal Bone Variants Available',
+        variantsList: [
+          { code: 'A', title: 'Adult Healthy', desc: 'Standard adult anatomy, fully pneumatised mastoid' },
+          { code: 'AP', title: 'Adult Pathological', desc: 'Disease-state anatomy for advanced training' },
+          { code: 'P', title: 'Pediatric Healthy', desc: 'Pediatric proportions and landmarks' },
+          { code: 'PP', title: 'Pediatric Pathological', desc: 'Complex pediatric cases' },
+        ],
+      },
+      {
+        blockType: 'doctor-acknowledgment' as const,
+        title: 'Acknowledgment From a Globally Acclaimed Otolaryngologist',
+        quote:
+          'I have used the 3D-printed temporal bone for training people in ear surgery, especially in cochlear implants, and have found that the anatomical landmarks are really very precise and the feel that you get when you drill this bone is as close to drilling the real temporal bone as possible. So, I find using the 3D-printed temporal bone a very convenient way for training people for ear surgery, especially for cochlear implant surgery.',
+        doctorName: 'Dr. Milind Kirtane',
+        doctorTitle:
+          'MS (ENT), Padma Shri Awardee · Consulting ENT Surgeon, P. D. Hinduja National Hospital, Mumbai; Breach Candy; Saifee Hospital · Hon. Surgeon, King Edward Memorial Hospital',
+        imageUrl: '/images/photo_lab2.jpg',
+      },
+    ],
+  }
+
+  if (existingResources.totalDocs === 0) {
+    await payload.create({
+      collection: 'resources',
+      data: resourcesData,
+    })
+    console.log('  + Created Resources document with 8 blocks')
+  } else {
+    await payload.update({
+      collection: 'resources',
+      id: existingResources.docs[0].id,
+      data: resourcesData,
+    })
+    console.log('  = Updated existing Resources document with 8 blocks')
+  }
+
   console.log('✅ Full database seed completed successfully!')
 }
 

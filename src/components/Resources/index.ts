@@ -1,0 +1,8 @@
+export { ResourcesHero } from './ResourcesHero'
+export { WhySimulationSection } from './WhySimulationSection'
+export { ModelFeaturesSection } from './ModelFeaturesSection'
+export { TemporalBoneProceduresSection } from './TemporalBoneProceduresSection'
+export { SinusProceduresSection } from './SinusProceduresSection'
+export { LarynxProceduresSection } from './LarynxProceduresSection'
+export { VariantsSection } from './VariantsSection'
+export { DoctorAcknowledgmentSection } from './DoctorAcknowledgmentSection'
