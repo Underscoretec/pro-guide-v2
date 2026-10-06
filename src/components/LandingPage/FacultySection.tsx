@@ -1,13 +1,11 @@
 import React from 'react'
 
-interface FacultyMember {
-  initials: string
-  name: string
-  role: string
-  bio: string
+interface FacultySectionProps {
+  data?: any
+  faculty?: any[]
 }
 
-const facultyList: FacultyMember[] = [
+const defaultFaculty = [
   {
     initials: 'PN',
     name: 'Dr. Prashant Naik',
@@ -28,39 +26,49 @@ const facultyList: FacultyMember[] = [
   },
 ]
 
-export const FacultySection: React.FC = () => {
+export const FacultySection: React.FC<FacultySectionProps> = ({ data, faculty }) => {
+  const title = data?.title || 'World-Class Faculty'
+  const subtitle =
+    data?.subtitle ||
+    'Learn from faculty members who bring a blend of theory and practice, and real-world examples relevant to your learning experience.'
+
+  const rawList = data?.facultyList || faculty || []
+  const list = rawList.length > 0 ? rawList : defaultFaculty
+
   return (
     <section className="py-[52px]">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="sechead">
-          <h2 className="font-bold text-ink">World-Class Faculty</h2>
+          <h2 className="font-bold text-ink">{title}</h2>
           <p className="text-muted mt-2 text-[15px]">
-            Learn from faculty members who bring a blend of theory and practice, and real-world examples relevant to
-            your learning experience.
+            {subtitle}
           </p>
           <div className="rule" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
-          {facultyList.map((faculty, idx) => (
-            <div
-              key={idx}
-              className="bg-white border border-line rounded-[8px] p-[22px] text-left shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="w-[72px] h-[72px] rounded-full bg-purple text-white flex items-center justify-center font-extrabold text-[22px] mb-3">
-                {faculty.initials}
+          {list.map((member: any, idx: number) => {
+            const key = member.id || member.name || idx
+            return (
+              <div
+                key={key}
+                className="bg-white border border-line rounded-[8px] p-[22px] text-left shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="w-[72px] h-[72px] rounded-full bg-purple text-white flex items-center justify-center font-extrabold text-[22px] mb-3">
+                  {member.initials}
+                </div>
+                <h3 className="text-[17px] font-bold text-ink">
+                  {member.name}
+                </h3>
+                <div className="text-[12.5px] text-purple font-bold mb-2">
+                  {member.role}
+                </div>
+                <p className="text-[13.5px] text-muted leading-relaxed">
+                  {member.bio}
+                </p>
               </div>
-              <h3 className="text-[17px] font-bold text-ink">
-                {faculty.name}
-              </h3>
-              <div className="text-[12.5px] text-purple font-bold mb-2">
-                {faculty.role}
-              </div>
-              <p className="text-[13.5px] text-muted leading-relaxed">
-                {faculty.bio}
-              </p>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>

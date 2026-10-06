@@ -69,6 +69,12 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    'home-page': HomePage;
+    products: Product;
+    workshops: Workshop;
+    faculty: Faculty;
+    testimonials: Testimonial;
+    posts: Post;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +84,12 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    workshops: WorkshopsSelect<false> | WorkshopsSelect<true>;
+    faculty: FacultySelect<false> | FacultySelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -87,8 +99,14 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    header: Header;
+    footer: Footer;
+  };
+  globalsSelect: {
+    header: HeaderSelect<false> | HeaderSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -164,6 +182,333 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  title: string;
+  description?: string | null;
+  sections?:
+    | (
+        | {
+            headline: string;
+            lede: string;
+            ticks?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            primaryCTA?: {
+              text?: string | null;
+              link?: string | null;
+            };
+            secondaryCTA?: {
+              text?: string | null;
+              link?: string | null;
+            };
+            mainImage?: (number | null) | Media;
+            mainImageUrl?: string | null;
+            cardImage1?: (number | null) | Media;
+            cardImage1Url?: string | null;
+            cardImage2?: (number | null) | Media;
+            cardImage2Url?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            title: string;
+            partnersList?:
+              | {
+                  name: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'partners';
+          }
+        | {
+            title: string;
+            productsList?:
+              | {
+                  title: string;
+                  slug: string;
+                  variant?: string | null;
+                  price: string;
+                  gstNote?: string | null;
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
+                  alt?: string | null;
+                  cartUrl?: string | null;
+                  detailsUrl?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'products';
+          }
+        | {
+            title: string;
+            subtitle?: string | null;
+            detailsList?:
+              | {
+                  category: string;
+                  title: string;
+                  description: string;
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
+                  alt?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'true-to-life-details';
+          }
+        | {
+            title: string;
+            workshopsList?:
+              | {
+                  title: string;
+                  category: 'temporal' | 'sinus' | 'larynx';
+                  tagline?: string | null;
+                  meta: string;
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
+                  alt?: string | null;
+                  brochureUrl?: string | null;
+                  registrationUrl?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'workshops';
+          }
+        | {
+            tag?: string | null;
+            title?: string | null;
+            description?: string | null;
+            collageImage?: (number | null) | Media;
+            collageImageUrl?: string | null;
+            gallery?:
+              | {
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
+                  alt?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'workshop-glimpses';
+          }
+        | {
+            title?: string | null;
+            image?: (number | null) | Media;
+            imageUrl?: string | null;
+            checkList?:
+              | {
+                  title: string;
+                  description: string;
+                  id?: string | null;
+                }[]
+              | null;
+            stats?:
+              | {
+                  value: string;
+                  label: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'why-artificial-bone';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            facultyList?:
+              | {
+                  initials: string;
+                  name: string;
+                  role: string;
+                  bio: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faculty';
+          }
+        | {
+            feedbackTitle?: string | null;
+            feedbackList?:
+              | {
+                  quote: string;
+                  author: string;
+                  id?: string | null;
+                }[]
+              | null;
+            storiesTitle?: string | null;
+            storiesList?:
+              | {
+                  quote: string;
+                  author: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
+        | {
+            title?: string | null;
+            variantsList?:
+              | {
+                  code: string;
+                  title: string;
+                  description: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'bone-variants';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            submitEmail?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'lead-form';
+          }
+        | {
+            tag?: string | null;
+            title?: string | null;
+            postsList?:
+              | {
+                  category: string;
+                  title: string;
+                  excerpt: string;
+                  meta?: string | null;
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'blog';
+          }
+      )[]
+    | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    keywords?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  title: string;
+  slug: string;
+  image?: (number | null) | Media;
+  /**
+   * Fallback image path if no Media upload is selected (e.g. /images/prod1.jpg)
+   */
+  imageUrl?: string | null;
+  alt?: string | null;
+  variant?: string | null;
+  price: string;
+  gstNote?: string | null;
+  cartUrl?: string | null;
+  detailsUrl?: string | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workshops".
+ */
+export interface Workshop {
+  id: number;
+  title: string;
+  category: 'temporal' | 'sinus' | 'larynx';
+  tagline?: string | null;
+  meta: string;
+  image?: (number | null) | Media;
+  /**
+   * Fallback image path if no Media upload is selected (e.g. /images/ws_lab.jpg)
+   */
+  imageUrl?: string | null;
+  alt?: string | null;
+  brochureUrl?: string | null;
+  registrationUrl?: string | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faculty".
+ */
+export interface Faculty {
+  id: number;
+  name: string;
+  initials: string;
+  role: string;
+  bio: string;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  quote: string;
+  author: string;
+  type: 'feedback' | 'story';
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  title: string;
+  slug: string;
+  category: string;
+  excerpt: string;
+  meta?: string | null;
+  image?: (number | null) | Media;
+  /**
+   * Fallback image path if no Media upload is selected (e.g. /images/photo_micro.jpg)
+   */
+  imageUrl?: string | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -193,6 +538,30 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'home-page';
+        value: number | HomePage;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'workshops';
+        value: number | Workshop;
+      } | null)
+    | ({
+        relationTo: 'faculty';
+        value: number | Faculty;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: number | Testimonial;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -279,6 +648,336 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  sections?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              headline?: T;
+              lede?: T;
+              ticks?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              primaryCTA?:
+                | T
+                | {
+                    text?: T;
+                    link?: T;
+                  };
+              secondaryCTA?:
+                | T
+                | {
+                    text?: T;
+                    link?: T;
+                  };
+              mainImage?: T;
+              mainImageUrl?: T;
+              cardImage1?: T;
+              cardImage1Url?: T;
+              cardImage2?: T;
+              cardImage2Url?: T;
+              id?: T;
+              blockName?: T;
+            };
+        partners?:
+          | T
+          | {
+              title?: T;
+              partnersList?:
+                | T
+                | {
+                    name?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        products?:
+          | T
+          | {
+              title?: T;
+              productsList?:
+                | T
+                | {
+                    title?: T;
+                    slug?: T;
+                    variant?: T;
+                    price?: T;
+                    gstNote?: T;
+                    image?: T;
+                    imageUrl?: T;
+                    alt?: T;
+                    cartUrl?: T;
+                    detailsUrl?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'true-to-life-details'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              detailsList?:
+                | T
+                | {
+                    category?: T;
+                    title?: T;
+                    description?: T;
+                    image?: T;
+                    imageUrl?: T;
+                    alt?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        workshops?:
+          | T
+          | {
+              title?: T;
+              workshopsList?:
+                | T
+                | {
+                    title?: T;
+                    category?: T;
+                    tagline?: T;
+                    meta?: T;
+                    image?: T;
+                    imageUrl?: T;
+                    alt?: T;
+                    brochureUrl?: T;
+                    registrationUrl?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'workshop-glimpses'?:
+          | T
+          | {
+              tag?: T;
+              title?: T;
+              description?: T;
+              collageImage?: T;
+              collageImageUrl?: T;
+              gallery?:
+                | T
+                | {
+                    image?: T;
+                    imageUrl?: T;
+                    alt?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'why-artificial-bone'?:
+          | T
+          | {
+              title?: T;
+              image?: T;
+              imageUrl?: T;
+              checkList?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              stats?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        faculty?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              facultyList?:
+                | T
+                | {
+                    initials?: T;
+                    name?: T;
+                    role?: T;
+                    bio?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              feedbackTitle?: T;
+              feedbackList?:
+                | T
+                | {
+                    quote?: T;
+                    author?: T;
+                    id?: T;
+                  };
+              storiesTitle?: T;
+              storiesList?:
+                | T
+                | {
+                    quote?: T;
+                    author?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'bone-variants'?:
+          | T
+          | {
+              title?: T;
+              variantsList?:
+                | T
+                | {
+                    code?: T;
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'lead-form'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              submitEmail?: T;
+              id?: T;
+              blockName?: T;
+            };
+        blog?:
+          | T
+          | {
+              tag?: T;
+              title?: T;
+              postsList?:
+                | T
+                | {
+                    category?: T;
+                    title?: T;
+                    excerpt?: T;
+                    meta?: T;
+                    image?: T;
+                    imageUrl?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  image?: T;
+  imageUrl?: T;
+  alt?: T;
+  variant?: T;
+  price?: T;
+  gstNote?: T;
+  cartUrl?: T;
+  detailsUrl?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workshops_select".
+ */
+export interface WorkshopsSelect<T extends boolean = true> {
+  title?: T;
+  category?: T;
+  tagline?: T;
+  meta?: T;
+  image?: T;
+  imageUrl?: T;
+  alt?: T;
+  brochureUrl?: T;
+  registrationUrl?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faculty_select".
+ */
+export interface FacultySelect<T extends boolean = true> {
+  name?: T;
+  initials?: T;
+  role?: T;
+  bio?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  quote?: T;
+  author?: T;
+  type?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  category?: T;
+  excerpt?: T;
+  meta?: T;
+  image?: T;
+  imageUrl?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -316,6 +1015,202 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header".
+ */
+export interface Header {
+  id: number;
+  announcement: {
+    text: string;
+    linkText: string;
+    linkUrl: string;
+  };
+  logo?: (number | null) | Media;
+  logoUrl?: string | null;
+  searchPlaceholder?: string | null;
+  navItems?:
+    | {
+        label: string;
+        url?: string | null;
+        hasDropdown?: boolean | null;
+        dropdownItems?:
+          | {
+              label: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  buyNowButton?: {
+    text?: string | null;
+    url?: string | null;
+  };
+  cartUrl?: string | null;
+  loginButton?: {
+    text?: string | null;
+    url?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  logo?: (number | null) | Media;
+  logoUrl?: string | null;
+  quickLinksTitle?: string | null;
+  quickLinks?:
+    | {
+        label: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  indianQuery?: {
+    title?: string | null;
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+  };
+  internationalQuery?: {
+    title?: string | null;
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+  };
+  address?: {
+    title?: string | null;
+    text?: string | null;
+  };
+  about?: string | null;
+  legalLinks?:
+    | {
+        label: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  copyright?: string | null;
+  socialLinks?:
+    | {
+        platform: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  announcement?:
+    | T
+    | {
+        text?: T;
+        linkText?: T;
+        linkUrl?: T;
+      };
+  logo?: T;
+  logoUrl?: T;
+  searchPlaceholder?: T;
+  navItems?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        hasDropdown?: T;
+        dropdownItems?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  buyNowButton?:
+    | T
+    | {
+        text?: T;
+        url?: T;
+      };
+  cartUrl?: T;
+  loginButton?:
+    | T
+    | {
+        text?: T;
+        url?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  logo?: T;
+  logoUrl?: T;
+  quickLinksTitle?: T;
+  quickLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  indianQuery?:
+    | T
+    | {
+        title?: T;
+        name?: T;
+        email?: T;
+        phone?: T;
+      };
+  internationalQuery?:
+    | T
+    | {
+        title?: T;
+        name?: T;
+        email?: T;
+        phone?: T;
+      };
+  address?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+      };
+  about?: T;
+  legalLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  copyright?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

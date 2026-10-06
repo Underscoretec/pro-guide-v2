@@ -5,6 +5,14 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { HomePage } from './collections/HomePage'
+import { Products } from './collections/Products'
+import { Workshops } from './collections/Workshops'
+import { Faculty } from './collections/Faculty'
+import { Testimonials } from './collections/Testimonials'
+import { Posts } from './collections/Posts'
+import Header from './globals/Header'
+import Footer from './globals/Footer'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -16,7 +24,17 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+  collections: [
+    Users,
+    Media,
+    HomePage,
+    Products,
+    Workshops,
+    Faculty,
+    Testimonials,
+    Posts,
+  ],
+  globals: [Header, Footer],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || 'fallback-secret-key-change-in-env',
   typescript: {

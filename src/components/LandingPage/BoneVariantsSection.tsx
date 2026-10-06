@@ -1,12 +1,10 @@
 import React from 'react'
 
-interface Variant {
-  code: string
-  title: string
-  description: string
+interface BoneVariantsProps {
+  data?: any
 }
 
-const variants: Variant[] = [
+const defaultVariants = [
   {
     code: 'A',
     title: 'Adult Healthy',
@@ -29,17 +27,20 @@ const variants: Variant[] = [
   },
 ]
 
-export const BoneVariantsSection: React.FC = () => {
+export const BoneVariantsSection: React.FC<BoneVariantsProps> = ({ data }) => {
+  const title = data?.title || 'Temporal Bone Variants'
+  const list = data?.variantsList && data.variantsList.length > 0 ? data.variantsList : defaultVariants
+
   return (
     <section className="py-[52px] bg-[#F8F8FA] border-t border-b border-line">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="sechead">
-          <h2 className="font-bold text-ink">Temporal Bone Variants</h2>
+          <h2 className="font-bold text-ink">{title}</h2>
           <div className="rule" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[2px] bg-line border border-line rounded-[8px] overflow-hidden">
-          {variants.map((v, idx) => (
+          {list.map((v: any, idx: number) => (
             <div key={idx} className="bg-white py-[26px] px-5 text-center flex flex-col items-center">
               <div className="w-[52px] h-[52px] mx-auto mb-[10px] rounded-full bg-tint text-purple flex items-center justify-center text-[22px] font-extrabold">
                 {v.code}

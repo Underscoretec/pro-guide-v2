@@ -3,10 +3,13 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  data?: any
+}
+
+export const Header: React.FC<HeaderProps> = ({ data }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [learningOpen, setLearningOpen] = useState(false)
-  const [trainingOpen, setTrainingOpen] = useState(false)
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -15,13 +18,57 @@ export const Header: React.FC = () => {
     }
   }
 
+  // Fallbacks from global
+  const announcementText =
+    data?.announcement?.text ||
+    'Unlock new opportunities by upskilling and stepping into a brighter future.'
+  const announcementLinkText = data?.announcement?.linkText || 'Explore Now!!'
+  const announcementLinkUrl = data?.announcement?.linkUrl || '#workshops'
+
+  const logoSrc = data?.logo?.url || data?.logoUrl || '/images/logo.svg'
+  const searchPlaceholder = data?.searchPlaceholder || 'What would you like to learn?'
+
+  const defaultNavItems = [
+    { label: 'Home', url: '/' },
+    {
+      label: 'Learning',
+      hasDropdown: true,
+      dropdownItems: [
+        { label: 'About Faculty & Training', url: '/training-courses.html' },
+        { label: 'Otolaryngology Video Library', url: '/videos.html' },
+        { label: 'Why 3D Simulation Models', url: '/resources.html' },
+      ],
+    },
+    {
+      label: 'Training Courses',
+      hasDropdown: true,
+      dropdownItems: [
+        { label: '3D Temporal Bone', url: '#workshops' },
+        { label: 'Paranasal Sinus', url: '#workshops' },
+        { label: 'Microlaryngoscopy & Laser Surgeries', url: '#workshops' },
+        { label: 'Types of Training Courses Conducted', url: '/training-courses.html' },
+      ],
+    },
+    { label: 'Resources', url: '/resources.html' },
+    { label: 'Get Your Own Customized Model', url: '/customized-model.html' },
+    { label: 'Contact Us', url: '/contact.html' },
+  ]
+
+  const navItems = data?.navItems && data.navItems.length > 0 ? data.navItems : defaultNavItems
+
+  const buyNowText = data?.buyNowButton?.text || 'Buy Now'
+  const buyNowUrl = data?.buyNowButton?.url || '/products.html'
+  const cartUrl = data?.cartUrl || 'https://pro-guide.in/'
+  const loginText = data?.loginButton?.text || 'Login /Register'
+  const loginUrl = data?.loginButton?.url || 'https://pro-guide.in/'
+
   return (
     <>
       {/* Top Announcement Bar */}
       <div className="bg-purple-bar text-white text-center text-[13.5px] py-2 px-4 font-semibold">
-        Unlock new opportunities by upskilling and stepping into a brighter future.&nbsp;
-        <Link href="#workshops" className="text-[#FFD9A8] underline hover:text-white transition-colors">
-          Explore Now!!
+        {announcementText}&nbsp;
+        <Link href={announcementLinkUrl} className="text-[#FFD9A8] underline hover:text-white transition-colors">
+          {announcementLinkText}
         </Link>
       </div>
 
@@ -32,7 +79,7 @@ export const Header: React.FC = () => {
           <Link href="/" className="flex items-center shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/logo.svg"
+              src={logoSrc}
               alt="ProGuide"
               className="h-[50px] w-auto block"
             />
@@ -43,7 +90,7 @@ export const Header: React.FC = () => {
             <span className="text-muted text-sm">&#128269;</span>
             <input
               type="text"
-              placeholder="What would you like to learn?"
+              placeholder={searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleSearchKeyDown}
@@ -53,125 +100,67 @@ export const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1 ml-auto flex-wrap">
-            <Link
-              href="/"
-              className="text-purple font-semibold text-[13.5px] px-[9px] py-2 rounded hover:text-purple hover:bg-tint transition-colors"
-            >
-              Home
-            </Link>
+            {navItems.map((item: any, idx: number) => {
+              if (item.hasDropdown) {
+                const isOpen = openDropdownIndex === idx
+                return (
+                  <div
+                    key={idx}
+                    className="relative group"
+                    onMouseEnter={() => setOpenDropdownIndex(idx)}
+                    onMouseLeave={() => setOpenDropdownIndex(null)}
+                  >
+                    <button
+                      type="button"
+                      className="text-ink font-semibold text-[13.5px] px-[9px] py-2 rounded hover:text-purple hover:bg-tint flex items-center gap-1 transition-colors"
+                    >
+                      {item.label} <span className="text-[10px] text-muted">&#x25BE;</span>
+                    </button>
+                    <div
+                      className={`absolute top-full left-0 bg-white min-w-[250px] border border-line rounded-[6px] shadow-[0_14px_34px_rgba(31,35,40,0.14)] py-[6px] z-50 transition-all duration-150 ${
+                        isOpen ? 'block opacity-100' : 'hidden opacity-0'
+                      }`}
+                    >
+                      {item.dropdownItems?.map((dropItem: any, dropIdx: number) => (
+                        <Link
+                          key={dropIdx}
+                          href={dropItem.url || '#'}
+                          className="block px-4 py-[9px] text-[13.5px] text-ink hover:bg-tint hover:text-purple"
+                        >
+                          {dropItem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
 
-            {/* Learning Dropdown */}
-            <div
-              className="relative group"
-              onMouseEnter={() => setLearningOpen(true)}
-              onMouseLeave={() => setLearningOpen(false)}
-            >
-              <button
-                type="button"
-                className="text-ink font-semibold text-[13.5px] px-[9px] py-2 rounded hover:text-purple hover:bg-tint flex items-center gap-1 transition-colors"
-              >
-                Learning <span className="text-[10px] text-muted">&#x25BE;</span>
-              </button>
-              <div
-                className={`absolute top-full left-0 bg-white min-w-[250px] border border-line rounded-[6px] shadow-[0_14px_34px_rgba(31,35,40,0.14)] py-[6px] z-50 transition-all duration-150 ${
-                  learningOpen ? 'block opacity-100' : 'hidden opacity-0'
-                }`}
-              >
+              return (
                 <Link
-                  href="/training-courses.html"
-                  className="block px-4 py-[9px] text-[13.5px] text-ink hover:bg-tint hover:text-purple"
+                  key={idx}
+                  href={item.url || '/'}
+                  className={`font-semibold text-[13.5px] px-[9px] py-2 rounded transition-colors ${
+                    item.url === '/' || item.label === 'Home'
+                      ? 'text-purple hover:bg-tint'
+                      : 'text-ink hover:text-purple hover:bg-tint'
+                  }`}
                 >
-                  About Faculty &amp; Training
+                  {item.label}
                 </Link>
-                <Link
-                  href="/videos.html"
-                  className="block px-4 py-[9px] text-[13.5px] text-ink hover:bg-tint hover:text-purple"
-                >
-                  Otolaryngology Video Library
-                </Link>
-                <Link
-                  href="/resources"
-                  className="block px-4 py-[9px] text-[13.5px] text-ink hover:bg-tint hover:text-purple"
-                >
-                  Why 3D Simulation Models
-                </Link>
-              </div>
-            </div>
-
-            {/* Training Courses Dropdown */}
-            <div
-              className="relative group"
-              onMouseEnter={() => setTrainingOpen(true)}
-              onMouseLeave={() => setTrainingOpen(false)}
-            >
-              <button
-                type="button"
-                className="text-ink font-semibold text-[13.5px] px-[9px] py-2 rounded hover:text-purple hover:bg-tint flex items-center gap-1 transition-colors"
-              >
-                Training Courses <span className="text-[10px] text-muted">&#x25BE;</span>
-              </button>
-              <div
-                className={`absolute top-full left-0 bg-white min-w-[260px] border border-line rounded-[6px] shadow-[0_14px_34px_rgba(31,35,40,0.14)] py-[6px] z-50 transition-all duration-150 ${
-                  trainingOpen ? 'block opacity-100' : 'hidden opacity-0'
-                }`}
-              >
-                <Link
-                  href="#workshops"
-                  className="block px-4 py-[9px] text-[13.5px] text-ink hover:bg-tint hover:text-purple"
-                >
-                  3D Temporal Bone
-                </Link>
-                <Link
-                  href="#workshops"
-                  className="block px-4 py-[9px] text-[13.5px] text-ink hover:bg-tint hover:text-purple"
-                >
-                  Paranasal Sinus
-                </Link>
-                <Link
-                  href="#workshops"
-                  className="block px-4 py-[9px] text-[13.5px] text-ink hover:bg-tint hover:text-purple"
-                >
-                  Microlaryngoscopy &amp; Laser Surgeries
-                </Link>
-                <Link
-                  href="/training-courses.html"
-                  className="block px-4 py-[9px] text-[13.5px] text-ink hover:bg-tint hover:text-purple"
-                >
-                  Types of Training Courses Conducted
-                </Link>
-              </div>
-            </div>
-
-            <Link
-              href="/resources"
-              className="text-ink font-semibold text-[13.5px] px-[9px] py-2 rounded hover:text-purple hover:bg-tint transition-colors"
-            >
-              Resources
-            </Link>
-            <Link
-              href="/customized-model.html"
-              className="text-ink font-semibold text-[13.5px] px-[9px] py-2 rounded hover:text-purple hover:bg-tint transition-colors"
-            >
-              Get Your Own Customized Model
-            </Link>
-            <Link
-              href="/contact.html"
-              className="text-ink font-semibold text-[13.5px] px-[9px] py-2 rounded hover:text-purple hover:bg-tint transition-colors"
-            >
-              Contact Us
-            </Link>
+              )
+            })}
 
             {/* Buy Now Button */}
             <Link
-              href="/products.html"
+              href={buyNowUrl}
               className="inline-block bg-orange text-white text-[12.5px] font-bold px-[14px] py-2 rounded-[5px] hover:bg-orange-d border border-orange hover:border-orange-d transition-all ml-1 shadow-sm"
             >
-              Buy Now
+              {buyNowText}
             </Link>
 
             {/* Cart Icon */}
             <a
-              href="https://pro-guide.in/"
+              href={cartUrl}
               target="_blank"
               rel="noopener noreferrer"
               title="Cart (opens the ProGuide store)"
@@ -182,12 +171,12 @@ export const Header: React.FC = () => {
 
             {/* Login / Register */}
             <a
-              href="https://pro-guide.in/"
+              href={loginUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="border border-[#C9CDD3] rounded-[5px] px-4 py-[9px] text-[13.5px] font-bold text-ink hover:border-purple hover:text-purple hover:bg-tint transition-all ml-1"
             >
-              Login /Register
+              {loginText}
             </a>
           </nav>
 
@@ -220,111 +209,57 @@ export const Header: React.FC = () => {
               <span className="text-muted text-sm mr-2">&#128269;</span>
               <input
                 type="text"
-                placeholder="What would you like to learn?"
+                placeholder={searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleSearchKeyDown}
                 className="bg-transparent border-0 outline-none text-[13.5px] w-full"
               />
             </div>
-            <Link
-              href="/"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-purple font-semibold text-[14px] py-1"
-            >
-              Home
-            </Link>
-            <div className="border-t border-line pt-2">
-              <span className="font-bold text-[13px] text-muted uppercase">Learning</span>
-              <Link
-                href="/training-courses.html"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-ink py-1 pl-3 text-[13.5px] hover:text-purple"
-              >
-                About Faculty &amp; Training
-              </Link>
-              <Link
-                href="/videos.html"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-ink py-1 pl-3 text-[13.5px] hover:text-purple"
-              >
-                Otolaryngology Video Library
-              </Link>
-              <Link
-                href="/resources"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-ink py-1 pl-3 text-[13.5px] hover:text-purple"
-              >
-                Why 3D Simulation Models
-              </Link>
-            </div>
-            <div className="border-t border-line pt-2">
-              <span className="font-bold text-[13px] text-muted uppercase">Training Courses</span>
-              <Link
-                href="#workshops"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-ink py-1 pl-3 text-[13.5px] hover:text-purple"
-              >
-                3D Temporal Bone
-              </Link>
-              <Link
-                href="#workshops"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-ink py-1 pl-3 text-[13.5px] hover:text-purple"
-              >
-                Paranasal Sinus
-              </Link>
-              <Link
-                href="#workshops"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-ink py-1 pl-3 text-[13.5px] hover:text-purple"
-              >
-                Microlaryngoscopy &amp; Laser Surgeries
-              </Link>
-              <Link
-                href="/training-courses.html"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-ink py-1 pl-3 text-[13.5px] hover:text-purple"
-              >
-                Types of Training Courses Conducted
-              </Link>
-            </div>
-            <Link
-              href="/resources"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-ink font-semibold text-[14px] py-1 hover:text-purple"
-            >
-              Resources
-            </Link>
-            <Link
-              href="/customized-model.html"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-ink font-semibold text-[14px] py-1 hover:text-purple"
-            >
-              Get Your Own Customized Model
-            </Link>
-            <Link
-              href="/contact.html"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-ink font-semibold text-[14px] py-1 hover:text-purple"
-            >
-              Contact Us
-            </Link>
+            {navItems.map((item: any, idx: number) => {
+              if (item.hasDropdown) {
+                return (
+                  <div key={idx} className="border-t border-line pt-2">
+                    <span className="font-bold text-[13px] text-muted uppercase">{item.label}</span>
+                    {item.dropdownItems?.map((dropItem: any, dropIdx: number) => (
+                      <Link
+                        key={dropIdx}
+                        href={dropItem.url || '#'}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-ink py-1 pl-3 text-[13.5px] hover:text-purple"
+                      >
+                        {dropItem.label}
+                      </Link>
+                    ))}
+                  </div>
+                )
+              }
+              return (
+                <Link
+                  key={idx}
+                  href={item.url || '/'}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block text-ink font-semibold text-[14px] py-1 hover:text-purple"
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
             <div className="pt-2 flex flex-col gap-2">
               <Link
-                href="/products.html"
+                href={buyNowUrl}
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-center bg-orange text-white text-[13.5px] font-bold py-2 rounded-[5px]"
               >
-                Buy Now
+                {buyNowText}
               </Link>
               <a
-                href="https://pro-guide.in/"
+                href={loginUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-center border border-[#C9CDD3] text-ink text-[13.5px] font-bold py-2 rounded-[5px]"
               >
-                Login /Register
+                {loginText}
               </a>
             </div>
           </div>
@@ -335,3 +270,4 @@ export const Header: React.FC = () => {
 }
 
 export default Header
+ 

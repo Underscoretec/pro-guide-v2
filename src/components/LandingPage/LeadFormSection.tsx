@@ -2,17 +2,27 @@
 
 import React, { useState } from 'react'
 
-export const LeadFormSection: React.FC = () => {
+interface LeadFormProps {
+  data?: any
+}
+
+export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [country, setCountry] = useState('India')
   const [mobile, setMobile] = useState('')
   const [submitted, setSubmitted] = useState(false)
 
+  const title = data?.title || 'Let us guide you in your upskilling journey'
+  const subtitle =
+    data?.subtitle ||
+    'Our programme experts are available 7 days a week. Fill the form and we will help you choose the right programme.'
+  const submitEmail = data?.submitEmail || 'shelly@knowledgebridgeint.com'
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const body = `Name: ${firstName} ${lastName}%0ACountry: ${country}%0AMobile: ${mobile}`
-    window.location.href = `mailto:shelly@knowledgebridgeint.com?subject=ProGuide%20programme%20enquiry&body=${body}`
+    window.location.href = `mailto:${submitEmail}?subject=ProGuide%20programme%20enquiry&body=${body}`
     setSubmitted(true)
   }
 
@@ -21,11 +31,10 @@ export const LeadFormSection: React.FC = () => {
       <div className="max-w-[860px] mx-auto px-6">
         <div className="sechead">
           <h2 className="font-bold text-ink">
-            Let us guide you in your upskilling journey
+            {title}
           </h2>
           <p className="text-muted mt-2 text-[15px]">
-            Our programme experts are available 7 days a week. Fill the form and we will help you choose the right
-            programme.
+            {subtitle}
           </p>
           <div className="rule" />
         </div>
