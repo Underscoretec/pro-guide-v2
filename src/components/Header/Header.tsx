@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface HeaderProps {
   data?: any
@@ -77,10 +78,13 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
         <div className="max-w-full mx-auto px-6 min-h-[64px] py-2 flex items-center gap-[18px] justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={logoSrc}
               alt="ProGuide"
+              width={172}
+              height={50}
+              priority
+              unoptimized
               className="h-[50px] w-auto block"
             />
           </Link>

@@ -259,6 +259,7 @@ export async function seed() {
           linkText: 'Explore Now!!',
           linkUrl: '#workshops',
         },
+        logo: null,
         logoUrl: '/images/logo.svg',
         searchPlaceholder: 'What would you like to learn?',
         navItems: [
