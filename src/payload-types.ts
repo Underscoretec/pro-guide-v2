@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
+    'shipping-addresses': ShippingAddress;
     media: Media;
     'home-page': HomePage;
     resources: Resource;
@@ -80,6 +81,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    'shipping-addresses': ShippingAddressesSelect<false> | ShippingAddressesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
@@ -135,6 +137,26 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  role: 'admin' | 'kb_admin' | 'user';
+  fullName: string;
+  phoneNumber?: string | null;
+  institution?: string | null;
+  /**
+   * Redeem code used to activate membership
+   */
+  redeemCode?: string | null;
+  /**
+   * Whether user email has been verified
+   */
+  isEmailVerified?: boolean | null;
+  /**
+   * Whether user phone number has been verified
+   */
+  isPhoneVerified?: boolean | null;
+  emailOtpHash?: string | null;
+  emailOtpExpiresAt?: string | null;
+  phoneOtpHash?: string | null;
+  phoneOtpExpiresAt?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -154,6 +176,26 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shipping-addresses".
+ */
+export interface ShippingAddress {
+  id: number;
+  /**
+   * User associated with this shipping address
+   */
+  user: number | User;
+  addressLine: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  deliveryNotes?: string | null;
+  isDefault?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -632,6 +674,10 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'shipping-addresses';
+        value: number | ShippingAddress;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
       } | null)
@@ -694,6 +740,17 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
+  fullName?: T;
+  phoneNumber?: T;
+  institution?: T;
+  redeemCode?: T;
+  isEmailVerified?: T;
+  isPhoneVerified?: T;
+  emailOtpHash?: T;
+  emailOtpExpiresAt?: T;
+  phoneOtpHash?: T;
+  phoneOtpExpiresAt?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -711,6 +768,22 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shipping-addresses_select".
+ */
+export interface ShippingAddressesSelect<T extends boolean = true> {
+  user?: T;
+  addressLine?: T;
+  city?: T;
+  state?: T;
+  postalCode?: T;
+  country?: T;
+  deliveryNotes?: T;
+  isDefault?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -61,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
   const buyNowUrl = data?.buyNowButton?.url || '/products'
   const cartUrl = data?.cartUrl || 'https://pro-guide.in/'
   const loginText = data?.loginButton?.text || 'Login /Register'
-  const loginUrl = data?.loginButton?.url || 'https://pro-guide.in/'
+  const loginUrl = '/sign-in'
 
   return (
     <>
@@ -161,14 +161,12 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
             </a>
 
             {/* Login / Register */}
-            <a
+            <Link
               href={loginUrl}
-              target="_blank"
-              rel="noopener noreferrer"
               className="border border-[#C9CDD3] rounded-[5px] px-4 py-[9px] text-[13.5px] font-bold text-ink hover:border-purple hover:text-purple hover:bg-tint transition-all ml-1"
             >
               {loginText}
-            </a>
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -244,14 +242,13 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
               >
                 {buyNowText}
               </Link>
-              <a
+              <Link
                 href={loginUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
                 className="text-center border border-[#C9CDD3] text-ink text-[13.5px] font-bold py-2 rounded-[5px]"
               >
                 {loginText}
-              </a>
+              </Link>
             </div>
           </div>
         )}

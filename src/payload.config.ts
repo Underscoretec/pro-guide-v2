@@ -4,6 +4,7 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import { Users } from './collections/Users'
+import { ShippingAddresses } from './collections/ShippingAddresses'
 import { Media } from './collections/Media'
 import { HomePage } from './collections/HomePage'
 import { Resources } from './collections/Resources'
@@ -21,7 +22,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, HomePage, Resources, ProductsPage],
+  collections: [Users, ShippingAddresses, Media, HomePage, Resources, ProductsPage],
   globals: [Header, Footer],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || 'fallback-secret-key-change-in-env',
