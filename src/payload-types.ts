@@ -70,11 +70,6 @@ export interface Config {
     users: User;
     media: Media;
     'home-page': HomePage;
-    products: Product;
-    workshops: Workshop;
-    faculty: Faculty;
-    testimonials: Testimonial;
-    posts: Post;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -85,11 +80,6 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
-    products: ProductsSelect<false> | ProductsSelect<true>;
-    workshops: WorkshopsSelect<false> | WorkshopsSelect<true>;
-    faculty: FacultySelect<false> | FacultySelect<true>;
-    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
-    posts: PostsSelect<false> | PostsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -417,98 +407,6 @@ export interface HomePage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products".
- */
-export interface Product {
-  id: number;
-  title: string;
-  slug: string;
-  image?: (number | null) | Media;
-  /**
-   * Fallback image path if no Media upload is selected (e.g. /images/prod1.jpg)
-   */
-  imageUrl?: string | null;
-  alt?: string | null;
-  variant?: string | null;
-  price: string;
-  gstNote?: string | null;
-  cartUrl?: string | null;
-  detailsUrl?: string | null;
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "workshops".
- */
-export interface Workshop {
-  id: number;
-  title: string;
-  category: 'temporal' | 'sinus' | 'larynx';
-  tagline?: string | null;
-  meta: string;
-  image?: (number | null) | Media;
-  /**
-   * Fallback image path if no Media upload is selected (e.g. /images/ws_lab.jpg)
-   */
-  imageUrl?: string | null;
-  alt?: string | null;
-  brochureUrl?: string | null;
-  registrationUrl?: string | null;
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faculty".
- */
-export interface Faculty {
-  id: number;
-  name: string;
-  initials: string;
-  role: string;
-  bio: string;
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials".
- */
-export interface Testimonial {
-  id: number;
-  quote: string;
-  author: string;
-  type: 'feedback' | 'story';
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
- */
-export interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  category: string;
-  excerpt: string;
-  meta?: string | null;
-  image?: (number | null) | Media;
-  /**
-   * Fallback image path if no Media upload is selected (e.g. /images/photo_micro.jpg)
-   */
-  imageUrl?: string | null;
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -542,26 +440,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'home-page';
         value: number | HomePage;
-      } | null)
-    | ({
-        relationTo: 'products';
-        value: number | Product;
-      } | null)
-    | ({
-        relationTo: 'workshops';
-        value: number | Workshop;
-      } | null)
-    | ({
-        relationTo: 'faculty';
-        value: number | Faculty;
-      } | null)
-    | ({
-        relationTo: 'testimonials';
-        value: number | Testimonial;
-      } | null)
-    | ({
-        relationTo: 'posts';
-        value: number | Post;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -895,84 +773,6 @@ export interface HomePageSelect<T extends boolean = true> {
         description?: T;
         keywords?: T;
       };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products_select".
- */
-export interface ProductsSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  image?: T;
-  imageUrl?: T;
-  alt?: T;
-  variant?: T;
-  price?: T;
-  gstNote?: T;
-  cartUrl?: T;
-  detailsUrl?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "workshops_select".
- */
-export interface WorkshopsSelect<T extends boolean = true> {
-  title?: T;
-  category?: T;
-  tagline?: T;
-  meta?: T;
-  image?: T;
-  imageUrl?: T;
-  alt?: T;
-  brochureUrl?: T;
-  registrationUrl?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faculty_select".
- */
-export interface FacultySelect<T extends boolean = true> {
-  name?: T;
-  initials?: T;
-  role?: T;
-  bio?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials_select".
- */
-export interface TestimonialsSelect<T extends boolean = true> {
-  quote?: T;
-  author?: T;
-  type?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts_select".
- */
-export interface PostsSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  category?: T;
-  excerpt?: T;
-  meta?: T;
-  image?: T;
-  imageUrl?: T;
-  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }
