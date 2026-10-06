@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface HeroSectionProps {
   data?: any
@@ -63,18 +64,94 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
     pairs.push(pair)
   }
 
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
+  const isInfinite = pairs.length > 1
+  // Clone last slide at start and first slide at end for seamless infinite loop
+  const extendedSlides = isInfinite
+    ? [pairs[pairs.length - 1], ...pairs, pairs[0]]
+    : pairs
 
+  const [currentIndex, setCurrentIndex] = useState(isInfinite ? 1 : 0)
+  const [withTransition, setWithTransition] = useState(true)
+  const [isPaused, setIsPaused] = useState(false)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+
+  // Auto-scroll forward continuously
   useEffect(() => {
-    if (pairs.length <= 1 || isPaused) return
+    if (!isInfinite || isPaused || !withTransition) return
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % pairs.length)
+      setIsTransitioning(true)
+      setCurrentIndex((prev) => prev + 1)
     }, 3500)
 
     return () => clearInterval(interval)
-  }, [pairs.length, isPaused])
+  }, [isInfinite, isPaused, withTransition])
+
+  // Re-enable transition after instant position reset
+  useEffect(() => {
+    if (!withTransition) {
+      const timer = setTimeout(() => {
+        setWithTransition(true)
+        setIsTransitioning(false)
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [withTransition])
+
+  // Fallback safety timeout for transition lock
+  useEffect(() => {
+    if (isTransitioning) {
+      const safety = setTimeout(() => {
+        setIsTransitioning(false)
+      }, 850)
+      return () => clearTimeout(safety)
+    }
+  }, [isTransitioning])
+
+  const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
+    // Only handle transforms on the carousel container itself (ignore child hover animations)
+    if (e.target !== e.currentTarget || e.propertyName !== 'transform') return
+    if (!isInfinite) return
+
+    if (currentIndex >= pairs.length + 1) {
+      // Reached clone of first slide -> seamlessly snap to real first slide (index 1)
+      setWithTransition(false)
+      setCurrentIndex(1)
+    } else if (currentIndex <= 0) {
+      // Reached clone of last slide -> seamlessly snap to real last slide
+      setWithTransition(false)
+      setCurrentIndex(pairs.length)
+    } else {
+      setIsTransitioning(false)
+    }
+  }
+
+  const handleNext = () => {
+    if (isTransitioning || !withTransition) return
+    setIsTransitioning(true)
+    setCurrentIndex((prev) => prev + 1)
+  }
+
+  const handlePrev = () => {
+    if (isTransitioning || !withTransition) return
+    setIsTransitioning(true)
+    setCurrentIndex((prev) => prev - 1)
+  }
+
+  const handleDotClick = (dotIdx: number) => {
+    if (isTransitioning || !withTransition) return
+    setIsTransitioning(true)
+    setCurrentIndex(dotIdx + 1)
+  }
+
+  // Calculate active indicator dot
+  const activeDotIndex = !isInfinite
+    ? 0
+    : currentIndex === 0
+      ? pairs.length - 1
+      : currentIndex >= pairs.length + 1
+        ? 0
+        : currentIndex - 1
 
   return (
     <div className="bg-gradient-to-b from-[#FBF9FD] to-[#F1EBF9] border-b border-line">
@@ -119,15 +196,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
         <div className="flex flex-col gap-3">
           {/* Top Image: Still & Static */}
           <div className="w-full rounded-[10px] overflow-hidden shadow-[0_20px_44px_rgba(76,21,96,0.22)] relative aspect-[16/10]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={mainImage}
               alt="Faculty guiding a delegate during hands-on dissection"
-              className="w-full h-full object-cover"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 45vw"
+              className="object-cover"
             />
           </div>
 
-          {/* Bottom Images: 2-by-2 Auto-Scroll Carousel */}
+          {/* Bottom Images: 2-by-2 Infinite Forward Carousel */}
           <div
             className="relative group w-full"
             onMouseEnter={() => setIsPaused(true)}
@@ -135,25 +214,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
           >
             <div className="overflow-hidden w-full rounded-[10px]">
               <div
-                className="flex transition-transform duration-700 ease-in-out"
+                className={`flex ${withTransition ? 'transition-transform duration-700 ease-in-out' : ''}`}
                 style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+                onTransitionEnd={handleTransitionEnd}
               >
-                {pairs.map((pair, slideIdx) => (
+                {extendedSlides.map((pair, slideIdx) => (
                   <div key={slideIdx} className="w-full shrink-0 grid grid-cols-2 gap-3">
-                    {pair.map((item, itemIdx) => {
+                    {pair.map((item: any, itemIdx: number) => {
                       const src = item.image?.url || item.imageUrl || item
                       const alt = item.alt || 'Medical simulation model'
 
                       return (
                         <div
                           key={itemIdx}
-                          className="rounded-[10px] overflow-hidden shadow-[0_20px_44px_rgba(76,21,96,0.22)] relative aspect-[4/3] bg-card flex items-center justify-center p-2 group/card"
+                          className="rounded-[10px] overflow-hidden shadow-[0_20px_44px_rgba(76,21,96,0.22)] relative aspect-[3/4] bg-white group/card"
                         >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
+                          <Image
                             src={src}
                             alt={alt}
-                            className="w-full h-full object-contain mix-blend-multiply transition-transform duration-300 group-hover/card:scale-105"
+                            fill
+                            sizes="(max-width: 1024px) 50vw, 25vw"
+                            className="object-contain transition-transform duration-300 group-hover/card:scale-105"
                           />
                         </div>
                       )
@@ -164,11 +245,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
             </div>
 
             {/* Carousel Navigation Arrows (appear on hover) */}
-            {pairs.length > 1 && (
+            {isInfinite && (
               <>
                 <button
                   type="button"
-                  onClick={() => setCurrentIndex((prev) => (prev === 0 ? pairs.length - 1 : prev - 1))}
+                  onClick={handlePrev}
                   aria-label="Previous images"
                   className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-purple shadow-md flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-pointer"
                 >
@@ -177,7 +258,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
 
                 <button
                   type="button"
-                  onClick={() => setCurrentIndex((prev) => (prev + 1) % pairs.length)}
+                  onClick={handleNext}
                   aria-label="Next images"
                   className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-purple shadow-md flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-pointer"
                 >
@@ -190,10 +271,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
                     <button
                       key={dotIdx}
                       type="button"
-                      onClick={() => setCurrentIndex(dotIdx)}
+                      onClick={() => handleDotClick(dotIdx)}
                       aria-label={`Go to slide ${dotIdx + 1}`}
                       className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                        currentIndex === dotIdx
+                        activeDotIndex === dotIdx
                           ? 'w-6 bg-purple'
                           : 'w-2 bg-[#C9CDD3] hover:bg-purple/50'
                       }`}

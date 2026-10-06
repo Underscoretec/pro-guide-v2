@@ -219,7 +219,10 @@ export interface HomePage {
             title: string;
             partnersList?:
               | {
-                  name: string;
+                  logo?: (number | null) | Media;
+                  logoUrl?: string | null;
+                  name?: string | null;
+                  link?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -589,7 +592,10 @@ export interface HomePageSelect<T extends boolean = true> {
               partnersList?:
                 | T
                 | {
+                    logo?: T;
+                    logoUrl?: T;
                     name?: T;
+                    link?: T;
                     id?: T;
                   };
               id?: T;
