@@ -1,30 +1,31 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import "../globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "Next.js App",
-  description: "Next.js + Payload CMS",
+export const viewport: Viewport = {
+  themeColor: "#4A148C",
+  width: "device-width",
+  initialScale: 1,
 };
 
-export default function AppLayout({
+export const metadata: Metadata = {
+  title: "Otolaryngology Head & Neck 3D Simulation Models | ProGuide",
+  description:
+    "ProGuide by KnowledgeBridge International: 3D temporal bone, paranasal sinus and larynx simulation models, hands-on ENT workshops and training courses.",
+  icons: {
+    icon: "/images/favicon.svg",
+  },
+};
+
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+    <html lang="en" className="scroll-smooth">
+      <body className="antialiased font-sans text-ink bg-white min-h-screen flex flex-col">
+        {children}
+      </body>
     </html>
   );
 }
