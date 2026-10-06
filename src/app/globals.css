@@ -1,49 +1,71 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Reusable Color Tokens from resources.html */
+  --purple: #673AB7;
+  --purple-d: #4A148C;
+  --purple-dd: #38106E;
+  --purple-bar: #4A148C;
+  --tint: #F2ECFA;
+  --ink: #1F2328;
+  --muted: #5F6670;
+  --line: #E3E5E9;
+  --card: #F4F4F6;
+  --white: #ffffff;
+  --green: #17A05E;
+  --orange: #E67E22;
+  --orange-d: #D35400;
+  --lav: #9C82BE;
+  --lav-l: #D2C4E3;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* Utility Classes - Text Colors */
+.text-purple { color: var(--purple); }
+.text-purple-d { color: var(--purple-d); }
+.text-purple-dd { color: var(--purple-dd); }
+.text-purple-bar { color: var(--purple-bar); }
+.text-tint { color: var(--tint); }
+.text-ink { color: var(--ink); }
+.text-muted { color: var(--muted); }
+.text-line { color: var(--line); }
+.text-card { color: var(--card); }
+.text-white { color: var(--white); }
+.text-green { color: var(--green); }
+.text-orange { color: var(--orange); }
+.text-orange-d { color: var(--orange-d); }
+.text-lav { color: var(--lav); }
+.text-lav-l { color: var(--lav-l); }
 
-html {
-  height: 100%;
-}
+/* Utility Classes - Background Colors */
+.bg-purple { background-color: var(--purple); }
+.bg-purple-d { background-color: var(--purple-d); }
+.bg-purple-dd { background-color: var(--purple-dd); }
+.bg-purple-bar { background-color: var(--purple-bar); }
+.bg-tint { background-color: var(--tint); }
+.bg-ink { background-color: var(--ink); }
+.bg-muted { background-color: var(--muted); }
+.bg-line { background-color: var(--line); }
+.bg-card { background-color: var(--card); }
+.bg-white { background-color: var(--white); }
+.bg-green { background-color: var(--green); }
+.bg-orange { background-color: var(--orange); }
+.bg-orange-d { background-color: var(--orange-d); }
+.bg-lav { background-color: var(--lav); }
+.bg-lav-l { background-color: var(--lav-l); }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
+/* Utility Classes - Border Colors */
+.border-purple { border-color: var(--purple); }
+.border-purple-d { border-color: var(--purple-d); }
+.border-purple-dd { border-color: var(--purple-dd); }
+.border-tint { border-color: var(--tint); }
+.border-ink { border-color: var(--ink); }
+.border-muted { border-color: var(--muted); }
+.border-line { border-color: var(--line); }
+.border-card { border-color: var(--card); }
+.border-white { border-color: var(--white); }
+.border-green { border-color: var(--green); }
+.border-orange { border-color: var(--orange); }
+.border-orange-d { border-color: var(--orange-d); }
+.border-lav { border-color: var(--lav); }
+.border-lav-l { border-color: var(--lav-l); }
