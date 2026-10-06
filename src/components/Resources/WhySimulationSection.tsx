@@ -1,6 +1,6 @@
 import React from 'react'
 
-const POINTS = [
+const DEFAULT_POINTS = [
   {
     num: '01',
     text: 'Anatomy of the temporal bone and paranasal sinuses mandates attaining proper skills before venturing for surgical procedures.',
@@ -19,13 +19,22 @@ const POINTS = [
   },
 ]
 
-export function WhySimulationSection() {
+interface WhySimulationSectionProps {
+  data?: {
+    title?: string
+    points?: Array<{ num?: string; text?: string }>
+  }
+}
+
+export function WhySimulationSection({ data }: WhySimulationSectionProps) {
+  const points = data?.points && data.points.length > 0 ? data.points : DEFAULT_POINTS
+
   return (
     <section className="py-[52px]">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-[22px] text-center">
-          {POINTS.map((item) => (
-            <div key={item.num}>
+          {points.map((item, idx) => (
+            <div key={idx}>
               <div className="text-[26px] font-extrabold text-purple">{item.num}</div>
               <p className="text-[13.5px] text-muted mt-1">{item.text}</p>
             </div>

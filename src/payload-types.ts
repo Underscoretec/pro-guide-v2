@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     'home-page': HomePage;
+    resources: Resource;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    resources: ResourcesSelect<false> | ResourcesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -407,6 +409,127 @@ export interface HomePage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resources".
+ */
+export interface Resource {
+  id: number;
+  title: string;
+  sections?:
+    | (
+        | {
+            crumbHomeText?: string | null;
+            crumbCurrentText?: string | null;
+            title?: string | null;
+            description?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'resources-hero';
+          }
+        | {
+            title?: string | null;
+            points?:
+              | {
+                  num: string;
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'why-simulation';
+          }
+        | {
+            title?: string | null;
+            features?:
+              | {
+                  num: string;
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'model-features';
+          }
+        | {
+            title?: string | null;
+            procedures?:
+              | {
+                  name: string;
+                  id?: string | null;
+                }[]
+              | null;
+            image?: (number | null) | Media;
+            imageUrl?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'temporal-bone-procedures';
+          }
+        | {
+            title?: string | null;
+            procedures?:
+              | {
+                  name: string;
+                  id?: string | null;
+                }[]
+              | null;
+            image?: (number | null) | Media;
+            imageUrl?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'sinus-procedures';
+          }
+        | {
+            title?: string | null;
+            procedures?:
+              | {
+                  name: string;
+                  id?: string | null;
+                }[]
+              | null;
+            image?: (number | null) | Media;
+            imageUrl?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'larynx-procedures';
+          }
+        | {
+            title?: string | null;
+            variantsList?:
+              | {
+                  code: string;
+                  title: string;
+                  desc: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'variants';
+          }
+        | {
+            title?: string | null;
+            quote: string;
+            doctorName?: string | null;
+            doctorTitle?: string | null;
+            image?: (number | null) | Media;
+            imageUrl?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'doctor-acknowledgment';
+          }
+      )[]
+    | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    keywords?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -440,6 +563,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'home-page';
         value: number | HomePage;
+      } | null)
+    | ({
+        relationTo: 'resources';
+        value: number | Resource;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -762,6 +889,136 @@ export interface HomePageSelect<T extends boolean = true> {
                     imageUrl?: T;
                     id?: T;
                   };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resources_select".
+ */
+export interface ResourcesSelect<T extends boolean = true> {
+  title?: T;
+  sections?:
+    | T
+    | {
+        'resources-hero'?:
+          | T
+          | {
+              crumbHomeText?: T;
+              crumbCurrentText?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'why-simulation'?:
+          | T
+          | {
+              title?: T;
+              points?:
+                | T
+                | {
+                    num?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'model-features'?:
+          | T
+          | {
+              title?: T;
+              features?:
+                | T
+                | {
+                    num?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'temporal-bone-procedures'?:
+          | T
+          | {
+              title?: T;
+              procedures?:
+                | T
+                | {
+                    name?: T;
+                    id?: T;
+                  };
+              image?: T;
+              imageUrl?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'sinus-procedures'?:
+          | T
+          | {
+              title?: T;
+              procedures?:
+                | T
+                | {
+                    name?: T;
+                    id?: T;
+                  };
+              image?: T;
+              imageUrl?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'larynx-procedures'?:
+          | T
+          | {
+              title?: T;
+              procedures?:
+                | T
+                | {
+                    name?: T;
+                    id?: T;
+                  };
+              image?: T;
+              imageUrl?: T;
+              id?: T;
+              blockName?: T;
+            };
+        variants?:
+          | T
+          | {
+              title?: T;
+              variantsList?:
+                | T
+                | {
+                    code?: T;
+                    title?: T;
+                    desc?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'doctor-acknowledgment'?:
+          | T
+          | {
+              title?: T;
+              quote?: T;
+              doctorName?: T;
+              doctorTitle?: T;
+              image?: T;
+              imageUrl?: T;
               id?: T;
               blockName?: T;
             };
