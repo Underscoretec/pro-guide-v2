@@ -12,7 +12,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
   const defaultQuickLinks = [
     { label: 'Buy Now', url: '/products.html' },
     { label: 'Cart', url: 'https://pro-guide.in/' },
-    { label: 'Resources', url: '/resources.html' },
+    { label: 'Resources', url: '/resources' },
     { label: 'Get Your Own Customized Model', url: '/customized-model.html' },
     { label: 'Login/Register', url: 'https://pro-guide.in/' },
   ]
@@ -68,34 +68,15 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
               {quickLinksTitle}
             </h4>
             <div className="space-y-[3px]">
-              <Link href="/products.html" className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors">
-                Buy Now
-              </Link>
-              <a
-                href="https://pro-guide.in/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors"
-              >
-                Cart
-              </a>
-              <Link href="/resources" className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors">
-                Resources
-              </Link>
-              <Link
-                href="/customized-model.html"
-                className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors"
-              >
-                Get Your Own Customized Model
-              </Link>
-              <a
-                href="https://pro-guide.in/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors"
-              >
-                Login/Register
-              </a>
+              {quickLinks.map((item: any, idx: number) => (
+                <Link
+                  key={idx}
+                  href={item.url || '#'}
+                  className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -110,7 +91,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
               Email :{' '}
               <a
                 href={`mailto:${indianEmail}`}
-                className="inline text-white hover:text-white hover:underline"
+                className="inline text-[#E7D8EE] hover:text-white hover:underline"
               >
                 {indianEmail}
               </a>
@@ -130,7 +111,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
               Email:{' '}
               <a
                 href={`mailto:${intlEmail}`}
-                className="inline text-white hover:text-white hover:underline"
+                className="inline text-[#E7D8EE] hover:text-white hover:underline"
               >
                 {intlEmail}
               </a>
