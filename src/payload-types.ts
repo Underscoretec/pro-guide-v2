@@ -203,6 +203,14 @@ export interface HomePage {
             cardImage1Url?: string | null;
             cardImage2?: (number | null) | Media;
             cardImage2Url?: string | null;
+            carouselImages?:
+              | {
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
+                  alt?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'hero';
@@ -563,6 +571,14 @@ export interface HomePageSelect<T extends boolean = true> {
               cardImage1Url?: T;
               cardImage2?: T;
               cardImage2Url?: T;
+              carouselImages?:
+                | T
+                | {
+                    image?: T;
+                    imageUrl?: T;
+                    alt?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };
