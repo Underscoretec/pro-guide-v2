@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     'home-page': HomePage;
     resources: Resource;
+    'products-page': ProductsPage;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
+    'products-page': ProductsPageSelect<false> | ProductsPageSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -541,6 +543,68 @@ export interface Resource {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products-page".
+ */
+export interface ProductsPage {
+  id: number;
+  title: string;
+  hero?: {
+    crumbHomeText?: string | null;
+    crumbCurrentText?: string | null;
+    title?: string | null;
+    description?: string | null;
+  };
+  families?:
+    | {
+        familyId?: string | null;
+        title: string;
+        subtitle?: string | null;
+        isAlt?: boolean | null;
+        items?:
+          | {
+              name: string;
+              badge?: string | null;
+              image?: (number | null) | Media;
+              imageUrl?: string | null;
+              description?: string | null;
+              bulletPoints?:
+                | {
+                    point?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+              primaryButton?: {
+                text?: string | null;
+                link?: string | null;
+              };
+              secondaryButton?: {
+                text?: string | null;
+                link?: string | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  stageComparison?: {
+    title?: string | null;
+    tiers?:
+      | {
+          tier: string;
+          models: string;
+          builtFor: string;
+          typicalUse: string;
+          id?: string | null;
+        }[]
+      | null;
+    footerNote?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -578,6 +642,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'resources';
         value: number | Resource;
+      } | null)
+    | ({
+        relationTo: 'products-page';
+        value: number | ProductsPage;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1051,6 +1119,75 @@ export interface ResourcesSelect<T extends boolean = true> {
         title?: T;
         description?: T;
         keywords?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products-page_select".
+ */
+export interface ProductsPageSelect<T extends boolean = true> {
+  title?: T;
+  hero?:
+    | T
+    | {
+        crumbHomeText?: T;
+        crumbCurrentText?: T;
+        title?: T;
+        description?: T;
+      };
+  families?:
+    | T
+    | {
+        familyId?: T;
+        title?: T;
+        subtitle?: T;
+        isAlt?: T;
+        items?:
+          | T
+          | {
+              name?: T;
+              badge?: T;
+              image?: T;
+              imageUrl?: T;
+              description?: T;
+              bulletPoints?:
+                | T
+                | {
+                    point?: T;
+                    id?: T;
+                  };
+              primaryButton?:
+                | T
+                | {
+                    text?: T;
+                    link?: T;
+                  };
+              secondaryButton?:
+                | T
+                | {
+                    text?: T;
+                    link?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  stageComparison?:
+    | T
+    | {
+        title?: T;
+        tiers?:
+          | T
+          | {
+              tier?: T;
+              models?: T;
+              builtFor?: T;
+              typicalUse?: T;
+              id?: T;
+            };
+        footerNote?: T;
       };
   updatedAt?: T;
   createdAt?: T;

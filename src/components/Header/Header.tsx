@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
   const navItems = data?.navItems && data.navItems.length > 0 ? data.navItems : defaultNavItems
 
   const buyNowText = data?.buyNowButton?.text || 'Buy Now'
-  const buyNowUrl = data?.buyNowButton?.url || '/products.html'
+  const buyNowUrl = data?.buyNowButton?.url || '/products'
   const cartUrl = data?.cartUrl || 'https://pro-guide.in/'
   const loginText = data?.loginButton?.text || 'Login /Register'
   const loginUrl = data?.loginButton?.url || 'https://pro-guide.in/'

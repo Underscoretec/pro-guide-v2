@@ -7,6 +7,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { HomePage } from './collections/HomePage'
 import { Resources } from './collections/Resources'
+import { ProductsPage } from './collections/ProductsPage'
 import Header from './globals/Header'
 import Footer from './globals/Footer'
 
@@ -20,7 +21,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, HomePage, Resources],
+  collections: [Users, Media, HomePage, Resources, ProductsPage],
   globals: [Header, Footer],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || 'fallback-secret-key-change-in-env',

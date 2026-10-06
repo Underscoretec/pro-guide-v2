@@ -1,5 +1,6 @@
 import config from '../payload.config'
 import { getPayload } from 'payload'
+import { defaultProductFamilies } from '../lib/payload/productsPage'
 
 const seedProducts = [
   {
@@ -289,7 +290,7 @@ export async function seed() {
         ],
         buyNowButton: {
           text: 'Buy Now',
-          url: '/products.html',
+          url: '/products',
         },
         cartUrl: 'https://pro-guide.in/',
         loginButton: {
@@ -695,6 +696,72 @@ export async function seed() {
       data: resourcesData,
     })
     console.log('  = Updated existing Resources document with 8 blocks')
+  }
+
+  // 5. Seed ProductsPage Collection
+  console.log('🛍️ Seeding ProductsPage Collection...')
+  const existingProductsPage = await payload.find({
+    collection: 'products-page',
+    limit: 1,
+  })
+
+  const productsPageData: any = {
+    title: 'Product Offerings',
+    hero: {
+      crumbHomeText: 'Home',
+      crumbCurrentText: 'Product Offerings',
+      title: 'Product Offerings',
+      description:
+        'The complete OSSA+ Simulations catalogue — ENT simulation models across otology, rhinology, laryngology and vestibular training, cast in OSSA+ Composite™ by OSSA PLUS SIMULATION LLP. Store items can be purchased right away; everything else is a quick enquiry away.',
+    },
+    families: defaultProductFamilies,
+    stageComparison: {
+      title: 'Choose by Training Stage',
+      tiers: [
+        {
+          tier: 'Basic',
+          models: 'Mastoid Bone Model · Task-Based PNS',
+          builtFor: 'First-year residents, course delegates',
+          typicalUse: 'Weekly drilling & endoscopy practice',
+        },
+        {
+          tier: 'Task',
+          models:
+            'Tympanoplasty · Stapedectomy · Ossiculoplasty · Facial Decompression · Balloon series',
+          builtFor: 'Skill-specific rehearsal',
+          typicalUse: 'Deliberate practice of one procedure',
+        },
+        {
+          tier: 'Advanced',
+          models: 'Cochlear Implant Model · Advance PNS',
+          builtFor: 'Senior residents, fellows, device training',
+          typicalUse: 'Approach + implant workflow rehearsal',
+        },
+        {
+          tier: 'Complete',
+          models: 'Complete Temporal Bone',
+          builtFor: 'Exams, courses, skull base work',
+          typicalUse: 'Full-procedure dissection & assessment',
+        },
+      ],
+      footerNote:
+        'Full model specifications and the material story are on ossa.sudors.in · purchases and quotes are handled here on ProGuide.',
+    },
+  }
+
+  if (existingProductsPage.totalDocs === 0) {
+    await payload.create({
+      collection: 'products-page',
+      data: productsPageData,
+    })
+    console.log('  + Created ProductsPage document')
+  } else {
+    await payload.update({
+      collection: 'products-page',
+      id: existingProductsPage.docs[0].id,
+      data: productsPageData,
+    })
+    console.log('  = Updated existing ProductsPage document')
   }
 
   console.log('✅ Full database seed completed successfully!')
