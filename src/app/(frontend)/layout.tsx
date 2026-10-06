@@ -4,6 +4,7 @@ import '../globals.css'
 import Header from '@/components/Header/Header'
 import Footer from '@/components/Footer/Footer'
 import { getHeader, getFooter } from '@/lib/payload/globals'
+import { getCurrentUser } from '@/lib/auth/session'
 
 export const viewport: Viewport = {
   themeColor: '#4A148C',
@@ -25,15 +26,16 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [header, footer] = await Promise.all([
+  const [header, footer, user] = await Promise.all([
     getHeader(),
     getFooter(),
+    getCurrentUser(),
   ])
 
   return (
     <html lang="en" className="scroll-smooth">
       <body className="antialiased font-sans text-ink bg-white min-h-screen flex flex-col">
-        <Header data={header} />
+        <Header data={header} user={user ? { fullName: user.fullName, email: user.email } : null} />
         {children}
         <Footer footer={footer} />
       </body>

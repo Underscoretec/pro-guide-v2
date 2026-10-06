@@ -6,9 +6,10 @@ import Image from 'next/image'
 
 interface HeaderProps {
   data?: any
+  user?: { fullName?: string | null; email: string } | null
 }
 
-export const Header: React.FC<HeaderProps> = ({ data }) => {
+export const Header: React.FC<HeaderProps> = ({ data, user }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -62,6 +63,8 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
   const cartUrl = data?.cartUrl || 'https://pro-guide.in/'
   const loginText = data?.loginButton?.text || 'Login /Register'
   const loginUrl = '/sign-in'
+
+  const initial = (user?.fullName || user?.email || '?').trim().charAt(0).toUpperCase()
 
   return (
     <>
@@ -161,12 +164,23 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
             </a>
 
             {/* Login / Register */}
-            <Link
-              href={loginUrl}
-              className="border border-[#C9CDD3] rounded-[5px] px-4 py-[9px] text-[13.5px] font-bold text-ink hover:border-purple hover:text-purple hover:bg-tint transition-all ml-1"
-            >
-              {loginText}
-            </Link>
+            {user ? (
+              <Link
+                href="/profile"
+                title="My Profile"
+                aria-label="My Profile"
+                className="ml-1 w-9 h-9 rounded-full bg-orange-d text-white font-bold text-[14px] flex items-center justify-center hover:bg-orange transition-colors"
+              >
+                {initial}
+              </Link>
+            ) : (
+              <Link
+                href={loginUrl}
+                className="border border-[#C9CDD3] rounded-[5px] px-4 py-[9px] text-[13.5px] font-bold text-ink hover:border-purple hover:text-purple hover:bg-tint transition-all ml-1"
+              >
+                {loginText}
+              </Link>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -176,12 +190,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
             className="lg:hidden p-2 text-ink hover:text-purple rounded-md focus:outline-none"
             aria-label="Toggle Navigation Menu"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {mobileMenuOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
@@ -242,13 +251,23 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
               >
                 {buyNowText}
               </Link>
-              <Link
-                href={loginUrl}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-center border border-[#C9CDD3] text-ink text-[13.5px] font-bold py-2 rounded-[5px]"
-              >
-                {loginText}
-              </Link>
+              {user ? (
+                <Link
+                  href="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center border border-[#C9CDD3] text-ink text-[13.5px] font-bold py-2 rounded-[5px]"
+                >
+                  My Profile
+                </Link>
+              ) : (
+                <Link
+                  href={loginUrl}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center border border-[#C9CDD3] text-ink text-[13.5px] font-bold py-2 rounded-[5px]"
+                >
+                  {loginText}
+                </Link>
+              )}
             </div>
           </div>
         )}
@@ -258,4 +277,3 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
 }
 
 export default Header
- 

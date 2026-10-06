@@ -228,3 +228,10 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
 
   redirect('/')
 }
+
+export async function signOut() {
+  const payload = await getPayloadClient()
+  const jar = await cookies()
+  jar.delete(`${payload.config.cookiePrefix}-token`)
+  redirect('/sign-in')
+}
