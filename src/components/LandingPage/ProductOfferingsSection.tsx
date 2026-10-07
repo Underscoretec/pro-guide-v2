@@ -133,6 +133,12 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
 
                   {/* Actions */}
                   <div className="flex gap-2 mt-3 pt-1">
+                    <Link
+                      href="/products"
+                      className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-white text-ink rounded-[5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
+                    >
+                      View Details
+                    </Link>
                     <button
                       type="button"
                       onClick={(e) => handleAddToCart(e, prod, imageSrc)}
@@ -140,12 +146,6 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                     >
                       Add to Cart
                     </button>
-                    <Link
-                      href="/products"
-                      className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-white text-ink rounded-[5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
-                    >
-                      View Details
-                    </Link>
                   </div>
                 </div>
               </div>
@@ -156,16 +156,16 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
         {/* View Cart & All Products CTA */}
         <p className="text-center mt-[22px] flex items-center justify-center gap-3">
           <Link
-            href="/cart"
-            className="inline-block bg-purple text-white px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-purple hover:bg-purple-d transition-all shadow-sm"
-          >
-            View Cart &rarr;
-          </Link>
-          <Link
             href="/products"
             className="inline-block bg-white text-ink px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
           >
             All Products &rarr;
+          </Link>
+          <Link
+            href="/cart"
+            className="inline-block bg-purple text-white px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-purple hover:bg-purple-d transition-all shadow-sm"
+          >
+            View Cart &rarr;
           </Link>
         </p>
       </div>
