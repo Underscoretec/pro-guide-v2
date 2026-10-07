@@ -111,13 +111,12 @@ export function ContactContent({ data }: ContactContentProps) {
   }
 
   const getStyle = (fieldName: string) =>
-    fieldErrors[fieldName] ? { borderColor: '#612178' } : {}
+    fieldErrors[fieldName] ? { borderColor: '#DC2626' } : {}
 
   return (
     <>
-      <ToastContainer position="bottom-right" />
       <div className="phero">
-        <div className="max-w-[1200px] mx-auto px-6">
+        <div className="wrap">
           <div className="crumb">
             <Link href="/">Home</Link> / Contact Us
           </div>
@@ -125,8 +124,9 @@ export function ContactContent({ data }: ContactContentProps) {
           <p>{heroDescription}</p>
         </div>
       </div>
+      <ToastContainer position="bottom-right" />
 
-      <section>
+      <section style={{ paddingTop: '10px', paddingBottom: '48px' }}>
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="split" style={{ alignItems: 'start' }}>
             <form className="form" onSubmit={handleSubmit} noValidate>

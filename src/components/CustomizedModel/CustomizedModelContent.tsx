@@ -183,19 +183,18 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
 
   const getInputClass = (fieldName: string) =>
     `w-full border ${
-      fieldErrors[fieldName] ? 'border-[#612178]' : 'border-[#D1D5DB]'
-    } bg-white rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7]`
+      fieldErrors[fieldName] ? 'border-[#DC2626]' : 'border-[#E5E7EB] hover:border-[#D1D5DB]'
+    } bg-white rounded-[4px] px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#5E007B] focus:ring-1 focus:ring-[#5E007B] transition-all`
 
   const getSelectClass = (fieldName: string) =>
     `w-full border ${
-      fieldErrors[fieldName] ? 'border-[#612178]' : 'border-[#D1D5DB]'
-    } bg-white rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] appearance-none focus:outline-none focus:border-[#673AB7] cursor-pointer`
+      fieldErrors[fieldName] ? 'border-[#DC2626]' : 'border-[#E5E7EB] hover:border-[#D1D5DB]'
+    } bg-white rounded-[4px] px-3.5 py-2.5 text-[14px] text-[#1F2328] appearance-none focus:outline-none focus:border-[#5E007B] focus:ring-1 focus:ring-[#5E007B] transition-all cursor-pointer`
 
   return (
     <>
-      <ToastContainer position="bottom-right" />
       <div className="phero">
-        <div className="max-w-[1200px] mx-auto px-6">
+        <div className="wrap">
           <div className="crumb">
             <Link href="/">Home</Link> / Get Your Own Customized Model
           </div>
@@ -203,8 +202,9 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
           <p>{heroDescription}</p>
         </div>
       </div>
+      <ToastContainer position="bottom-right" />
 
-      <section className="py-[52px]">
+      <section style={{ paddingTop: '10px', paddingBottom: '48px' }}>
         <div className="max-w-[1200px] mx-auto px-6">
           <form onSubmit={handleSubmit} noValidate>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
