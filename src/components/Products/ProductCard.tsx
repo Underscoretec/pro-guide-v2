@@ -115,6 +115,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
 
         {/* Pinned Bottom Buttons: Buy and Enquire */}
         <div className="mt-auto pt-2 flex items-center gap-2">
+          <Link
+            href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
+            className="flex-1 text-center bg-white text-ink px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
+          >
+            Enquire
+          </Link>
+
+          
           <button
             type="button"
             onClick={handleBuy}
@@ -122,13 +130,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
           >
             Buy
           </button>
-
-          <Link
-            href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
-            className="flex-1 text-center bg-white text-ink px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
-          >
-            Enquire
-          </Link>
         </div>
       </div>
     </div>
