@@ -1084,6 +1084,83 @@ export async function seed() {
     console.log('  = Updated existing TrainingCoursesPage document')
   }
 
+  // 8. Seed ContactPage
+  console.log('Seeding ContactPage...')
+  const existingContactPage = await payload.find({
+    collection: 'contact-page',
+    limit: 1,
+  })
+
+  const contactPageData = {
+    title: 'Get In Touch',
+    heroDescription:
+      "Have questions or need assistance? We're here to help — workshops, models, bulk and institutional orders, or anything else.",
+    indianQueries: {
+      title: 'Contacts for Indian Queries',
+      name: 'Shelly Sequeira',
+      email: 'shelly@knowledgebridgeint.com',
+      phone: '9220522294',
+    },
+    internationalQueries: {
+      title: 'Contacts for International Queries',
+      name: 'Shashikumar Sambhoo',
+      email: 'svs@knowledgebridgeint.com',
+      phone: '+971 507863903 | +91 9820454543',
+    },
+    address: {
+      title: 'Address',
+      text: '506, Centre Point, 5th Floor, J.B. Nagar, Andheri Kurla Road, Andheri (East), Mumbai-400059, Maharashtra, India',
+    },
+    formDisclaimer:
+      'By clicking the button below, you agree to receive communications via Email/Call/WhatsApp/SMS from KnowledgeBridge about this programme and other relevant programmes.',
+  }
+
+  if (existingContactPage.totalDocs === 0) {
+    await payload.create({
+      collection: 'contact-page',
+      data: contactPageData,
+    })
+    console.log('  + Created ContactPage document')
+  } else {
+    await payload.update({
+      collection: 'contact-page',
+      id: existingContactPage.docs[0].id,
+      data: contactPageData,
+    })
+    console.log('  = Updated existing ContactPage document')
+  }
+
+  // 9. Seed CustomizedModelPage
+  console.log('Seeding CustomizedModelPage...')
+  const existingCustomizedModelPage = await payload.find({
+    collection: 'customized-model-page',
+    limit: 1,
+  })
+
+  const customizedModelPageData = {
+    title: 'Get Your Own Customized 3D Simulated Model',
+    heroDescription:
+      'We provide 3D simulated models as per your requirement. Fill in the details below and upload your DICOM file — our engineers will review the submission and get back to you within 48 working hours.',
+    dicomHelpText: 'dicom file (max. 50MB)',
+    dicomFormatInfo:
+      'Only DICOM (.dcom) files are supported. Minimum 0.6mm thick sections in all the three planes Sagittal, Axial, CORONAL',
+  }
+
+  if (existingCustomizedModelPage.totalDocs === 0) {
+    await payload.create({
+      collection: 'customized-model-page',
+      data: customizedModelPageData,
+    })
+    console.log('  + Created CustomizedModelPage document')
+  } else {
+    await payload.update({
+      collection: 'customized-model-page',
+      id: existingCustomizedModelPage.docs[0].id,
+      data: customizedModelPageData,
+    })
+    console.log('  = Updated existing CustomizedModelPage document')
+  }
+
   console.log('✅ Full database seed completed successfully!')
 }
 
