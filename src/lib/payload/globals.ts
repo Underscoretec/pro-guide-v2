@@ -20,3 +20,4 @@ export const getFooter = cache(async () => {
     return null
   }
 })
+

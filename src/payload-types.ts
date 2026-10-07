@@ -71,6 +71,8 @@ export interface Config {
     media: Media;
     'home-page': HomePage;
     resources: Resource;
+    'contact-page': ContactPage;
+    'contact-submissions': ContactSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +84,8 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
+    'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
+    'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -538,6 +542,48 @@ export interface Resource {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page".
+ */
+export interface ContactPage {
+  id: number;
+  title: string;
+  heroDescription?: string | null;
+  indianQueries?: {
+    title?: string | null;
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+  };
+  internationalQueries?: {
+    title?: string | null;
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+  };
+  address?: {
+    title?: string | null;
+    text?: string | null;
+  };
+  formDisclaimer?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions".
+ */
+export interface ContactSubmission {
+  id: number;
+  firstName: string;
+  lastName?: string | null;
+  country?: string | null;
+  mobile?: string | null;
+  message: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -575,6 +621,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'resources';
         value: number | Resource;
+      } | null)
+    | ({
+        relationTo: 'contact-page';
+        value: number | ContactPage;
+      } | null)
+    | ({
+        relationTo: 'contact-submissions';
+        value: number | ContactSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1046,6 +1100,52 @@ export interface ResourcesSelect<T extends boolean = true> {
         description?: T;
         keywords?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page_select".
+ */
+export interface ContactPageSelect<T extends boolean = true> {
+  title?: T;
+  heroDescription?: T;
+  indianQueries?:
+    | T
+    | {
+        title?: T;
+        name?: T;
+        email?: T;
+        phone?: T;
+      };
+  internationalQueries?:
+    | T
+    | {
+        title?: T;
+        name?: T;
+        email?: T;
+        phone?: T;
+      };
+  address?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+      };
+  formDisclaimer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions_select".
+ */
+export interface ContactSubmissionsSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  country?: T;
+  mobile?: T;
+  message?: T;
   updatedAt?: T;
   createdAt?: T;
 }

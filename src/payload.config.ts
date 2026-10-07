@@ -7,6 +7,8 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { HomePage } from './collections/HomePage'
 import { Resources } from './collections/Resources'
+import { ContactPage } from './collections/ContactPage'
+import { ContactSubmissions } from './collections/ContactSubmissions'
 import Header from './globals/Header'
 import Footer from './globals/Footer'
 
@@ -20,7 +22,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, HomePage, Resources],
+  collections: [Users, Media, HomePage, Resources, ContactPage, ContactSubmissions],
   globals: [Header, Footer],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || 'fallback-secret-key-change-in-env',
@@ -31,5 +33,6 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URI || 'file:./payload.db',
     },
+    push: false,
   }),
 })
