@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface FooterProps {
   footer?: any
@@ -134,10 +135,12 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
         {/* Brand Row */}
         <div className="border-t border-white/25 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr] gap-[26px] items-center">
           <div className="shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={logoSrc}
               alt="ProGuide"
+              width={152}
+              height={44}
+              unoptimized
               className="h-[44px] w-auto block"
             />
           </div>

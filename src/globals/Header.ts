@@ -96,7 +96,7 @@ export const Header: GlobalConfig = {
         {
           name: 'url',
           type: 'text',
-          defaultValue: '/products.html',
+          defaultValue: '/products',
         },
       ],
     },

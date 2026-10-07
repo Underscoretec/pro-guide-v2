@@ -107,12 +107,25 @@ export const PartnersBlock: Block = {
     },
     {
       name: 'partnersList',
+      label: 'Partners Logos',
       type: 'array',
       fields: [
         {
+          name: 'logo',
+          type: 'upload',
+          relationTo: 'media',
+        },
+        {
+          name: 'logoUrl',
+          type: 'text',
+        },
+        {
           name: 'name',
           type: 'text',
-          required: true,
+        },
+        {
+          name: 'link',
+          type: 'text',
         },
       ],
     },

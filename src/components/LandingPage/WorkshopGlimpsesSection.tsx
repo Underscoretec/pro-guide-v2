@@ -26,7 +26,7 @@ export const WorkshopGlimpsesSection: React.FC<WorkshopGlimpsesProps> = ({ data 
     <section className="pt-0 pb-[52px]">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="sechead mb-[22px]">
-          <p className="text-purple font-extrabold tracking-[1px] uppercase text-[12px]">
+          <p className="!text-purple font-extrabold tracking-[1px] uppercase text-[12px]">
             {tag}
           </p>
           <h2 className="font-bold text-ink mt-1">

@@ -43,7 +43,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ data, posts }) => {
     <section className="py-[52px] bg-[#F8F8FA] border-t border-b border-line">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="sechead">
-          <p className="text-purple font-extrabold tracking-[1px] uppercase text-[12px]">
+          <p className="!text-purple font-extrabold tracking-[1px] uppercase text-[12px]">
             {tag}
           </p>
           <h2 className="font-bold text-ink mt-1">{title}</h2>
