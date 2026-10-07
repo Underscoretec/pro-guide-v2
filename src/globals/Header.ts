@@ -25,7 +25,7 @@ export const Header: GlobalConfig = {
         {
           name: 'linkUrl',
           type: 'text',
-          defaultValue: '#workshops',
+          defaultValue: '/workshops',
           required: true,
         },
       ],

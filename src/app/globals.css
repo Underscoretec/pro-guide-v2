@@ -210,3 +210,53 @@ section.purple h2 { color: #fff; }
 .border-orange-d { border-color: var(--orange-d); }
 .border-lav { border-color: var(--lav); }
 .border-lav-l { border-color: var(--lav-l); }
+
+/* Grid Layouts from HTML */
+.grid { display: grid; gap: 18px; }
+.g4 { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.g3 { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.g2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+
+/* Faculty / Management Team Cards from HTML */
+.fcard { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 22px; text-align: left; }
+.avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px; margin-bottom: 12px; }
+.fcard h3 { font-size: 17px; font-weight: 700; color: var(--ink); }
+.fcard .role { font-size: 12.5px; color: var(--purple); font-weight: 700; margin-bottom: 8px; }
+.fcard p { font-size: 13.5px; color: var(--muted); }
+
+/* Workshops Cards from HTML */
+.wcard { background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+.wcard .wimg { aspect-ratio: 16/9; overflow: hidden; }
+.wcard .wimg img { width: 100%; height: 100%; object-fit: cover; }
+.wcard .wbody { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.wcard .tagline { font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: #E67E22; font-weight: 800; }
+.wcard h3 { font-size: 16px; line-height: 1.4; font-weight: 700; color: var(--ink); }
+.wcard .meta { font-size: 12.5px; color: var(--muted); }
+.wcard .actions { display: flex; gap: 8px; margin-top: auto; padding-top: 10px; }
+.wcard .actions .btn { flex: 1; padding: 9px 8px; font-size: 12px; }
+
+/* Statband from HTML */
+.statband { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 34px; }
+.stat { background: #F8F8FA; text-align: center; padding: 22px 14px; }
+.stat .n { font-size: 30px; font-weight: 800; color: var(--purple); }
+.stat .l { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+/* 2026 Course Catalogue from HTML */
+.course { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+.course .cimg { margin: -20px -22px 14px; aspect-ratio: 16/8.5; overflow: hidden; background: var(--card); }
+.course .cimg img { width: 100%; height: 100%; object-fit: cover; }
+.course .cat { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--orange); }
+.course h3 { font-size: 17px; font-weight: 700; color: var(--ink); }
+.course .why { font-size: 13.5px; color: var(--muted); }
+.course details { border-top: 1px dashed var(--line); padding-top: 8px; margin-top: 4px; }
+.course summary { cursor: pointer; font-size: 13px; font-weight: 700; color: var(--purple); list-style: none; display: inline-flex; align-items: center; }
+.course summary::-webkit-details-marker { display: none; }
+.course summary::after { content: ' \25BE'; font-weight: 800; font-size: 11px; color: var(--purple); margin-left: 4px; }
+.course details[open] summary::after { content: ' \25B4'; font-weight: 800; font-size: 11px; color: var(--purple); margin-left: 4px; }
+.course ul { list-style: none; margin-top: 8px; }
+.course ul li { font-size: 13px; padding: 3px 0 3px 20px; position: relative; color: #3A4048; }
+.course ul li::before { content: '\2713'; position: absolute; left: 2px; color: var(--purple); font-weight: 800; }
+.course .fmt { font-size: 12px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 8px; }
+.course .actions { display: flex; gap: 8px; margin-top: auto; padding-top: 10px; }
+.course .actions .btn { flex: 1; padding: 8px; font-size: 12.5px; }
+

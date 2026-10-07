@@ -28,6 +28,14 @@ const nextConfig: NextConfig = {
         source: '/customized-model.html',
         destination: '/customized-model',
       },
+      {
+        source: '/products.html',
+        destination: '/products',
+      },
+      {
+        source: '/:path*.html',
+        destination: '/:path*',
+      },
     ]
   },
 }

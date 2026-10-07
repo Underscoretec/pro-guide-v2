@@ -181,7 +181,7 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
 
         <p className="text-center mt-[22px]">
           <Link
-            href="/workshops.html"
+            href="/workshops"
             className="inline-block bg-white text-ink px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
           >
             View all programmes &rarr;

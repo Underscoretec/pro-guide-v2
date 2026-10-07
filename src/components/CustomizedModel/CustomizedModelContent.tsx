@@ -2,8 +2,23 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-export function CustomizedModelContent() {
+interface CustomizedModelContentProps {
+  data?: any
+}
+
+export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
+  const title = data?.title || 'Get Your Own Customized 3D Simulated Model'
+  const heroDescription =
+    data?.heroDescription ||
+    'We provide 3D simulated models as per your requirement. Fill in the details below and upload your DICOM file — our engineers will review the submission and get back to you within 48 working hours.'
+  const dicomHelpText = data?.dicomHelpText || 'dicom file (max. 50MB)'
+  const dicomFormatInfo =
+    data?.dicomFormatInfo ||
+    'Only DICOM (.dcom) files are supported. Minimum 0.6mm thick sections in all the three planes Sagittal, Axial, CORONAL'
+
   const [formData, setFormData] = useState({
     firstName: '',
     academicQualification: '',
@@ -22,17 +37,23 @@ export function CustomizedModelContent() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [verifiedHuman, setVerifiedHuman] = useState(false)
   const [dragActive, setDragActive] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({})
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+    if (value.trim()) {
+      setFieldErrors((prev) => ({ ...prev, [name]: false }))
+    }
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0])
+      setFieldErrors((prev) => ({ ...prev, file: false }))
     }
   }
 
@@ -52,37 +73,140 @@ export function CustomizedModelContent() {
     setDragActive(false)
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setSelectedFile(e.dataTransfer.files[0])
+      setFieldErrors((prev) => ({ ...prev, file: false }))
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!verifiedHuman) {
-      alert('Please check "Verify you are human" before submitting.')
+    const newErrors: Record<string, boolean> = {}
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const isEmailValid = emailRegex.test(formData.email.trim())
+    const cleanPhone = formData.whatsAppNo.replace(/\D/g, '')
+    const isPhoneValid = cleanPhone.length === 10
+
+    if (!formData.firstName.trim()) newErrors.firstName = true
+    if (!formData.academicQualification.trim()) newErrors.academicQualification = true
+    if (!formData.email.trim() || !isEmailValid) newErrors.email = true
+    if (!formData.iMessageNo.trim()) newErrors.iMessageNo = true
+    if (!formData.whatsAppNo.trim() || !isPhoneValid) newErrors.whatsAppNo = true
+    if (!formData.viberNo.trim()) newErrors.viberNo = true
+    if (!formData.institutionName) newErrors.institutionName = true
+    if (!formData.address) newErrors.address = true
+    if (!formData.state.trim()) newErrors.state = true
+    if (!formData.city.trim()) newErrors.city = true
+    if (!formData.country.trim()) newErrors.country = true
+    if (!formData.pincode.trim()) newErrors.pincode = true
+    if (!selectedFile) newErrors.file = true
+
+    setFieldErrors(newErrors)
+
+    if (Object.keys(newErrors).length > 0) {
+      if (formData.email.trim() && !isEmailValid) {
+        toast.error('Please enter a valid email address', { position: 'bottom-right' })
+      } else if (formData.whatsAppNo.trim() && !isPhoneValid) {
+        toast.error('Please enter a valid 10-digit phone number', { position: 'bottom-right' })
+      } else if (newErrors.file) {
+        toast.error('Please upload a DICOM file', { position: 'bottom-right' })
+      } else {
+        toast.error('Please fill in all required fields', { position: 'bottom-right' })
+      }
       return
     }
-    const body = `Name: ${formData.firstName}%0AQualification: ${formData.academicQualification}%0AEmail: ${formData.email}%0AiMessage: ${formData.iMessageNo}%0AWhatsApp: ${formData.whatsAppNo}%0AViber: ${formData.viberNo}%0AInstitution: ${formData.institutionName}%0AAddress: ${formData.address}%0AState/City: ${formData.state} / ${formData.city}%0ACountry/Pincode: ${formData.country} / ${formData.pincode}%0AAttached File: ${selectedFile ? selectedFile.name : 'None'}`
-    window.location.href = `mailto:svs@knowledgebridgeint.com?subject=Customized%203D%20Model%20Requirement&body=${body}`
+
+    if (!verifiedHuman) {
+      toast.error('Please check "Verify you are human" before submitting.', {
+        position: 'bottom-right',
+      })
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch('/api/customized-model-submissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          academicQualification: formData.academicQualification,
+          email: formData.email,
+          iMessageNo: formData.iMessageNo,
+          whatsAppNo: formData.whatsAppNo,
+          viberNo: formData.viberNo,
+          institutionName: formData.institutionName,
+          address: formData.address,
+          state: formData.state,
+          city: formData.city,
+          country: formData.country,
+          pincode: formData.pincode,
+          fileName: selectedFile ? selectedFile.name : '',
+        }),
+      })
+
+      if (response.ok) {
+        toast.success('Customized 3D model request submitted successfully!', {
+          position: 'bottom-right',
+        })
+        setFormData({
+          firstName: '',
+          academicQualification: '',
+          email: '',
+          iMessageNo: '',
+          whatsAppNo: '',
+          viberNo: '',
+          institutionName: '',
+          address: '',
+          state: '',
+          city: '',
+          country: '',
+          pincode: '',
+        })
+        setSelectedFile(null)
+        setVerifiedHuman(false)
+        setFieldErrors({})
+      } else {
+        const errData = await response.json().catch(() => null)
+        const msg = errData?.errors?.[0]?.message || 'Failed to submit request. Please try again.'
+        toast.error(msg, { position: 'bottom-right' })
+      }
+    } catch (err) {
+      console.error('Error submitting customized model request:', err)
+      toast.error('An error occurred. Please try again.', { position: 'bottom-right' })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
+
+  const getInputClass = (fieldName: string) =>
+    `w-full border ${
+      fieldErrors[fieldName] ? 'border-[#612178]' : 'border-[#D1D5DB]'
+    } bg-white rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7]`
+
+  const getSelectClass = (fieldName: string) =>
+    `w-full border ${
+      fieldErrors[fieldName] ? 'border-[#612178]' : 'border-[#D1D5DB]'
+    } bg-white rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] appearance-none focus:outline-none focus:border-[#673AB7] cursor-pointer`
 
   return (
     <>
+      <ToastContainer position="bottom-right" />
       <div className="phero">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="crumb">
             <Link href="/">Home</Link> / Get Your Own Customized Model
           </div>
-          <h1>Get Your Own Customized 3D Simulated Model</h1>
-          <p>
-            We provide 3D simulated models as per your requirement. Fill in the details below and upload your DICOM
-            file — our engineers will review the submission and get back to you within 48 working hours.
-          </p>
+          <h1>{title}</h1>
+          <p>{heroDescription}</p>
         </div>
       </div>
 
       <section className="py-[52px]">
         <div className="max-w-[1200px] mx-auto px-6">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} noValidate>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
               {/* Left Column: Personal Details & Address */}
               <div className="space-y-6">
@@ -94,19 +218,18 @@ export function CustomizedModelContent() {
                       <input
                         type="text"
                         name="firstName"
-                        placeholder="First Name"
+                        placeholder="First Name *"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7] bg-white"
-                        required
+                        className={getInputClass('firstName')}
                       />
                       <input
                         type="text"
                         name="academicQualification"
-                        placeholder="Enter Academic Qualification"
+                        placeholder="Enter Academic Qualification *"
                         value={formData.academicQualification}
                         onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7] bg-white"
+                        className={getInputClass('academicQualification')}
                       />
                     </div>
 
@@ -115,41 +238,46 @@ export function CustomizedModelContent() {
                       <input
                         type="email"
                         name="email"
-                        placeholder="Enter email"
+                        placeholder="Enter email *"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7] bg-white"
-                        required
+                        className={getInputClass('email')}
                       />
                       <input
                         type="text"
                         name="iMessageNo"
-                        placeholder="iMessage No."
+                        placeholder="iMessage No. *"
                         value={formData.iMessageNo}
                         onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7] bg-white"
+                        className={getInputClass('iMessageNo')}
                       />
                     </div>
 
                     {/* Row 3 */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                       <input
-                        type="text"
+                        type="tel"
                         name="whatsAppNo"
-                        placeholder="WhatsApp No."
+                        maxLength={10}
+                        placeholder="WhatsApp No. (10 Digits) *"
                         value={formData.whatsAppNo}
-                        onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7] bg-white"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '')
+                          setFormData({ ...formData, whatsAppNo: val })
+                          if (val.length === 10) setFieldErrors((prev) => ({ ...prev, whatsAppNo: false }))
+                        }}
+                        className={getInputClass('whatsAppNo')}
                       />
                       <input
                         type="text"
                         name="viberNo"
-                        placeholder="Viber No."
+                        placeholder="Viber No. *"
                         value={formData.viberNo}
                         onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7] bg-white"
+                        className={getInputClass('viberNo')}
                       />
                     </div>
+
 
                     {/* Row 4: Clinic / Hospital / Institute / College Name */}
                     <div className="relative">
@@ -157,10 +285,10 @@ export function CustomizedModelContent() {
                         name="institutionName"
                         value={formData.institutionName}
                         onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] appearance-none focus:outline-none focus:border-[#673AB7] bg-white cursor-pointer"
+                        className={getSelectClass('institutionName')}
                       >
                         <option value="" disabled hidden>
-                          Clinic / Hospital / Institute / College Name
+                          Clinic / Hospital / Institute / College Name *
                         </option>
                         <option value="Clinic">Clinic</option>
                         <option value="Hospital">Hospital</option>
@@ -187,10 +315,10 @@ export function CustomizedModelContent() {
                         name="address"
                         value={formData.address}
                         onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] appearance-none focus:outline-none focus:border-[#673AB7] bg-white cursor-pointer"
+                        className={getSelectClass('address')}
                       >
                         <option value="" disabled hidden>
-                          Address
+                          Address *
                         </option>
                         <option value="Hospital Address">Hospital / Clinic Address</option>
                         <option value="Residential Address">Residential Address</option>
@@ -208,18 +336,18 @@ export function CustomizedModelContent() {
                       <input
                         type="text"
                         name="state"
-                        placeholder="State"
+                        placeholder="State *"
                         value={formData.state}
                         onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7] bg-white"
+                        className={getInputClass('state')}
                       />
                       <input
                         type="text"
                         name="city"
-                        placeholder="City"
+                        placeholder="City *"
                         value={formData.city}
                         onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7] bg-white"
+                        className={getInputClass('city')}
                       />
                     </div>
 
@@ -228,18 +356,18 @@ export function CustomizedModelContent() {
                       <input
                         type="text"
                         name="country"
-                        placeholder="Country"
+                        placeholder="Country *"
                         value={formData.country}
                         onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7] bg-white"
+                        className={getInputClass('country')}
                       />
                       <input
                         type="text"
                         name="pincode"
-                        placeholder="Pincode"
+                        placeholder="Pincode *"
                         value={formData.pincode}
                         onChange={handleInputChange}
-                        className="w-full border border-[#D1D5DB] rounded-md px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#673AB7] bg-white"
+                        className={getInputClass('pincode')}
                       />
                     </div>
                   </div>
@@ -258,7 +386,9 @@ export function CustomizedModelContent() {
                     onDragOver={handleDrag}
                     onDrop={handleDrop}
                     className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors flex flex-col items-center justify-center cursor-pointer relative ${
-                      dragActive
+                      fieldErrors.file
+                        ? 'border-[#612178]'
+                        : dragActive
                         ? 'border-[#2563EB] bg-blue-50'
                         : 'border-[#D1D5DB] bg-[#FAFAFA] hover:bg-gray-50'
                     }`}
@@ -290,7 +420,7 @@ export function CustomizedModelContent() {
                       </span>{' '}
                       or drag and drop
                     </p>
-                    <p className="text-[13px] text-[#6B7280] mt-1">dicom file (max. 50MB)</p>
+                    <p className="text-[13px] text-[#6B7280] mt-1">{dicomHelpText}</p>
 
                     {selectedFile && (
                       <div className="mt-3 px-3 py-1.5 bg-blue-100 text-blue-800 rounded-md text-xs font-semibold">
@@ -301,11 +431,8 @@ export function CustomizedModelContent() {
 
                   {/* Format Notes */}
                   <div className="mt-4 space-y-1.5 text-[13px] text-[#4B5563]">
-                    <p>
-                      <span className="font-semibold text-[#1F2328]">Format:</span> Only DICOM (.dcom) files are supported.
-                    </p>
                     <p className="text-[#4B5563] font-medium leading-relaxed">
-                      Minimum 0.6mm thick sections in all the three planes Sagittal, Axial, CORONAL
+                      {dicomFormatInfo}
                     </p>
                   </div>
                 </div>
@@ -324,24 +451,24 @@ export function CustomizedModelContent() {
 
                   {/* Cloudflare Logo Badge */}
                   <div className="flex flex-col items-end">
-                    <div className="flex items-center gap-1.5 text-[#F97316] font-extrabold text-[12px] tracking-wider">
-                      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z" />
-                      </svg>
-                      <span className="text-[#374151] font-bold text-[11px] uppercase tracking-widest">
-                        CLOUDFLARE
-                      </span>
-                    </div>
-                    <span className="text-[10px] text-[#9CA3AF]">Privacy • Terms</span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/images/Cloudflare Logo.png"
+                      alt="Cloudflare"
+                      className="h-7 w-auto object-contain"
+                    />
+                    <span className="text-[10px] text-[#9CA3AF] mt-0.5">Privacy • Terms</span>
                   </div>
                 </div>
 
                 {/* Submit Button */}
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="mt-4 w-full py-3 bg-[#673AB7] hover:bg-[#5B21B6] text-white font-semibold rounded-lg text-[15px] transition shadow-sm"
+                  style={{ opacity: isSubmitting ? 0.7 : 1 }}
                 >
-                  Submit
+                  {isSubmitting ? 'Submitting...' : 'Submit'}
                 </button>
 
                 {/* Bottom Link */}
@@ -359,3 +486,4 @@ export function CustomizedModelContent() {
     </>
   )
 }
+

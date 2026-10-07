@@ -74,6 +74,10 @@ export interface Config {
     'contact-page': ContactPage;
     'contact-submissions': ContactSubmission;
     'products-page': ProductsPage;
+    'customized-model-page': CustomizedModelPage;
+    'customized-model-submissions': CustomizedModelSubmission;
+    'workshops-page': WorkshopsPage;
+    'training-courses-page': TrainingCoursesPage;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +92,10 @@ export interface Config {
     'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
     'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     'products-page': ProductsPageSelect<false> | ProductsPageSelect<true>;
+    'customized-model-page': CustomizedModelPageSelect<false> | CustomizedModelPageSelect<true>;
+    'customized-model-submissions': CustomizedModelSubmissionsSelect<false> | CustomizedModelSubmissionsSelect<true>;
+    'workshops-page': WorkshopsPageSelect<false> | WorkshopsPageSelect<true>;
+    'training-courses-page': TrainingCoursesPageSelect<false> | TrainingCoursesPageSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -651,6 +659,176 @@ export interface ProductsPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customized-model-page".
+ */
+export interface CustomizedModelPage {
+  id: number;
+  title: string;
+  heroDescription?: string | null;
+  dicomHelpText?: string | null;
+  dicomFormatInfo?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customized-model-submissions".
+ */
+export interface CustomizedModelSubmission {
+  id: number;
+  firstName: string;
+  academicQualification: string;
+  email: string;
+  iMessageNo: string;
+  whatsAppNo: string;
+  viberNo: string;
+  institutionName: string;
+  address: string;
+  state: string;
+  city: string;
+  country: string;
+  pincode: string;
+  file?: (number | null) | Media;
+  fileName?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workshops-page".
+ */
+export interface WorkshopsPage {
+  id: number;
+  title: string;
+  heroDescription?: string | null;
+  glimpses?: {
+    image?: (number | null) | Media;
+    imageUrl?: string | null;
+    caption?: string | null;
+    brochureFile?: (number | null) | Media;
+    brochureUrl?: string | null;
+  };
+  temporalHeading?: string | null;
+  sinusHeading?: string | null;
+  larynxHeading?: string | null;
+  temporalWorkshops?:
+    | {
+        title: string;
+        tagline?: string | null;
+        meta?: string | null;
+        image?: (number | null) | Media;
+        imageUrl?: string | null;
+        alt?: string | null;
+        brochureFile?: (number | null) | Media;
+        brochureUrl?: string | null;
+        registrationUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  sinusWorkshops?:
+    | {
+        title: string;
+        tagline?: string | null;
+        meta?: string | null;
+        image?: (number | null) | Media;
+        imageUrl?: string | null;
+        alt?: string | null;
+        brochureFile?: (number | null) | Media;
+        brochureUrl?: string | null;
+        registrationUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  larynxWorkshops?:
+    | {
+        title: string;
+        tagline?: string | null;
+        meta?: string | null;
+        image?: (number | null) | Media;
+        imageUrl?: string | null;
+        alt?: string | null;
+        brochureFile?: (number | null) | Media;
+        brochureUrl?: string | null;
+        registrationUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  larynxStats?:
+    | {
+        value: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "training-courses-page".
+ */
+export interface TrainingCoursesPage {
+  id: number;
+  title: string;
+  heroDescription?: string | null;
+  managementTeamTitle?: string | null;
+  managementTeam?:
+    | {
+        initials: string;
+        name: string;
+        role: string;
+        bio: string;
+        photo?: (number | null) | Media;
+        imageUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  coursesSeriesTitle?: string | null;
+  coursesSeriesDescription?: string | null;
+  courses?:
+    | {
+        category: string;
+        title: string;
+        why: string;
+        procedures?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        fmt: string;
+        image?: (number | null) | Media;
+        imageUrl?: string | null;
+        brochureFile?: (number | null) | Media;
+        brochureUrl?: string | null;
+        registrationUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  whyArtificialBone?: {
+    title?: string | null;
+    image?: (number | null) | Media;
+    imageUrl?: string | null;
+    checkList?:
+      | {
+          title: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+    stats?:
+      | {
+          value: string;
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -700,6 +878,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'products-page';
         value: number | ProductsPage;
+      } | null)
+    | ({
+        relationTo: 'customized-model-page';
+        value: number | CustomizedModelPage;
+      } | null)
+    | ({
+        relationTo: 'customized-model-submissions';
+        value: number | CustomizedModelSubmission;
+      } | null)
+    | ({
+        relationTo: 'workshops-page';
+        value: number | WorkshopsPage;
+      } | null)
+    | ({
+        relationTo: 'training-courses-page';
+        value: number | TrainingCoursesPage;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1288,6 +1482,176 @@ export interface ProductsPageSelect<T extends boolean = true> {
               id?: T;
             };
         footerNote?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customized-model-page_select".
+ */
+export interface CustomizedModelPageSelect<T extends boolean = true> {
+  title?: T;
+  heroDescription?: T;
+  dicomHelpText?: T;
+  dicomFormatInfo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customized-model-submissions_select".
+ */
+export interface CustomizedModelSubmissionsSelect<T extends boolean = true> {
+  firstName?: T;
+  academicQualification?: T;
+  email?: T;
+  iMessageNo?: T;
+  whatsAppNo?: T;
+  viberNo?: T;
+  institutionName?: T;
+  address?: T;
+  state?: T;
+  city?: T;
+  country?: T;
+  pincode?: T;
+  file?: T;
+  fileName?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workshops-page_select".
+ */
+export interface WorkshopsPageSelect<T extends boolean = true> {
+  title?: T;
+  heroDescription?: T;
+  glimpses?:
+    | T
+    | {
+        image?: T;
+        imageUrl?: T;
+        caption?: T;
+        brochureFile?: T;
+        brochureUrl?: T;
+      };
+  temporalHeading?: T;
+  sinusHeading?: T;
+  larynxHeading?: T;
+  temporalWorkshops?:
+    | T
+    | {
+        title?: T;
+        tagline?: T;
+        meta?: T;
+        image?: T;
+        imageUrl?: T;
+        alt?: T;
+        brochureFile?: T;
+        brochureUrl?: T;
+        registrationUrl?: T;
+        id?: T;
+      };
+  sinusWorkshops?:
+    | T
+    | {
+        title?: T;
+        tagline?: T;
+        meta?: T;
+        image?: T;
+        imageUrl?: T;
+        alt?: T;
+        brochureFile?: T;
+        brochureUrl?: T;
+        registrationUrl?: T;
+        id?: T;
+      };
+  larynxWorkshops?:
+    | T
+    | {
+        title?: T;
+        tagline?: T;
+        meta?: T;
+        image?: T;
+        imageUrl?: T;
+        alt?: T;
+        brochureFile?: T;
+        brochureUrl?: T;
+        registrationUrl?: T;
+        id?: T;
+      };
+  larynxStats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "training-courses-page_select".
+ */
+export interface TrainingCoursesPageSelect<T extends boolean = true> {
+  title?: T;
+  heroDescription?: T;
+  managementTeamTitle?: T;
+  managementTeam?:
+    | T
+    | {
+        initials?: T;
+        name?: T;
+        role?: T;
+        bio?: T;
+        photo?: T;
+        imageUrl?: T;
+        id?: T;
+      };
+  coursesSeriesTitle?: T;
+  coursesSeriesDescription?: T;
+  courses?:
+    | T
+    | {
+        category?: T;
+        title?: T;
+        why?: T;
+        procedures?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        fmt?: T;
+        image?: T;
+        imageUrl?: T;
+        brochureFile?: T;
+        brochureUrl?: T;
+        registrationUrl?: T;
+        id?: T;
+      };
+  whyArtificialBone?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        imageUrl?: T;
+        checkList?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+        stats?:
+          | T
+          | {
+              value?: T;
+              label?: T;
+              id?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;

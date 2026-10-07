@@ -1,8 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
-import { Header } from '@/components/Header/Header'
-import { Footer } from '@/components/Footer/Footer'
 import { CustomizedModelContent } from '@/components/CustomizedModel/CustomizedModelContent'
+import { getCustomizedModelPage } from '@/lib/payload/customizedModel'
 
 export const metadata: Metadata = {
   title: 'Get Your Own Customized 3D Model | ProGuide',
@@ -10,14 +9,13 @@ export const metadata: Metadata = {
     'Upload your CT (DICOM) and get a patient-specific 3D simulated model cast for surgical rehearsal.',
 }
 
-export default function CustomizedModelPage() {
+export default async function CustomizedModelPage() {
+  const data = await getCustomizedModelPage()
+
   return (
-    <>
-     
-      <main className="flex-1">
-        <CustomizedModelContent />
-      </main>
-    
-    </>
+    <main className="flex-1">
+      <CustomizedModelContent data={data} />
+    </main>
   )
 }
+

@@ -15,7 +15,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      window.location.href = '/products.html'
+      window.location.href = '/products'
     }
   }
 
@@ -35,8 +35,8 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
       label: 'Learning',
       hasDropdown: true,
       dropdownItems: [
-        { label: 'About Faculty & Training', url: '/training-courses.html' },
-        { label: 'Otolaryngology Video Library', url: '/videos.html' },
+        { label: 'About Faculty & Training', url: '/training-courses' },
+        { label: 'Otolaryngology Video Library', url: '/videos' },
         { label: 'Why 3D Simulation Models', url: '/resources' },
       ],
     },
@@ -44,10 +44,10 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
       label: 'Training Courses',
       hasDropdown: true,
       dropdownItems: [
-        { label: '3D Temporal Bone', url: '#workshops' },
-        { label: 'Paranasal Sinus', url: '#workshops' },
-        { label: 'Microlaryngoscopy & Laser Surgeries', url: '#workshops' },
-        { label: 'Types of Training Courses Conducted', url: '/training-courses.html' },
+        { label: '3D Temporal Bone', url: '/workshops#temporal' },
+        { label: 'Paranasal Sinus', url: '/workshops#sinus' },
+        { label: 'Microlaryngoscopy & Laser Surgeries', url: '/workshops#larynx' },
+        { label: 'Types of Training Courses Conducted', url: '/training-courses' },
       ],
     },
     { label: 'Resources', url: '/resources' },
@@ -55,10 +55,35 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
     { label: 'Contact Us', url: '/contact' },
   ]
 
-  const navItems = data?.navItems && data.navItems.length > 0 ? data.navItems : defaultNavItems
+  const sanitizeUrl = (rawUrl: string, label: string) => {
+    if (!rawUrl) return '/'
+    let url = rawUrl.replace(/\.html/g, '')
+    if (label === '3D Temporal Bone') return '/workshops#temporal'
+    if (label === 'Paranasal Sinus') return '/workshops#sinus'
+    if (label === 'Microlaryngoscopy & Laser Surgeries') return '/workshops#larynx'
+    if (label === 'Types of Training Courses Conducted' || label === 'About Faculty & Training') return '/training-courses'
+    if (label === 'Otolaryngology Video Library') return '/videos'
+    if (label === 'Why 3D Simulation Models' || label === 'Resources') return '/resources'
+    if (url === '#workshops') return '/workshops'
+    if (url === '#temporal') return '/workshops#temporal'
+    if (url === '#sinus') return '/workshops#sinus'
+    if (url === '#larynx') return '/workshops#larynx'
+    return url
+  }
+
+  const rawNavItems = data?.navItems && data.navItems.length > 0 ? data.navItems : defaultNavItems
+
+  const navItems = rawNavItems.map((item: any) => ({
+    ...item,
+    url: sanitizeUrl(item.url, item.label),
+    dropdownItems: item.dropdownItems?.map((drop: any) => ({
+      ...drop,
+      url: sanitizeUrl(drop.url, drop.label),
+    })),
+  }))
 
   const buyNowText = data?.buyNowButton?.text || 'Buy Now'
-  const buyNowUrl = data?.buyNowButton?.url || '/products'
+  const buyNowUrl = sanitizeUrl(data?.buyNowButton?.url || '/products', 'Buy Now')
   const cartUrl = data?.cartUrl || 'https://pro-guide.in/'
   const loginText = data?.loginButton?.text || 'Login /Register'
   const loginUrl = data?.loginButton?.url || 'https://pro-guide.in/'
@@ -68,7 +93,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
       {/* Top Announcement Bar */}
       <div className="bg-purple-bar text-white text-center text-[13.5px] py-2 px-4 font-semibold">
         {announcementText}&nbsp;
-        <Link href={announcementLinkUrl} className="!text-[#FFD9A8] underline hover:text-white transition-colors">
+        <Link href={sanitizeUrl(announcementLinkUrl, 'Announcement')} className="!text-[#FFD9A8] underline hover:text-white transition-colors">
           {announcementLinkText}
         </Link>
       </div>
@@ -116,6 +141,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
                         <Link
                           key={dropIdx}
                           href={dropItem.url || '#'}
+                          onClick={() => setOpenDropdownIndex(null)}
                           className="block px-4 py-[9px] text-[13.5px] text-ink hover:bg-tint hover:text-purple"
                         >
                           {dropItem.label}

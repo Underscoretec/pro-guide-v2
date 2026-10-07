@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface ContactContentProps {
   data?: any
@@ -40,13 +42,33 @@ export function ContactContent({ data }: ContactContentProps) {
     msg: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [errorMsg, setErrorMsg] = useState('')
+  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({})
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const newErrors: Record<string, boolean> = {}
+
+    const cleanMob = formData.mob.replace(/\D/g, '')
+    const isMobValid = cleanMob.length === 10
+
+    if (!formData.fn.trim()) newErrors.fn = true
+    if (!formData.ln.trim()) newErrors.ln = true
+    if (!formData.country.trim()) newErrors.country = true
+    if (!formData.mob.trim() || !isMobValid) newErrors.mob = true
+    if (!formData.msg.trim()) newErrors.msg = true
+
+    setFieldErrors(newErrors)
+
+    if (Object.keys(newErrors).length > 0) {
+      if (formData.mob.trim() && !isMobValid) {
+        toast.error('Please enter a valid 10-digit mobile number.', { position: 'bottom-right' })
+      } else {
+        toast.error('Please fill in all required fields.', { position: 'bottom-right' })
+      }
+      return
+    }
+
     setIsSubmitting(true)
-    setErrorMsg('')
 
     try {
       const response = await fetch('/api/contact-submissions', {
@@ -64,7 +86,9 @@ export function ContactContent({ data }: ContactContentProps) {
       })
 
       if (response.ok) {
-        setIsSubmitted(true)
+        toast.success('Form submitted successfully!', {
+          position: 'bottom-right',
+        })
         setFormData({
           fn: '',
           ln: '',
@@ -72,20 +96,26 @@ export function ContactContent({ data }: ContactContentProps) {
           mob: '',
           msg: '',
         })
+        setFieldErrors({})
       } else {
         const data = await response.json().catch(() => null)
-        setErrorMsg(data?.errors?.[0]?.message || 'Failed to submit form. Please try again.')
+        const msg = data?.errors?.[0]?.message || 'Failed to submit form. Please try again.'
+        toast.error(msg, { position: 'bottom-right' })
       }
     } catch (err) {
       console.error('Error submitting contact form:', err)
-      setErrorMsg('An error occurred. Please try again.')
+      toast.error('An error occurred. Please try again.', { position: 'bottom-right' })
     } finally {
       setIsSubmitting(false)
     }
   }
 
+  const getStyle = (fieldName: string) =>
+    fieldErrors[fieldName] ? { borderColor: '#612178' } : {}
+
   return (
     <>
+      <ToastContainer position="bottom-right" />
       <div className="phero">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="crumb">
@@ -99,95 +129,70 @@ export function ContactContent({ data }: ContactContentProps) {
       <section>
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="split" style={{ alignItems: 'start' }}>
-            {isSubmitted ? (
-              <div className="form" style={{ textAlign: 'center', padding: '36px 24px' }}>
-                <div
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '50%',
-                    backgroundColor: '#d1fae5',
-                    color: '#059669',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 16px auto',
-                    fontSize: '24px',
-                    fontWeight: 'bold',
+            <form className="form" onSubmit={handleSubmit} noValidate>
+              <div className="frow">
+                <input
+                  name="fn"
+                  placeholder="First Name *"
+                  value={formData.fn}
+                  style={getStyle('fn')}
+                  onChange={(e) => {
+                    setFormData({ ...formData, fn: e.target.value })
+                    if (e.target.value.trim()) setFieldErrors((p) => ({ ...p, fn: false }))
                   }}
-                >
-                  ✓
-                </div>
-                <h3 style={{ marginBottom: '8px', color: '#065f46' }}>Contact Submitted Successfully!</h3>
-                <p style={{ fontSize: '15px', color: '#4b5563', marginBottom: '24px' }}>
-                  Thank you for reaching out. Your details have been recorded and our team will get back to you shortly.
-                </p>
-                <button
-                  className="btn"
-                  type="button"
-                  onClick={() => setIsSubmitted(false)}
-                >
-                  Submit Another Query
-                </button>
+                />
+                <input
+                  name="ln"
+                  placeholder="Last Name *"
+                  value={formData.ln}
+                  style={getStyle('ln')}
+                  onChange={(e) => {
+                    setFormData({ ...formData, ln: e.target.value })
+                    if (e.target.value.trim()) setFieldErrors((p) => ({ ...p, ln: false }))
+                  }}
+                />
               </div>
-            ) : (
-              <form className="form" onSubmit={handleSubmit}>
-                {errorMsg && (
-                  <div
-                    style={{
-                      padding: '10px 14px',
-                      marginBottom: '16px',
-                      borderRadius: '6px',
-                      backgroundColor: '#fee2e2',
-                      color: '#991b1b',
-                      fontSize: '14px',
-                    }}
-                  >
-                    {errorMsg}
-                  </div>
-                )}
-                <div className="frow">
-                  <input
-                    name="fn"
-                    placeholder="First Name"
-                    required
-                    value={formData.fn}
-                    onChange={(e) => setFormData({ ...formData, fn: e.target.value })}
-                  />
-                  <input
-                    name="ln"
-                    placeholder="Last Name"
-                    value={formData.ln}
-                    onChange={(e) => setFormData({ ...formData, ln: e.target.value })}
-                  />
-                </div>
-                <div className="frow">
-                  <input
-                    name="country"
-                    placeholder="Country"
-                    value={formData.country}
-                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                  />
-                  <input
-                    name="mob"
-                    placeholder="Mobile Number"
-                    value={formData.mob}
-                    onChange={(e) => setFormData({ ...formData, mob: e.target.value })}
-                  />
-                </div>
-                <textarea
-                  name="msg"
-                  placeholder="Message"
-                  required
-                  value={formData.msg}
-                  onChange={(e) => setFormData({ ...formData, msg: e.target.value })}
-                ></textarea>
-                <div className="fnote">{formDisclaimer}</div>
-                <button className="btn" type="submit" disabled={isSubmitting} style={{ width: '100%', opacity: isSubmitting ? 0.7 : 1 }}>
-                  {isSubmitting ? 'Submitting...' : 'Submit'}
-                </button>
-              </form>
-            )}
+              <div className="frow">
+                <input
+                  name="country"
+                  placeholder="Country *"
+                  value={formData.country}
+                  style={getStyle('country')}
+                  onChange={(e) => {
+                    setFormData({ ...formData, country: e.target.value })
+                    if (e.target.value.trim()) setFieldErrors((p) => ({ ...p, country: false }))
+                  }}
+                />
+                <input
+                  name="mob"
+                  type="tel"
+                  maxLength={10}
+                  placeholder="10-Digit Mobile Number *"
+                  value={formData.mob}
+                  style={getStyle('mob')}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    setFormData({ ...formData, mob: val })
+                    if (val.length === 10) setFieldErrors((p) => ({ ...p, mob: false }))
+                  }}
+                />
+              </div>
+              <textarea
+                name="msg"
+                placeholder="Message *"
+                value={formData.msg}
+                style={getStyle('msg')}
+                onChange={(e) => {
+                  setFormData({ ...formData, msg: e.target.value })
+                  if (e.target.value.trim()) setFieldErrors((p) => ({ ...p, msg: false }))
+                }}
+              ></textarea>
+              <div className="fnote">{formDisclaimer}</div>
+              <button className="btn" type="submit" disabled={isSubmitting} style={{ width: '100%', opacity: isSubmitting ? 0.7 : 1 }}>
+                {isSubmitting ? 'Submitting...' : 'Submit'}
+              </button>
+            </form>
+
 
             <div>
               <div className="form" style={{ marginBottom: '18px' }}>
@@ -223,3 +228,4 @@ export function ContactContent({ data }: ContactContentProps) {
     </>
   )
 }
+
