@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 export function ContactContent() {
@@ -11,6 +11,19 @@ export function ContactContent() {
     mob: '',
     msg: '',
   })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const product = params.get('product')
+      if (product) {
+        setFormData((prev) => ({
+          ...prev,
+          msg: prev.msg || `Hi, I would like to enquire about the "${product}" simulation model. Please provide pricing, availability, and institutional order details.`,
+        }))
+      }
+    }
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

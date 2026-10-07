@@ -1,13 +1,19 @@
+'use client'
+
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useCart } from '@/context/CartContext'
 
 export interface ProductItem {
+  id?: string
   name: string
   badge?: string
   image?: any
   imageUrl?: string
   description?: string
+  price?: number
   bulletPoints?: (string | { point: string })[]
   primaryButton?: {
     text?: string
@@ -24,6 +30,9 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
+  const router = useRouter()
+  const { addToCart } = useCart()
+
   const imgSrc =
     item.image?.url || item.imageUrl || (typeof item.image === 'string' ? item.image : '/images/prod1.jpg')
   const altText = item.name || 'ProGuide 3D Simulation Model'
@@ -33,10 +42,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
       ? item.bulletPoints.map((p) => (typeof p === 'string' ? p : p.point))
       : []
 
-  const primaryBtn = item.primaryButton || {
-    text: 'Buy / Enquire',
-    link: 'https://pro-guide.in/',
+  const price = typeof item.price === 'number' && !isNaN(item.price) ? item.price : 20000
+
+  const handleBuy = (e: React.MouseEvent) => {
+    e.preventDefault()
+    addToCart({
+      id: item.id || item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+      name: item.name,
+      price,
+      imageUrl: imgSrc,
+      quantity: 1,
+    })
+    router.push('/cart')
   }
+
+  const formattedPrice = `Rs ${price.toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`
 
   return (
     <div className="bg-white border border-line rounded-[8px] overflow-hidden flex flex-col h-full transition-all duration-[180ms] hover:shadow-[0_14px_30px_rgba(31,35,40,0.12)] hover:-translate-y-[3px] group">
@@ -53,11 +76,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
 
       {/* Uniform card body */}
       <div className="p-5 flex flex-col flex-1">
-        {item.badge && (
-          <span className="text-[11px] font-extrabold tracking-[1.2px] uppercase text-orange mb-1.5 block">
-            {item.badge}
+        <div className="flex items-center justify-between gap-2 mb-1.5">
+          {item.badge ? (
+            <span className="text-[11px] font-extrabold tracking-[1.2px] uppercase text-orange block">
+              {item.badge}
+            </span>
+          ) : (
+            <span />
+          )}
+          <span className="text-[13px] font-semibold text-muted">
+            {formattedPrice}
           </span>
-        )}
+        </div>
 
         <h3 className="text-[16.5px] font-bold text-ink leading-[1.35] mb-2">
           {item.name}
@@ -83,29 +113,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
           </div>
         )}
 
-        {/* Pinned Bottom Buttons */}
-        <div className="mt-auto pt-2 flex flex-wrap gap-2">
-          {primaryBtn?.text && (
-            <Link
-              href={primaryBtn.link || 'https://pro-guide.in/'}
-              target={primaryBtn.link?.startsWith('http') ? '_blank' : undefined}
-              rel={primaryBtn.link?.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className="flex-1 min-w-[110px] text-center bg-purple text-white px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm"
-            >
-              {primaryBtn.text}
-            </Link>
-          )}
+        {/* Pinned Bottom Buttons: Buy and Enquire */}
+        <div className="mt-auto pt-2 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleBuy}
+            className="flex-1 text-center bg-purple text-white px-3.5 py-[9px] rounded-[5px] font-bold text-[13px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer"
+          >
+            Buy
+          </button>
 
-          {item.secondaryButton?.text && (
-            <Link
-              href={item.secondaryButton.link || '/contact'}
-              target={item.secondaryButton.link?.startsWith('http') ? '_blank' : undefined}
-              rel={item.secondaryButton.link?.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className="flex-1 min-w-[110px] text-center bg-white text-ink px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
-            >
-              {item.secondaryButton.text}
-            </Link>
-          )}
+          <Link
+            href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
+            className="flex-1 text-center bg-white text-ink px-3.5 py-[9px] rounded-[5px] font-bold text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
+          >
+            Enquire
+          </Link>
         </div>
       </div>
     </div>
