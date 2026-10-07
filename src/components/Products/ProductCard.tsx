@@ -69,31 +69,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
           src={imgSrc}
           alt={altText}
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           className="object-contain p-2 transition-transform duration-300 group-hover:scale-105"
         />
       </div>
 
       {/* Uniform card body */}
-      <div className="p-5 flex flex-col flex-1">
+      <div className="p-4 sm:p-5 flex flex-col flex-1">
         <div className="flex items-center justify-between gap-2 mb-1.5">
           {item.badge ? (
-            <span className="text-[11px] font-extrabold tracking-[1.2px] uppercase text-orange block">
+            <span className="text-[10.5px] font-extrabold tracking-[1.1px] uppercase text-orange block truncate">
               {item.badge}
             </span>
           ) : (
             <span />
           )}
-          <span className="text-[13px] font-semibold text-muted">
+          <span className="text-[12.5px] font-semibold text-muted whitespace-nowrap">
             {formattedPrice}
           </span>
         </div>
 
-        <h3 className="text-[16.5px] font-bold text-ink leading-[1.35] mb-2">
+        <h3 className="text-[15.5px] sm:text-[16px] font-bold text-ink leading-[1.35] mb-2">
           {item.name}
         </h3>
 
-        <p className="text-[13.5px] text-muted leading-[1.6] flex-1 mb-3">
+        <p className="text-[13px] text-muted leading-[1.55] flex-1 mb-3">
           {item.description}
         </p>
 
@@ -118,14 +118,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
           <button
             type="button"
             onClick={handleBuy}
-            className="flex-1 text-center bg-purple text-white px-3.5 py-[9px] rounded-[5px] font-bold text-[13px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer"
+            className="flex-1 text-center bg-purple text-white px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer"
           >
             Buy
           </button>
 
           <Link
             href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
-            className="flex-1 text-center bg-white text-ink px-3.5 py-[9px] rounded-[5px] font-bold text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
+            className="flex-1 text-center bg-white text-ink px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
           >
             Enquire
           </Link>
