@@ -62,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
 
   const buyNowText = data?.buyNowButton?.text || 'Buy Now'
   const buyNowUrl = data?.buyNowButton?.url || '/products'
-  const cartUrl = data?.cartUrl || '/cart'
+  const cartUrl = data?.cartUrl && !data.cartUrl.includes('pro-guide.in') ? data.cartUrl : '/cart'
   const loginText = data?.loginButton?.text || 'Login /Register'
   const loginUrl = data?.loginButton?.url || 'https://pro-guide.in/'
 

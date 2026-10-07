@@ -292,7 +292,7 @@ export async function seed() {
           text: 'Buy Now',
           url: '/products',
         },
-        cartUrl: 'https://pro-guide.in/',
+        cartUrl: '/cart',
         loginButton: {
           text: 'Login /Register',
           url: 'https://pro-guide.in/',
@@ -313,10 +313,10 @@ export async function seed() {
         logoUrl: '/images/logo_white.svg',
         quickLinksTitle: 'Quick Links',
         quickLinks: [
-          { label: 'Buy Now', url: '/products.html' },
-          { label: 'Cart', url: 'https://pro-guide.in/' },
-          { label: 'Resources', url: '/resources.html' },
-          { label: 'Get Your Own Customized Model', url: '/customized-model.html' },
+          { label: 'Buy Now', url: '/products' },
+          { label: 'Cart', url: '/cart' },
+          { label: 'Resources', url: '/resources' },
+          { label: 'Get Your Own Customized Model', url: '/customized-model' },
           { label: 'Login/Register', url: 'https://pro-guide.in/' },
         ],
         indianQuery: {

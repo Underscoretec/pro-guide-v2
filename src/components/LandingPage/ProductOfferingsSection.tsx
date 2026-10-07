@@ -1,5 +1,9 @@
+'use client'
+
 import React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useCart } from '@/context/CartContext'
 
 interface ProductOfferingsProps {
   data?: any
@@ -54,9 +58,28 @@ const defaultProducts = [
 ]
 
 export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data, products }) => {
+  const router = useRouter()
+  const { addToCart } = useCart()
+
   const title = data?.title || 'Product Offerings'
   const rawList = data?.productsList || products || []
   const productList = rawList.length > 0 ? rawList : defaultProducts
+
+  const handleAddToCart = (e: React.MouseEvent, prod: any, imageSrc: string) => {
+    e.preventDefault()
+    const priceNum = typeof prod.price === 'string'
+      ? parseInt(prod.price.replace(/[^0-9]/g, ''), 10) || 20000
+      : 20000
+
+    addToCart({
+      id: prod.slug || prod.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      name: prod.title,
+      price: priceNum,
+      imageUrl: imageSrc,
+      quantity: 1,
+    })
+    router.push('/cart')
+  }
 
   return (
     <section id="products" className="py-[52px] bg-[#F8F8FA] border-t border-b border-line">
@@ -110,16 +133,15 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
 
                   {/* Actions */}
                   <div className="flex gap-2 mt-3 pt-1">
-                    <a
-                      href={prod.cartUrl || 'https://pro-guide.in/'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-purple text-white rounded-[5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all"
+                    <button
+                      type="button"
+                      onClick={(e) => handleAddToCart(e, prod, imageSrc)}
+                      className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-purple text-white rounded-[5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all cursor-pointer"
                     >
                       Add to Cart
-                    </a>
+                    </button>
                     <Link
-                      href={detailsHref}
+                      href="/products"
                       className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-white text-ink rounded-[5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
                     >
                       View Details
@@ -131,13 +153,19 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
           })}
         </div>
 
-        {/* View All CTA */}
-        <p className="text-center mt-[22px]">
+        {/* View Cart & All Products CTA */}
+        <p className="text-center mt-[22px] flex items-center justify-center gap-3">
           <Link
-            href="/products.html"
+            href="/cart"
+            className="inline-block bg-purple text-white px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-purple hover:bg-purple-d transition-all shadow-sm"
+          >
+            View Cart &rarr;
+          </Link>
+          <Link
+            href="/products"
             className="inline-block bg-white text-ink px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
           >
-            View Cart &amp; All Products &rarr;
+            All Products &rarr;
           </Link>
         </p>
       </div>

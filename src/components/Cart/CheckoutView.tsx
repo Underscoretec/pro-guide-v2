@@ -11,11 +11,11 @@ interface FloatingFieldProps {
   name: string
   value: string
   onChange: (val: string) => void
+  onBlur?: () => void
+  error?: string
   type?: string
   required?: boolean
   isTextarea?: boolean
-  isSelect?: boolean
-  selectOptions?: { label: string; value: string }[]
   rows?: number
   className?: string
   placeholder?: string
@@ -27,18 +27,18 @@ const FloatingField: React.FC<FloatingFieldProps> = ({
   name,
   value,
   onChange,
+  onBlur,
+  error,
   type = 'text',
   required = false,
   isTextarea = false,
-  isSelect = false,
-  selectOptions = [],
   rows = 5,
   className = '',
   placeholder,
 }) => {
   const [isFocused, setIsFocused] = useState(false)
   const hasValue = Boolean(value && value.trim().length > 0)
-  const isFloating = isFocused || hasValue
+  const isFloating = isFocused || hasValue || Boolean(error)
 
   const displayPlaceholder = !isFloating
     ? placeholder !== undefined
@@ -46,88 +46,74 @@ const FloatingField: React.FC<FloatingFieldProps> = ({
       : label
     : ''
 
-  return (
-    <div
-      className={`relative rounded-[2px] transition-all duration-150 ${
-        isFocused
-          ? 'border-2 border-[#5E007B]'
-          : 'border border-[#E5E7EB] hover:border-[#D1D5DB]'
-      } ${
-        isTextarea
-          ? 'p-3.5 min-h-[130px]'
-          : 'h-[46px] flex items-center px-3.5'
-      } ${className}`}
-    >
-      {/* Floating Label: appears on top border when focused or has value */}
-      {isFloating && (
-        <label
-          htmlFor={id || name}
-          className={`absolute -top-2.5 left-3 bg-white px-1 text-[11px] font-medium leading-none pointer-events-none transition-colors duration-150 select-none z-10 ${
-            isFocused ? 'text-[#5E007B]' : 'text-[#6B7280]'
-          }`}
-        >
-          {label}
-        </label>
-      )}
+  const borderClass = isFocused
+    ? 'border-2 border-[#5E007B]'
+    : error
+    ? 'border-2 border-[#DC2626]'
+    : 'border border-[#E5E7EB] hover:border-[#D1D5DB]'
 
-      {isSelect ? (
-        <div className="relative w-full flex items-center justify-between">
-          <select
+  const labelColorClass = isFocused
+    ? 'text-[#5E007B]'
+    : error
+    ? 'text-[#DC2626]'
+    : 'text-[#6B7280]'
+
+  return (
+    <div className={className}>
+      <div
+        className={`relative rounded-[2px] transition-all duration-150 ${borderClass} ${
+          isTextarea ? 'p-3.5 min-h-[130px]' : 'h-[46px] flex items-center px-3.5'
+        }`}
+      >
+        {/* Floating Label */}
+        {isFloating && (
+          <label
+            htmlFor={id || name}
+            className={`absolute -top-2.5 left-3 bg-white px-1 text-[11px] font-medium leading-none pointer-events-none transition-colors duration-150 select-none z-10 ${labelColorClass}`}
+          >
+            {label}
+          </label>
+        )}
+
+        {isTextarea ? (
+          <textarea
             id={id || name}
             name={name}
+            rows={rows}
             value={value}
             onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onBlur={() => {
+              setIsFocused(false)
+              onBlur?.()
+            }}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full bg-transparent text-[13.5px] text-ink focus:outline-none appearance-none cursor-pointer pr-6"
-          >
-            {selectOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-ink">
-            <svg
-              className="w-4 h-4 text-ink"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
-        </div>
-      ) : isTextarea ? (
-        <textarea
-          id={id || name}
-          name={name}
-          rows={rows}
-          value={value}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={displayPlaceholder}
-          className="w-full h-full bg-transparent border-none text-[13.5px] text-ink placeholder-[#9CA3AF] focus:outline-none resize-y min-h-[105px]"
-        />
-      ) : (
-        <input
-          id={id || name}
-          name={name}
-          type={type}
-          required={required}
-          value={value}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={displayPlaceholder}
-          className="w-full h-full bg-transparent border-none text-[13.5px] text-ink placeholder-[#9CA3AF] focus:outline-none"
-        />
+            placeholder={displayPlaceholder}
+            className="w-full h-full bg-transparent border-none text-[13.5px] text-ink placeholder-[#9CA3AF] focus:outline-none resize-y min-h-[105px]"
+          />
+        ) : (
+          <input
+            id={id || name}
+            name={name}
+            type={type}
+            required={required}
+            value={value}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => {
+              setIsFocused(false)
+              onBlur?.()
+            }}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={displayPlaceholder}
+            className="w-full h-full bg-transparent border-none text-[13.5px] text-ink placeholder-[#9CA3AF] focus:outline-none"
+          />
+        )}
+      </div>
+
+      {/* Validation Error Message */}
+      {error && (
+        <p className="text-[11px] text-[#DC2626] mt-1 pl-1 font-medium flex items-center gap-1">
+          <span>&times;</span> {error}
+        </p>
       )}
     </div>
   )
@@ -135,15 +121,18 @@ const FloatingField: React.FC<FloatingFieldProps> = ({
 
 export const CheckoutView: React.FC = () => {
   const router = useRouter()
-  const { items, subtotal, isHydrated, clearCart } = useCart()
+  const { items, subtotal, clearCart } = useCart()
 
   const [currentStep, setCurrentStep] = useState<2 | 3>(2)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [confirmedOrderId, setConfirmedOrderId] = useState<string | number | null>(null)
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     companyName: '',
-    country: 'India',
+    country: '',
     streetAddress1: '',
     streetAddress2: '',
     city: '',
@@ -154,7 +143,96 @@ export const CheckoutView: React.FC = () => {
     orderNotes: '',
   })
 
-  // Fallback demo items from the screenshot if cart is empty
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [touched, setTouched] = useState<Record<string, boolean>>({})
+
+  // Validate individual field
+  const validateField = (fieldName: string, value: string): string => {
+    switch (fieldName) {
+      case 'firstName':
+        if (!value.trim()) return 'First name is required'
+        return ''
+      case 'lastName':
+        if (!value.trim()) return 'Last name is required'
+        return ''
+      case 'country':
+        if (!value.trim()) return 'Country is required'
+        return ''
+      case 'streetAddress1':
+        if (!value.trim()) return 'Street address is required'
+        return ''
+      case 'city':
+        if (!value.trim()) return 'Town / City is required'
+        return ''
+      case 'postcode':
+        if (!value.trim()) return 'Postcode / PIN / ZIP is required'
+        if (!/^[a-zA-Z0-9\s-]{3,10}$/.test(value.trim())) {
+          return 'Enter a valid postcode (e.g. 400059)'
+        }
+        return ''
+      case 'province':
+        if (!value.trim()) return 'Province / State is required'
+        return ''
+      case 'phone':
+        if (!value.trim()) return 'Phone number is required'
+        if (!/^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]{6,15}$/.test(value.trim())) {
+          return 'Enter a valid phone number (min 10 digits)'
+        }
+        return ''
+      case 'email':
+        if (!value.trim()) return 'Email address is required'
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+          return 'Enter a valid email address'
+        }
+        return ''
+      default:
+        return ''
+    }
+  }
+
+  const handleFieldChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+    if (touched[field]) {
+      const err = validateField(field, value)
+      setErrors((prev) => ({ ...prev, [field]: err }))
+    }
+  }
+
+  const handleFieldBlur = (field: string) => {
+    setTouched((prev) => ({ ...prev, [field]: true }))
+    const err = validateField(field, formData[field as keyof typeof formData] || '')
+    setErrors((prev) => ({ ...prev, [field]: err }))
+  }
+
+  const validateAll = (): boolean => {
+    const newErrors: Record<string, string> = {}
+    const requiredFields = [
+      'firstName',
+      'lastName',
+      'country',
+      'streetAddress1',
+      'city',
+      'postcode',
+      'province',
+      'phone',
+      'email',
+    ]
+
+    requiredFields.forEach((field) => {
+      const val = formData[field as keyof typeof formData] || ''
+      const err = validateField(field, val)
+      if (err) newErrors[field] = err
+    })
+
+    setErrors(newErrors)
+    setTouched(
+      requiredFields.reduce((acc, f) => ({ ...acc, [f]: true }), {})
+    )
+
+    return Object.keys(newErrors).length === 0
+  }
+
+  // Display items: use active cart items or screenshot defaults
   const displayItems =
     items.length > 0
       ? items
@@ -177,23 +255,76 @@ export const CheckoutView: React.FC = () => {
     })}`
   }
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitError(null)
+
+    const isValid = validateAll()
+    if (!isValid) {
+      // Scroll to first error
+      const firstErrorField = document.querySelector('[name="' + Object.keys(errors)[0] + '"]')
+      firstErrorField?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
+
     setIsSubmitting(true)
-    setTimeout(() => {
+
+    try {
+      const response = await fetch('/api/checkout-submissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          companyName: formData.companyName.trim(),
+          country: formData.country.trim(),
+          streetAddress1: formData.streetAddress1.trim(),
+          streetAddress2: formData.streetAddress2.trim(),
+          city: formData.city.trim(),
+          postcode: formData.postcode.trim(),
+          province: formData.province.trim(),
+          phone: formData.phone.trim(),
+          email: formData.email.trim(),
+          orderNotes: formData.orderNotes.trim(),
+          items: displayItems.map((item) => ({
+            name: item.name,
+            quantity: item.quantity || 1,
+            price: item.price || 20000,
+            subtotal: (item.price || 20000) * (item.quantity || 1),
+          })),
+          subtotal: computedSubtotal,
+          shipping: 'Free shipping',
+          gst: computedGst,
+          total: computedTotal,
+          status: 'Pending',
+        }),
+      })
+
+      const result = await response.json()
+
+      if (response.ok && (result.doc || result.id)) {
+        const orderId = result.doc?.id || result.id
+        setConfirmedOrderId(orderId)
+        clearCart()
+        setCurrentStep(3)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        const errMsg =
+          result.errors?.[0]?.message ||
+          result.message ||
+          'Failed to submit form to Payload. Please check the fields and try again.'
+        setSubmitError(errMsg)
+      }
+    } catch (err: any) {
+      console.error('Order submission error:', err)
+      setSubmitError('Network error while placing order. Please try again.')
+    } finally {
       setIsSubmitting(false)
-      setCurrentStep(3)
-    }, 600)
+    }
   }
 
-  const countryOptions = [
-    { label: 'India', value: 'India' },
-    { label: 'United States', value: 'United States' },
-    { label: 'United Kingdom', value: 'United Kingdom' },
-    { label: 'United Arab Emirates', value: 'United Arab Emirates' },
-    { label: 'Singapore', value: 'Singapore' },
-    { label: 'Australia', value: 'Australia' },
-  ]
 
   return (
     <div className="bg-white min-h-[75vh] py-10 md:py-14">
@@ -255,7 +386,7 @@ export const CheckoutView: React.FC = () => {
 
         {/* Step 3: Confirmation State */}
         {currentStep === 3 ? (
-          <div className="max-w-[700px] mx-auto py-8 text-center">
+          <div className="max-w-[720px] mx-auto py-8 text-center animate-in fade-in duration-200">
             <div className="w-16 h-16 bg-[#ECFDF5] text-[#059669] rounded-full flex items-center justify-center mx-auto text-3xl mb-5 font-bold">
               ✓
             </div>
@@ -263,16 +394,20 @@ export const CheckoutView: React.FC = () => {
               Thank You! Your Order Has Been Placed.
             </h2>
             <p className="text-muted text-[14.5px] mb-8 leading-relaxed">
-              We have received your simulation order request. A ProGuide surgical training coordinator will review your institutional details and reach out within 2 hours with the formal proforma invoice.
+              Your shipping address and order details have been saved to the administrative database
+              {confirmedOrderId ? ` (Order ID: #${confirmedOrderId})` : ''}. Our simulation coordinator will review your request and reach out within 2 hours with the formal proforma invoice and dispatch tracking.
             </p>
 
-            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] p-6 text-left mb-8 space-y-3">
-              <div className="font-bold text-ink text-[14px] uppercase tracking-wider pb-2 border-b border-[#E5E7EB]">
-                Order Summary
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] p-6 text-left mb-8 space-y-3 shadow-xs">
+              <div className="font-bold text-ink text-[13.5px] uppercase tracking-wider pb-2 border-b border-[#E5E7EB] flex items-center justify-between">
+                <span>Saved Shipping Details</span>
+                {confirmedOrderId && (
+                  <span className="text-purple text-[12px]">Ref: #{confirmedOrderId}</span>
+                )}
               </div>
               <div className="text-[13.5px] space-y-2 text-ink">
                 <div className="flex justify-between">
-                  <span className="text-muted">Recipient:</span>
+                  <span className="text-muted">Customer Name:</span>
                   <span className="font-medium">
                     {formData.firstName} {formData.lastName || ''}
                   </span>
@@ -284,7 +419,7 @@ export const CheckoutView: React.FC = () => {
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-muted">Contact Phone:</span>
+                  <span className="text-muted">Phone Number:</span>
                   <span className="font-medium">{formData.phone}</span>
                 </div>
                 <div className="flex justify-between">
@@ -292,9 +427,11 @@ export const CheckoutView: React.FC = () => {
                   <span className="font-medium">{formData.email}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted">Shipping Location:</span>
-                  <span className="font-medium">
-                    {formData.city}, {formData.province} - {formData.postcode}
+                  <span className="text-muted">Delivery Address:</span>
+                  <span className="font-medium text-right max-w-[340px]">
+                    {formData.streetAddress1}
+                    {formData.streetAddress2 ? `, ${formData.streetAddress2}` : ''},{' '}
+                    {formData.city}, {formData.province} - {formData.postcode}, {formData.country}
                   </span>
                 </div>
                 <div className="flex justify-between pt-2 border-t border-[#E5E7EB] font-bold text-[15px]">
@@ -307,23 +444,34 @@ export const CheckoutView: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/products"
-                onClick={() => clearCart()}
-                className="bg-[#4A148C] hover:bg-[#3B0D70] text-white px-7 py-3 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-all"
+                className="bg-[#5E007B] hover:bg-[#430D60] text-white px-7 py-3 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-all"
               >
-                Back to Products
+                Order More Models
               </Link>
               <Link
                 href="/"
-                onClick={() => clearCart()}
                 className="border border-[#D1D5DB] text-ink hover:text-purple hover:border-purple px-7 py-3 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-all"
               >
-                Return Home
+                Return to Home
               </Link>
             </div>
           </div>
         ) : (
           /* Step 2: Main Shipping & Checkout Form Grid */
-          <form onSubmit={handlePlaceOrder}>
+          <form onSubmit={handlePlaceOrder} noValidate>
+            {submitError && (
+              <div className="mb-6 p-4 bg-[#FEF2F2] border border-[#FCA5A5] rounded-[4px] text-[#991B1B] text-[13px] flex items-center justify-between">
+                <span>{submitError}</span>
+                <button
+                  type="button"
+                  onClick={() => setSubmitError(null)}
+                  className="font-bold text-lg leading-none cursor-pointer"
+                >
+                  &times;
+                </button>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
               {/* Left Section: Billing Details (lg:col-span-8) */}
               <div className="lg:col-span-8 space-y-4">
@@ -334,18 +482,22 @@ export const CheckoutView: React.FC = () => {
                 {/* First Name & Last Name */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FloatingField
-                    label="First Name"
+                    label="First Name *"
                     name="firstName"
                     required
                     value={formData.firstName}
-                    onChange={(val) => setFormData({ ...formData, firstName: val })}
+                    error={touched.firstName ? errors.firstName : undefined}
+                    onChange={(val) => handleFieldChange('firstName', val)}
+                    onBlur={() => handleFieldBlur('firstName')}
                   />
                   <FloatingField
-                    label="Last Name"
+                    label="Last Name *"
                     name="lastName"
                     required
                     value={formData.lastName}
-                    onChange={(val) => setFormData({ ...formData, lastName: val })}
+                    error={touched.lastName ? errors.lastName : undefined}
+                    onChange={(val) => handleFieldChange('lastName', val)}
+                    onBlur={() => handleFieldBlur('lastName')}
                   />
                 </div>
 
@@ -354,17 +506,18 @@ export const CheckoutView: React.FC = () => {
                   label="Company Name (optional)"
                   name="companyName"
                   value={formData.companyName}
-                  onChange={(val) => setFormData({ ...formData, companyName: val })}
+                  onChange={(val) => handleFieldChange('companyName', val)}
                 />
 
-                {/* Country / Region * Select */}
+                {/* Country / Region * */}
                 <FloatingField
                   label="Country / Region *"
                   name="country"
-                  isSelect
-                  selectOptions={countryOptions}
+                  required
                   value={formData.country}
-                  onChange={(val) => setFormData({ ...formData, country: val })}
+                  error={touched.country ? errors.country : undefined}
+                  onChange={(val) => handleFieldChange('country', val)}
+                  onBlur={() => handleFieldBlur('country')}
                 />
 
                 {/* Street Address 1 */}
@@ -373,16 +526,17 @@ export const CheckoutView: React.FC = () => {
                   name="streetAddress1"
                   required
                   value={formData.streetAddress1}
-                  onChange={(val) => setFormData({ ...formData, streetAddress1: val })}
+                  error={touched.streetAddress1 ? errors.streetAddress1 : undefined}
+                  onChange={(val) => handleFieldChange('streetAddress1', val)}
+                  onBlur={() => handleFieldBlur('streetAddress1')}
                 />
 
-                {/* Street Address 2 (no default placeholder, reveals label on focus) */}
+                {/* Street Address 2 */}
                 <FloatingField
                   label="Apartment, suite, unit, etc. (optional)"
                   name="streetAddress2"
-                  placeholder=""
                   value={formData.streetAddress2}
-                  onChange={(val) => setFormData({ ...formData, streetAddress2: val })}
+                  onChange={(val) => handleFieldChange('streetAddress2', val)}
                 />
 
                 {/* Town / City * */}
@@ -391,7 +545,9 @@ export const CheckoutView: React.FC = () => {
                   name="city"
                   required
                   value={formData.city}
-                  onChange={(val) => setFormData({ ...formData, city: val })}
+                  error={touched.city ? errors.city : undefined}
+                  onChange={(val) => handleFieldChange('city', val)}
+                  onBlur={() => handleFieldBlur('city')}
                 />
 
                 {/* Postcode / ZIP * */}
@@ -400,7 +556,9 @@ export const CheckoutView: React.FC = () => {
                   name="postcode"
                   required
                   value={formData.postcode}
-                  onChange={(val) => setFormData({ ...formData, postcode: val })}
+                  error={touched.postcode ? errors.postcode : undefined}
+                  onChange={(val) => handleFieldChange('postcode', val)}
+                  onBlur={() => handleFieldBlur('postcode')}
                 />
 
                 {/* Province * */}
@@ -409,7 +567,9 @@ export const CheckoutView: React.FC = () => {
                   name="province"
                   required
                   value={formData.province}
-                  onChange={(val) => setFormData({ ...formData, province: val })}
+                  error={touched.province ? errors.province : undefined}
+                  onChange={(val) => handleFieldChange('province', val)}
+                  onBlur={() => handleFieldBlur('province')}
                 />
 
                 {/* Phone * */}
@@ -419,17 +579,21 @@ export const CheckoutView: React.FC = () => {
                   type="tel"
                   required
                   value={formData.phone}
-                  onChange={(val) => setFormData({ ...formData, phone: val })}
+                  error={touched.phone ? errors.phone : undefined}
+                  onChange={(val) => handleFieldChange('phone', val)}
+                  onBlur={() => handleFieldBlur('phone')}
                 />
 
-                {/* Your Mail */}
+                {/* Your Mail * */}
                 <FloatingField
-                  label="Your Mail"
+                  label="Your Mail *"
                   name="email"
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(val) => setFormData({ ...formData, email: val })}
+                  error={touched.email ? errors.email : undefined}
+                  onChange={(val) => handleFieldChange('email', val)}
+                  onBlur={() => handleFieldBlur('email')}
                 />
 
                 {/* Order Notes (optional) */}
@@ -439,7 +603,7 @@ export const CheckoutView: React.FC = () => {
                   isTextarea
                   rows={5}
                   value={formData.orderNotes}
-                  onChange={(val) => setFormData({ ...formData, orderNotes: val })}
+                  onChange={(val) => handleFieldChange('orderNotes', val)}
                 />
               </div>
 
@@ -533,9 +697,16 @@ export const CheckoutView: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#5E007B] hover:bg-[#430D60] active:scale-[0.99] text-white py-3.5 px-6 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-all shadow-sm cursor-pointer disabled:opacity-70"
+                  className="w-full bg-[#5E007B] hover:bg-[#430D60] active:scale-[0.99] text-white py-3.5 px-6 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-all shadow-sm cursor-pointer disabled:opacity-70 flex items-center justify-center gap-2"
                 >
-                  {isSubmitting ? 'PROCESSING...' : 'PLACE ORDER'}
+                  {isSubmitting ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>SUBMITTING ORDER...</span>
+                    </>
+                  ) : (
+                    'PLACE ORDER'
+                  )}
                 </button>
               </div>
             </div>
