@@ -106,7 +106,10 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
     })),
   }))
 
-  const buyNowText = data?.buyNowButton?.text || 'Buy Now'
+  const buyNowText =
+    data?.buyNowButton?.text && !['Buy Now', 'Buy 3D Models'].includes(data.buyNowButton.text)
+      ? data.buyNowButton.text
+      : 'Explore Products'
   const buyNowUrl = sanitizeUrl(data?.buyNowButton?.url || '/products', 'Buy Now')
   const cartUrl = data?.cartUrl || 'https://pro-guide.in/'
   const loginText = data?.loginButton?.text || 'Login /Register'
@@ -207,12 +210,13 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
               })
             })()}
 
-            {/* Buy Now Button */}
+            {/* Unique Highlighted Products CTA Button */}
             <Link
               href={buyNowUrl}
-              className="inline-block bg-orange text-white text-[12.5px] font-bold px-[14px] py-2 rounded-[5px] hover:bg-orange-d border border-orange hover:border-orange-d transition-all ml-1 shadow-sm"
+              className="relative inline-flex items-center gap-1.5 bg-gradient-to-r from-[#E67E22] via-[#F39C12] to-[#D35400] text-white text-[13px] font-extrabold px-[15px] py-2 rounded-[6px] shadow-[0_4px_14px_rgba(230,126,34,0.38)] hover:shadow-[0_6px_22px_rgba(230,126,34,0.55)] hover:scale-[1.04] active:scale-[0.97] transition-all duration-200 ml-1.5 overflow-hidden group"
             >
-              {buyNowText}
+           
+              <span>{buyNowText}</span>
             </Link>
 
             {/* Cart Icon */}
@@ -332,9 +336,10 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
               <Link
                 href={buyNowUrl}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-center bg-orange text-white text-[13.5px] font-bold py-2 rounded-[5px]"
+                className="text-center bg-gradient-to-r from-[#E67E22] via-[#F39C12] to-[#D35400] text-white text-[13.5px] font-extrabold py-2.5 rounded-[6px] shadow-md flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all"
               >
-                {buyNowText}
+                
+                <span>{buyNowText}</span>
               </Link>
               <a
                 href={loginUrl}
