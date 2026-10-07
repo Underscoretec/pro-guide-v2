@@ -127,6 +127,13 @@ export const CheckoutView: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [confirmedOrderId, setConfirmedOrderId] = useState<string | number | null>(null)
+  const [confirmedOrderSummary, setConfirmedOrderSummary] = useState<{
+    items: { id?: string; name: string; price: number; quantity?: number; imageUrl?: string }[]
+    subtotal: number
+    gst: number
+    total: number
+    date: string
+  } | null>(null)
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -255,6 +262,17 @@ export const CheckoutView: React.FC = () => {
     })}`
   }
 
+  const finalItems = confirmedOrderSummary?.items || displayItems
+  const finalSubtotal = confirmedOrderSummary?.subtotal ?? computedSubtotal
+  const finalGst = confirmedOrderSummary?.gst ?? computedGst
+  const finalTotal = confirmedOrderSummary?.total ?? computedTotal
+  const orderDateFormatted =
+    confirmedOrderSummary?.date ||
+    (() => {
+      const now = new Date()
+      return `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`
+    })()
+
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitError(null)
@@ -306,6 +324,17 @@ export const CheckoutView: React.FC = () => {
 
       if (response.ok && (result.doc || result.id)) {
         const orderId = result.doc?.id || result.id
+        const now = new Date()
+        const dd = String(now.getDate()).padStart(2, '0')
+        const mm = String(now.getMonth() + 1).padStart(2, '0')
+        const yyyy = now.getFullYear()
+        setConfirmedOrderSummary({
+          items: [...displayItems],
+          subtotal: computedSubtotal,
+          gst: computedGst,
+          total: computedTotal,
+          date: `${dd}/${mm}/${yyyy}`,
+        })
         setConfirmedOrderId(orderId)
         clearCart()
         setCurrentStep(3)
@@ -331,7 +360,7 @@ export const CheckoutView: React.FC = () => {
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Title */}
         <h1 className="text-[26px] md:text-[30px] font-bold text-ink tracking-tight mb-8 uppercase">
-          {currentStep === 3 ? 'CONFIRMATION' : 'SHIPPING AND CHECKOUT'}
+          {currentStep === 3 ? 'ORDER RECEIVED' : 'SHIPPING AND CHECKOUT'}
         </h1>
 
         {/* 3-Step Stepper Header */}
@@ -347,7 +376,7 @@ export const CheckoutView: React.FC = () => {
               </div>
             </Link>
 
-            {/* Step 2 - Active */}
+            {/* Step 2 */}
             <div className="relative pb-3">
               <div
                 className={`text-[13px] md:text-[14px] uppercase tracking-wider ${
@@ -359,10 +388,6 @@ export const CheckoutView: React.FC = () => {
               <div className="text-[12px] md:text-[12.5px] text-muted mt-0.5">
                 Checkout Your Items List
               </div>
-              {/* Active Dark Indicator Underline for Step 2 */}
-              {currentStep === 2 && (
-                <div className="absolute left-0 bottom-[-17px] w-full h-[2.5px] bg-ink" />
-              )}
             </div>
 
             {/* Step 3 */}
@@ -377,83 +402,141 @@ export const CheckoutView: React.FC = () => {
               <div className="text-[12px] md:text-[12.5px] text-muted mt-0.5">
                 Review And Submit Your Order
               </div>
-              {currentStep === 3 && (
-                <div className="absolute left-0 bottom-[-17px] w-full h-[2.5px] bg-ink" />
-              )}
             </div>
           </div>
+          {/* Active Dark Indicator Underline */}
+          <div
+            className={`absolute left-0 bottom-[-1px] h-[2px] bg-ink transition-all duration-300 ${
+              currentStep === 3 ? 'w-full' : 'hidden md:block md:w-2/3'
+            }`}
+          />
         </div>
 
         {/* Step 3: Confirmation State */}
         {currentStep === 3 ? (
-          <div className="max-w-[720px] mx-auto py-8 text-center animate-in fade-in duration-200">
-            <div className="w-16 h-16 bg-[#ECFDF5] text-[#059669] rounded-full flex items-center justify-center mx-auto text-3xl mb-5 font-bold">
-              ✓
+          <div className="py-6 animate-in fade-in duration-200">
+            {/* Purple Circle with White Checkmark */}
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#5E007B] flex items-center justify-center mx-auto mb-6 text-white shadow-sm">
+              <svg
+                className="w-7 h-7 md:w-8 md:h-8"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={3}
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
             </div>
-            <h2 className="text-[24px] font-bold text-ink mb-2">
-              Thank You! Your Order Has Been Placed.
+
+            {/* Title & Subtitle */}
+            <h2 className="text-[25px] md:text-[28px] font-bold text-[#111827] tracking-tight mb-2 text-center">
+              Your order is completed!
             </h2>
-            <p className="text-muted text-[14.5px] mb-8 leading-relaxed">
-              Your shipping address and order details have been saved to the administrative database
-              {confirmedOrderId ? ` (Order ID: #${confirmedOrderId})` : ''}. Our simulation coordinator will review your request and reach out within 2 hours with the formal proforma invoice and dispatch tracking.
+            <p className="text-[12.5px] md:text-[13px] text-[#6B7280] mb-8 text-center">
+              Thank you. Your order has been received.
             </p>
 
-            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] p-6 text-left mb-8 space-y-3 shadow-xs">
-              <div className="font-bold text-ink text-[13.5px] uppercase tracking-wider pb-2 border-b border-[#E5E7EB] flex items-center justify-between">
-                <span>Saved Shipping Details</span>
-                {confirmedOrderId && (
-                  <span className="text-purple text-[12px]">Ref: #{confirmedOrderId}</span>
-                )}
-              </div>
-              <div className="text-[13.5px] space-y-2 text-ink">
-                <div className="flex justify-between">
-                  <span className="text-muted">Customer Name:</span>
-                  <span className="font-medium">
-                    {formData.firstName} {formData.lastName || ''}
-                  </span>
-                </div>
-                {formData.companyName && (
-                  <div className="flex justify-between">
-                    <span className="text-muted">Institution:</span>
-                    <span className="font-medium">{formData.companyName}</span>
+            {/* Dashed Order Metadata Card */}
+            <div className="max-w-[700px] mx-auto rounded-[4px] border border-dashed border-[#D1D5DB] py-5 px-6 sm:px-8 mb-8 bg-white">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-4 text-left">
+                <div>
+                  <div className="text-[11.5px] text-[#6B7280] mb-1">Order Number</div>
+                  <div className="text-[13.5px] font-bold text-ink">
+                    {confirmedOrderId || '13119'}
                   </div>
-                )}
-                <div className="flex justify-between">
-                  <span className="text-muted">Phone Number:</span>
-                  <span className="font-medium">{formData.phone}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted">Email:</span>
-                  <span className="font-medium">{formData.email}</span>
+                <div>
+                  <div className="text-[11.5px] text-[#6B7280] mb-1">Date</div>
+                  <div className="text-[13.5px] font-bold text-ink">{orderDateFormatted}</div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted">Delivery Address:</span>
-                  <span className="font-medium text-right max-w-[340px]">
-                    {formData.streetAddress1}
-                    {formData.streetAddress2 ? `, ${formData.streetAddress2}` : ''},{' '}
-                    {formData.city}, {formData.province} - {formData.postcode}, {formData.country}
-                  </span>
+                <div>
+                  <div className="text-[11.5px] text-[#6B7280] mb-1">Total</div>
+                  <div className="text-[13.5px] font-bold text-ink">
+                    {formatPrice(finalTotal)}
+                  </div>
                 </div>
-                <div className="flex justify-between pt-2 border-t border-[#E5E7EB] font-bold text-[15px]">
-                  <span>Total Amount (incl. 18% GST):</span>
-                  <span>{formatPrice(computedTotal)}</span>
+                <div>
+                  <div className="text-[11.5px] text-[#6B7280] mb-1">Payment Method</div>
+                  <div className="text-[13.5px] font-bold text-ink">Direct Bank Transfer</div>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Link
-                href="/products"
-                className="bg-[#5E007B] hover:bg-[#430D60] text-white px-7 py-3 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-all"
-              >
-                Order More Models
-              </Link>
-              <Link
-                href="/"
-                className="border border-[#D1D5DB] text-ink hover:text-purple hover:border-purple px-7 py-3 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-all"
-              >
-                Return to Home
-              </Link>
+            {/* Order Details Card */}
+            <div className="max-w-[700px] mx-auto rounded-[4px] border border-[#E5E7EB] p-6 sm:p-8 bg-white">
+              <h3 className="text-[13px] font-bold text-ink uppercase tracking-wider mb-6 text-left">
+                ORDER DETAILS
+              </h3>
+
+              {/* Table Header */}
+              <div className="flex justify-between items-center pb-3 border-b border-[#E5E7EB] text-[11.5px] font-bold text-ink uppercase tracking-wider">
+                <span>PRODUCT</span>
+                <span>SUBTOTAL</span>
+              </div>
+
+              {/* Product Items List */}
+              <div className="divide-y divide-[#E5E7EB]/60">
+                {finalItems.map((item, idx) => {
+                  const itemSubtotal = item.price * (item.quantity || 1)
+                  return (
+                    <div
+                      key={item.id || idx}
+                      className="py-3 flex justify-between items-center text-[13px] text-[#4B5563]"
+                    >
+                      <span>
+                        {item.name}
+                        {item.quantity && item.quantity > 1 ? ` × ${item.quantity}` : ''}
+                      </span>
+                      <span>{formatPrice(itemSubtotal)}</span>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Summary Rows */}
+              <div className="border-t border-[#E5E7EB] text-[13px]">
+                {/* SUBTOTAL */}
+                <div className="py-3.5 flex justify-between items-center border-b border-[#E5E7EB]/60">
+                  <span className="font-bold text-ink uppercase text-[12px] tracking-wider">
+                    SUBTOTAL
+                  </span>
+                  <span className="font-bold text-ink">{formatPrice(finalSubtotal)}</span>
+                </div>
+
+                {/* SUBTOTAL / Free shipping */}
+                <div className="py-3.5 flex justify-between items-center border-b border-[#E5E7EB]/60">
+                  <span className="font-bold text-ink uppercase text-[12px] tracking-wider">
+                    SUBTOTAL
+                  </span>
+                  <span className="text-[#4B5563]">Free shipping</span>
+                </div>
+
+                {/* VAT */}
+                <div className="py-3.5 flex justify-between items-center border-b border-[#E5E7EB]/60">
+                  <span className="font-bold text-ink uppercase text-[12px] tracking-wider">
+                    VAT
+                  </span>
+                  <span className="text-[#4B5563]">{formatPrice(finalGst)}</span>
+                </div>
+
+                {/* PAYMENT METHOD */}
+                <div className="py-3.5 flex justify-between items-center border-b border-[#E5E7EB]/60">
+                  <span className="font-bold text-ink uppercase text-[12px] tracking-wider">
+                    PAYMENT METHOD
+                  </span>
+                  <span className="text-[#4B5563]">Direct bank transfer</span>
+                </div>
+
+                {/* TOTAL */}
+                <div className="pt-4 flex justify-between items-center">
+                  <span className="font-bold text-ink uppercase text-[13px] tracking-wider">
+                    TOTAL
+                  </span>
+                  <span className="font-bold text-ink text-[14px]">
+                    {formatPrice(finalTotal)}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         ) : (
