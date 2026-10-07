@@ -14,6 +14,7 @@ import { CustomizedModelPage } from './collections/CustomizedModelPage'
 import { CustomizedModelSubmissions } from './collections/CustomizedModelSubmissions'
 import { WorkshopsPage } from './collections/WorkshopsPage'
 import { TrainingCoursesPage } from './collections/TrainingCoursesPage'
+import { CheckoutSubmission } from './collections/CheckoutSubmission'
 import Header from './globals/Header'
 import Footer from './globals/Footer'
 
@@ -39,6 +40,7 @@ export default buildConfig({
     CustomizedModelSubmissions,
     WorkshopsPage,
     TrainingCoursesPage,
+    CheckoutSubmission
   ],
   globals: [Header, Footer],
   editor: lexicalEditor(),

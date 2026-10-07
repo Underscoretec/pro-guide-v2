@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useCart } from '@/context/CartContext'
 
 interface HeaderProps {
   data?: any
@@ -18,6 +19,8 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
       window.location.href = '/products'
     }
   }
+
+  const { itemCount, isHydrated } = useCart()
 
   // Fallbacks from global
   const announcementText =
@@ -176,15 +179,18 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
             </Link>
 
             {/* Cart Icon */}
-            <a
+            <Link
               href={cartUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Cart (opens the ProGuide store)"
-              className="text-[20px] px-[6px] py-1 text-ink hover:text-purple transition-colors ml-1"
+              title="Shopping Cart"
+              className="relative text-[20px] px-[6px] py-1 text-ink hover:text-purple transition-colors ml-1 inline-flex items-center"
             >
               &#128722;
-            </a>
+              {isHydrated && itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-purple text-white text-[10px] font-bold min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center leading-none shadow-sm">
+                  {itemCount}
+                </span>
+              )}
+            </Link>
 
             {/* Login / Register */}
             <a
@@ -263,6 +269,18 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
               )
             })}
             <div className="pt-2 flex flex-col gap-2">
+              <Link
+                href="/cart"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-center bg-[#F4F4F6] text-ink text-[13.5px] font-bold py-2 rounded-[5px] flex items-center justify-center gap-2 hover:text-purple"
+              >
+                <span>&#128722; Cart</span>
+                {isHydrated && itemCount > 0 && (
+                  <span className="bg-purple text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+                    {itemCount}
+                  </span>
+                )}
+              </Link>
               <Link
                 href={buyNowUrl}
                 onClick={() => setMobileMenuOpen(false)}

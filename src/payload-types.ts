@@ -78,6 +78,7 @@ export interface Config {
     'customized-model-submissions': CustomizedModelSubmission;
     'workshops-page': WorkshopsPage;
     'training-courses-page': TrainingCoursesPage;
+    'checkout-submissions': CheckoutSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -96,6 +97,7 @@ export interface Config {
     'customized-model-submissions': CustomizedModelSubmissionsSelect<false> | CustomizedModelSubmissionsSelect<true>;
     'workshops-page': WorkshopsPageSelect<false> | WorkshopsPageSelect<true>;
     'training-courses-page': TrainingCoursesPageSelect<false> | TrainingCoursesPageSelect<true>;
+    'checkout-submissions': CheckoutSubmissionsSelect<false> | CheckoutSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -829,6 +831,42 @@ export interface TrainingCoursesPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "checkout-submissions".
+ */
+export interface CheckoutSubmission {
+  id: number;
+  fullName?: string | null;
+  firstName: string;
+  lastName: string;
+  companyName?: string | null;
+  phone: string;
+  email: string;
+  country: string;
+  province: string;
+  streetAddress1: string;
+  streetAddress2?: string | null;
+  city: string;
+  postcode: string;
+  orderNotes?: string | null;
+  items?:
+    | {
+        name: string;
+        quantity: number;
+        price: number;
+        subtotal?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  subtotal?: number | null;
+  shipping?: string | null;
+  gst?: number | null;
+  total?: number | null;
+  status?: ('Pending' | 'Processing' | 'Dispatched' | 'Completed' | 'Cancelled') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -894,6 +932,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'training-courses-page';
         value: number | TrainingCoursesPage;
+      } | null)
+    | ({
+        relationTo: 'checkout-submissions';
+        value: number | CheckoutSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1653,6 +1695,41 @@ export interface TrainingCoursesPageSelect<T extends boolean = true> {
               id?: T;
             };
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "checkout-submissions_select".
+ */
+export interface CheckoutSubmissionsSelect<T extends boolean = true> {
+  fullName?: T;
+  firstName?: T;
+  lastName?: T;
+  companyName?: T;
+  phone?: T;
+  email?: T;
+  country?: T;
+  province?: T;
+  streetAddress1?: T;
+  streetAddress2?: T;
+  city?: T;
+  postcode?: T;
+  orderNotes?: T;
+  items?:
+    | T
+    | {
+        name?: T;
+        quantity?: T;
+        price?: T;
+        subtotal?: T;
+        id?: T;
+      };
+  subtotal?: T;
+  shipping?: T;
+  gst?: T;
+  total?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }
