@@ -79,6 +79,7 @@ export interface Config {
     'workshops-page': WorkshopsPage;
     'training-courses-page': TrainingCoursesPage;
     'checkout-submissions': CheckoutSubmission;
+    'lead-submissions': LeadSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -98,6 +99,7 @@ export interface Config {
     'workshops-page': WorkshopsPageSelect<false> | WorkshopsPageSelect<true>;
     'training-courses-page': TrainingCoursesPageSelect<false> | TrainingCoursesPageSelect<true>;
     'checkout-submissions': CheckoutSubmissionsSelect<false> | CheckoutSubmissionsSelect<true>;
+    'lead-submissions': LeadSubmissionsSelect<false> | LeadSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -867,6 +869,22 @@ export interface CheckoutSubmission {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lead-submissions".
+ */
+export interface LeadSubmission {
+  id: number;
+  fullName?: string | null;
+  firstName: string;
+  lastName: string;
+  country?: string | null;
+  mobile: string;
+  source?: string | null;
+  status?: ('New' | 'Contacted' | 'In Progress' | 'Enrolled' | 'Closed') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -936,6 +954,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'checkout-submissions';
         value: number | CheckoutSubmission;
+      } | null)
+    | ({
+        relationTo: 'lead-submissions';
+        value: number | LeadSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1729,6 +1751,21 @@ export interface CheckoutSubmissionsSelect<T extends boolean = true> {
   shipping?: T;
   gst?: T;
   total?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lead-submissions_select".
+ */
+export interface LeadSubmissionsSelect<T extends boolean = true> {
+  fullName?: T;
+  firstName?: T;
+  lastName?: T;
+  country?: T;
+  mobile?: T;
+  source?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;

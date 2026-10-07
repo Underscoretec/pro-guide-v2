@@ -1,7 +1,6 @@
 'use client'
 
-import React from 'react'
-import Image from 'next/image'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
@@ -12,6 +11,7 @@ export interface ProductItem {
   badge?: string
   image?: any
   imageUrl?: string
+  images?: (string | { image?: any; imageUrl?: string })[]
   description?: string
   price?: number
   bulletPoints?: (string | { point: string })[]
@@ -29,6 +29,62 @@ interface ProductCardProps {
   item: ProductItem
 }
 
+const nameOrUrlGalleries: Record<string, string[]> = {
+  '/images/prod1.jpg': [
+    '/images/prod1.jpg',
+    '/images/detail_middleear.jpg',
+    '/images/detail_sigmoid.jpg',
+    '/images/detail_macro.jpg',
+  ],
+  '/images/detail_sigmoid.jpg': [
+    '/images/detail_sigmoid.jpg',
+    '/images/prod1.jpg',
+    '/images/detail_middleear.jpg',
+    '/images/detail_macro.jpg',
+  ],
+  '/images/detail_macro.jpg': [
+    '/images/detail_macro.jpg',
+    '/images/detail_sigmoid.jpg',
+    '/images/prod1.jpg',
+    '/images/detail_middleear.jpg',
+  ],
+  '/images/detail_middleear.jpg': [
+    '/images/detail_middleear.jpg',
+    '/images/prod1.jpg',
+    '/images/detail_sigmoid.jpg',
+  ],
+  '/images/prod2.jpg': [
+    '/images/prod2.jpg',
+    '/images/detail_nose.jpg',
+    '/images/prod3.jpg',
+  ],
+  '/images/prod3.jpg': [
+    '/images/prod3.jpg',
+    '/images/detail_nose.jpg',
+    '/images/prod2.jpg',
+  ],
+  '/images/detail_nose.jpg': [
+    '/images/detail_nose.jpg',
+    '/images/prod2.jpg',
+    '/images/prod3.jpg',
+  ],
+  '/images/prod4.jpg': [
+    '/images/prod4.jpg',
+    '/images/detail_larynxtop.jpg',
+    '/images/prod1.jpg',
+  ],
+  '/images/detail_ear.jpg': [
+    '/images/detail_ear.jpg',
+    '/images/detail_middleear.jpg',
+    '/images/detail_macro.jpg',
+  ],
+  '/images/detail_larynxtop.jpg': [
+    '/images/detail_larynxtop.jpg',
+    '/images/prod4.jpg',
+    '/images/prod1.jpg',
+  ],
+}
+
 export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const router = useRouter()
   const { addToCart } = useCart()
@@ -36,6 +92,56 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const imgSrc =
     item.image?.url || item.imageUrl || (typeof item.image === 'string' ? item.image : '/images/prod1.jpg')
   const altText = item.name || 'ProGuide 3D Simulation Model'
+
+  // Resolve multiple images for hover slider
+  const resolveImages = (): string[] => {
+    if (Array.isArray(item.images) && item.images.length > 0) {
+      return item.images.map((img) =>
+        typeof img === 'string' ? img : img?.image?.url || img?.imageUrl || imgSrc
+      )
+    }
+
+    if (nameOrUrlGalleries[imgSrc]) {
+      return nameOrUrlGalleries[imgSrc]
+    }
+
+    const lowerName = (item.name || '').toLowerCase()
+    if (
+      lowerName.includes('temporal') ||
+      lowerName.includes('mastoid') ||
+      lowerName.includes('cochlear') ||
+      lowerName.includes('ear')
+    ) {
+      return [imgSrc, '/images/detail_middleear.jpg', '/images/detail_sigmoid.jpg', '/images/detail_macro.jpg']
+    }
+    if (
+      lowerName.includes('paranasal') ||
+      lowerName.includes('sinus') ||
+      lowerName.includes('pns') ||
+      lowerName.includes('sinuplasty')
+    ) {
+      return [imgSrc, '/images/detail_nose.jpg', '/images/prod2.jpg', '/images/prod3.jpg']
+    }
+    if (lowerName.includes('larynx') || lowerName.includes('airway')) {
+      return [imgSrc, '/images/detail_larynxtop.jpg', '/images/prod4.jpg']
+    }
+
+    return [imgSrc]
+  }
+
+  const cardImages = resolveImages()
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
+
+  useEffect(() => {
+    if (!isHovered || cardImages.length <= 1) return
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % cardImages.length)
+    }, 1200)
+
+    return () => clearInterval(interval)
+  }, [isHovered, cardImages.length])
 
   const points: string[] =
     item.bulletPoints && item.bulletPoints.length > 0
@@ -63,15 +169,46 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
 
   return (
     <div className="bg-white border border-line rounded-[8px] overflow-hidden flex flex-col h-full transition-all duration-[180ms] hover:shadow-[0_14px_30px_rgba(31,35,40,0.12)] hover:-translate-y-[3px] group">
-      {/* Uniform card image container */}
-      <div className="relative aspect-[16/10] bg-[#F8F9FA] overflow-hidden border-b border-line/60">
-        <Image
-          src={imgSrc}
-          alt={altText}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          className="object-contain p-2 transition-transform duration-300 group-hover:scale-105"
-        />
+      {/* Uniform card image container with hover auto-slide */}
+      <div
+        className="relative aspect-[16/10] bg-[#F8F9FA] overflow-hidden border-b border-line/60 select-none group/img"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false)
+          setCurrentIndex(0)
+        }}
+      >
+        {cardImages.map((src, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={i}
+            src={src}
+            alt={`${altText} view ${i + 1}`}
+            className={`absolute inset-0 w-full h-full object-contain p-2 mix-blend-multiply transition-opacity duration-500 ease-in-out ${
+              i === currentIndex
+                ? 'opacity-100 z-10'
+                : 'opacity-0 z-0 pointer-events-none'
+            }`}
+          />
+        ))}
+
+        {/* Slide Indicator Pills on hover */}
+        {cardImages.length > 1 && (
+          <div
+            className={`absolute bottom-2 left-0 right-0 z-20 flex justify-center items-center gap-1.5 transition-opacity duration-300 pointer-events-none ${
+              isHovered ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            {cardImages.map((_, i) => (
+              <span
+                key={i}
+                className={`h-1.5 rounded-full transition-all duration-300 shadow-xs ${
+                  i === currentIndex ? 'w-4 bg-orange' : 'w-1.5 bg-[#9CA3AF]/60'
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Uniform card body */}
@@ -115,14 +252,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
 
         {/* Pinned Bottom Buttons: Buy and Enquire */}
         <div className="mt-auto pt-2 flex items-center gap-2">
-          <Link
-            href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
-            className="flex-1 text-center bg-white text-ink px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
-          >
-            Enquire
-          </Link>
-
-          
           <button
             type="button"
             onClick={handleBuy}
@@ -130,6 +259,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
           >
             Buy
           </button>
+
+          <Link
+            href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
+            className="flex-1 text-center bg-white text-ink px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
+          >
+            Enquire
+          </Link>
         </div>
       </div>
     </div>
