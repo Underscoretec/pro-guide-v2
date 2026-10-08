@@ -36,7 +36,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="antialiased font-sans text-ink bg-white min-h-screen flex flex-col">
-        <CartProvider>
+        <CartProvider user={user ? { id: user.id, email: user.email } : null}>
           <Header data={header} user={user ? { fullName: user.fullName, email: user.email } : null} />
           {children}
           <Footer footer={footer} />
