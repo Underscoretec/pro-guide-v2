@@ -5,6 +5,8 @@ import { saveAddress } from '@/lib/profile/actions'
 import type { AuthState } from '@/lib/auth/actions'
 import { Field, FormError, primaryButtonClass } from '@/components/Auth/AuthShell'
 
+import { FiCheck, FiX } from 'react-icons/fi'
+
 export type Address = {
   id: number | string
   addressLine: string
@@ -43,9 +45,14 @@ export const AddressForm: React.FC<{
       <Field label="Postal Code / PIN" name="postalCode" required defaultValue={v.postalCode} error={e.postalCode} />
       <Field label="Country" name="country" required defaultValue={v.country || 'India'} />
       <Field className="sm:col-span-2" textarea label="Delivery Notes / Instructions (optional)" name="deliveryNotes" defaultValue={v.deliveryNotes ?? ''} />
-      <div className="sm:col-span-2 flex gap-3">
-        <button type="submit" disabled={pending} className={`${primaryButtonClass} !w-auto px-6`}>
-          {pending ? 'Saving…' : 'Save Address'}
+      <div className="sm:col-span-2 flex items-center gap-3 pt-2">
+        <button
+          type="submit"
+          disabled={pending}
+          className={`${primaryButtonClass} !w-auto px-6 inline-flex items-center gap-2`}
+        >
+          <FiCheck className="w-4 h-4" />
+          <span>{pending ? 'Saving…' : 'Save Address'}</span>
         </button>
         <button
           type="button"
@@ -53,9 +60,10 @@ export const AddressForm: React.FC<{
             if (onCancel) onCancel()
             else onDone()
           }}
-          className="border border-[#C9CDD3] rounded-[5px] px-6 text-[14px] font-semibold text-ink hover:border-purple cursor-pointer"
+          className="border border-[#C9CDD3] rounded-[6px] px-5 py-[10px] text-[14px] font-semibold text-ink hover:border-purple hover:text-purple hover:bg-white transition-all cursor-pointer inline-flex items-center gap-1.5"
         >
-          Cancel
+          <FiX className="w-4 h-4" />
+          <span>Cancel</span>
         </button>
       </div>
     </form>
