@@ -38,7 +38,11 @@ export default async function ThreeDSimulationPage() {
     return resourcesData?.sections?.find((b: any) => b.blockType === blockType)
   }
 
-  const heroData = getBlockData('resources-hero')
+  const rawHeroData = getBlockData('resources-hero')
+  const heroData = {
+    ...rawHeroData,
+    crumbCurrentText: '3D Simulation',
+  }
   const whyData = getBlockData('why-simulation')
   const featuresData = getBlockData('model-features')
   const temporalData = getBlockData('temporal-bone-procedures')

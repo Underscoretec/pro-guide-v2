@@ -12,7 +12,7 @@ interface ResourcesHeroProps {
 
 export function ResourcesHero({ data }: ResourcesHeroProps) {
   const crumbHomeText = data?.crumbHomeText || 'Home'
-  const crumbCurrentText = data?.crumbCurrentText || 'Resources'
+  const crumbCurrentText = data?.crumbCurrentText || '3D Simulation'
   const title = data?.title || 'Why 3D Simulation Models'
   const description =
     data?.description ||
