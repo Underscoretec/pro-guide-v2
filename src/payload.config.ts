@@ -16,6 +16,7 @@ import { CustomizedModelSubmissions } from './collections/CustomizedModelSubmiss
 import { WorkshopsPage } from './collections/WorkshopsPage'
 import { TrainingCoursesPage } from './collections/TrainingCoursesPage'
 import { CheckoutSubmission } from './collections/CheckoutSubmission'
+import { LeadSubmissions } from './collections/LeadSubmissions'
 import Header from './globals/Header'
 import Footer from './globals/Footer'
 
@@ -43,7 +44,8 @@ export default buildConfig({
     CustomizedModelSubmissions,
     WorkshopsPage,
     TrainingCoursesPage,
-    CheckoutSubmission
+    CheckoutSubmission,
+    LeadSubmissions,
   ],
   globals: [Header, Footer],
   editor: lexicalEditor(),
@@ -55,6 +57,6 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URI || 'file:./payload.db',
     },
-    push: true,
+    push: false,
   }),
 })
