@@ -9,7 +9,7 @@ export const Products: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'slug', 'price', 'category', 'sku', 'updatedAt'],
+    defaultColumns: ['name', 'slug', 'price', 'category', 'showOnLandingPage', 'updatedAt'],
     group: 'Shop',
   },
   access: {
@@ -34,6 +34,29 @@ export const Products: CollectionConfig = {
       label: 'Slug (e.g. tb, pns, pnsb, larynx)',
       admin: {
         description: 'URL identifier used in /products/[slug] and /product?p=[slug]',
+      },
+    },
+    {
+      name: 'showOnLandingPage',
+      type: 'checkbox',
+      defaultValue: false,
+      label: 'Show on Landing Page',
+      admin: {
+        description: 'Check this box to display this product in the Product Offerings section on the Home / Landing page.',
+      },
+    },
+    {
+      name: 'badge',
+      type: 'text',
+      label: 'Card Badge (e.g. Foundation, Complete, Advanced, Task, Only from OSSA+)',
+    },
+    {
+      name: 'displayOrder',
+      type: 'number',
+      defaultValue: 0,
+      label: 'Display Order / Priority',
+      admin: {
+        description: 'Lower numbers display first (e.g. 1, 2, 3...)',
       },
     },
     {
@@ -141,6 +164,36 @@ export const Products: CollectionConfig = {
       name: 'lining',
       type: 'text',
       label: 'Material / Composition Note',
+    },
+    {
+      name: 'bulletPoints',
+      type: 'array',
+      label: 'Key Bullets / Sub-items (Optional Accordion on Card)',
+      fields: [
+        {
+          name: 'point',
+          type: 'text',
+          required: true,
+          label: 'Bullet Point',
+        },
+      ],
+    },
+    {
+      name: 'primaryButtonText',
+      type: 'text',
+      defaultValue: 'Buy',
+      label: 'Primary Button Label',
+    },
+    {
+      name: 'secondaryButtonText',
+      type: 'text',
+      defaultValue: 'Enquire',
+      label: 'Secondary Button Label',
+    },
+    {
+      name: 'secondaryButtonLink',
+      type: 'text',
+      label: 'Secondary Button Link (leave empty for default enquiry form)',
     },
     {
       name: 'specifications',

@@ -153,18 +153,26 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
   const { addToCart } = useCart()
 
   const title = data?.title || 'Product Offerings'
-  const rawList = data?.productsList || products || []
+  const rawList =
+    Array.isArray(products) && products.length > 0
+      ? products
+      : Array.isArray(data?.productsList) && data.productsList.length > 0
+      ? data.productsList
+      : []
   const productList = rawList.length > 0 ? rawList : defaultProducts
 
   const handleAddToCart = (e: React.MouseEvent, prod: any, imageSrc: string) => {
     e.preventDefault()
-    const priceNum = typeof prod.price === 'string'
-      ? parseInt(prod.price.replace(/[^0-9]/g, ''), 10) || 20000
-      : 20000
+    const priceNum =
+      typeof prod.price === 'string'
+        ? parseInt(prod.price.replace(/[^0-9]/g, ''), 10) || 20000
+        : typeof prod.price === 'number'
+        ? prod.price
+        : 20000
 
     addToCart({
-      id: prod.slug || prod.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      name: prod.title,
+      id: prod.slug || (prod.title || prod.name || 'product').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      name: prod.title || prod.name,
       price: priceNum,
       imageUrl: imageSrc,
       quantity: 1,
@@ -233,7 +241,7 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                 {/* Product Image Hover Slider */}
                 <ProductImageSlider
                   images={images}
-                  alt={prod.alt || prod.title}
+                  alt={prod.alt || prod.title || prod.name || 'ProGuide Model'}
                   detailsHref={detailsHref}
                 />
 
@@ -241,7 +249,7 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                 <div className="p-[14px_16px_16px] flex flex-col gap-1 flex-1">
                   <h3 className="text-[16.5px] font-bold text-ink leading-snug">
                     <Link href={detailsHref} className="text-inherit hover:text-purple">
-                      {prod.title}
+                      {prod.title || prod.name}
                     </Link>
                   </h3>
                   <div className="text-[12.5px] text-muted">{prod.variant}</div>

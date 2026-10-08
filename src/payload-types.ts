@@ -282,6 +282,15 @@ export interface Product {
    * URL identifier used in /products/[slug] and /product?p=[slug]
    */
   slug: string;
+  /**
+   * Check this box to display this product in the Product Offerings section on the Home / Landing page.
+   */
+  showOnLandingPage?: boolean | null;
+  badge?: string | null;
+  /**
+   * Lower numbers display first (e.g. 1, 2, 3...)
+   */
+  displayOrder?: number | null;
   price: number;
   category?: string | null;
   sku?: string | null;
@@ -312,6 +321,15 @@ export interface Product {
       }[]
     | null;
   lining?: string | null;
+  bulletPoints?:
+    | {
+        point: string;
+        id?: string | null;
+      }[]
+    | null;
+  primaryButtonText?: string | null;
+  secondaryButtonText?: string | null;
+  secondaryButtonLink?: string | null;
   specifications?: {
     weight?: string | null;
     dimensions?: string | null;
@@ -1295,6 +1313,9 @@ export interface OrdersSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
+  showOnLandingPage?: T;
+  badge?: T;
+  displayOrder?: T;
   price?: T;
   category?: T;
   sku?: T;
@@ -1325,6 +1346,15 @@ export interface ProductsSelect<T extends boolean = true> {
         id?: T;
       };
   lining?: T;
+  bulletPoints?:
+    | T
+    | {
+        point?: T;
+        id?: T;
+      };
+  primaryButtonText?: T;
+  secondaryButtonText?: T;
+  secondaryButtonLink?: T;
   specifications?:
     | T
     | {
