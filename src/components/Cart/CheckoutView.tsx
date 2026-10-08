@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
 import { AddressForm, type Address } from '@/components/Profile/AddressForm'
 import { setDefaultAddress, removeAddress } from '@/lib/profile/actions'
+import { createOrder } from '@/lib/orders/actions'
 import type { ShippingAddress } from '@/payload-types'
 
 export interface CheckoutUser {
@@ -118,7 +119,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
     router.refresh()
   }
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitError(null)
 
@@ -135,34 +136,75 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
     setIsSubmitting(true)
 
-    const orderNum = `PG-${Date.now().toString().slice(-6)}`
-    const now = new Date()
-    const dd = String(now.getDate()).padStart(2, '0')
-    const mm = String(now.getMonth() + 1).padStart(2, '0')
-    const yyyy = now.getFullYear()
+    try {
+      const orderRes = await createOrder({
+        items: items.map((i) => ({
+          product: String(i.id),
+          productName: i.name,
+          productImage: i.imageUrl,
+          sku: `SKU-${i.id}`,
+          quantity: i.quantity || 1,
+          unitPrice: i.price,
+          totalPrice: (i.price || 0) * (i.quantity || 1),
+        })),
+        shippingAddress: {
+          fullName: user?.fullName || 'Customer',
+          phone: user?.phoneNumber || '',
+          addressLine1: selectedAddr.addressLine,
+          addressLine2: '',
+          city: selectedAddr.city,
+          state: selectedAddr.state,
+          postalCode: selectedAddr.postalCode,
+          country: selectedAddr.country || 'India',
+        },
+        pricing: {
+          subtotal,
+          discount: 0,
+          shippingAmount: 0,
+          taxAmount: computedGst,
+          totalAmount: computedTotal,
+          currency: 'INR',
+        },
+        paymentMethod: 'COD',
+        orderNotes: orderNotes.trim() || undefined,
+      })
 
-    setConfirmedOrderSummary({
-      items: [...items],
-      subtotal,
-      gst: computedGst,
-      total: computedTotal,
-      date: `${dd}/${mm}/${yyyy}`,
-      deliveryAddress: {
-        fullName: user?.fullName || 'Customer',
-        addressLine: selectedAddr.addressLine,
-        city: selectedAddr.city,
-        state: selectedAddr.state,
-        postalCode: selectedAddr.postalCode,
-        country: selectedAddr.country,
-        phone: user?.phoneNumber || '',
-      },
-      orderNotes: orderNotes.trim() || undefined,
-    })
-    setConfirmedOrderId(orderNum)
-    clearCart()
-    setIsSubmitting(false)
-    setCurrentStep(3)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+      if (orderRes.success && orderRes.order) {
+        const now = new Date()
+        const dd = String(now.getDate()).padStart(2, '0')
+        const mm = String(now.getMonth() + 1).padStart(2, '0')
+        const yyyy = now.getFullYear()
+
+        setConfirmedOrderSummary({
+          items: [...items],
+          subtotal,
+          gst: computedGst,
+          total: computedTotal,
+          date: `${dd}/${mm}/${yyyy}`,
+          deliveryAddress: {
+            fullName: user?.fullName || 'Customer',
+            addressLine: selectedAddr.addressLine,
+            city: selectedAddr.city,
+            state: selectedAddr.state,
+            postalCode: selectedAddr.postalCode,
+            country: selectedAddr.country,
+            phone: user?.phoneNumber || '',
+          },
+          orderNotes: orderNotes.trim() || undefined,
+        })
+        setConfirmedOrderId(orderRes.order.orderNumber)
+        clearCart()
+        setCurrentStep(3)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        setSubmitError(orderRes.error || 'Failed to place order. Please try again.')
+      }
+    } catch (err: any) {
+      console.error('Order creation error:', err)
+      setSubmitError(err?.message || 'Something went wrong while placing your order.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -267,7 +309,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 </div>
                 <div>
                   <div className="text-[11.5px] text-[#6B7280] mb-1">Payment Method</div>
-                  <div className="text-[13.5px] font-bold text-ink">Direct Bank Transfer</div>
+                  <div className="text-[13.5px] font-bold text-ink">Cash on Delivery (COD)</div>
                 </div>
               </div>
             </div>
@@ -361,7 +403,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   <span className="font-bold text-ink uppercase text-[12px] tracking-wider">
                     PAYMENT METHOD
                   </span>
-                  <span className="text-[#4B5563]">Direct bank transfer</span>
+                  <span className="text-[#4B5563]">Cash on Delivery (COD)</span>
                 </div>
 
                 <div className="pt-4 flex justify-between items-center">
@@ -705,6 +747,26 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                         </span>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Payment Method Option (COD) */}
+                  <div className="mt-4 p-4 bg-[#FAF5FF] border border-[#E9D5FF] rounded-[3px]">
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        type="radio"
+                        id="payment-cod"
+                        name="paymentMethod"
+                        checked={true}
+                        readOnly
+                        className="w-4 h-4 accent-[#5E007B]"
+                      />
+                      <label htmlFor="payment-cod" className="text-[13px] font-bold text-ink cursor-pointer">
+                        Cash on Delivery (COD)
+                      </label>
+                    </div>
+                    <p className="text-[11.5px] text-[#6B7280] mt-1.5 pl-6.5 leading-relaxed">
+                      Pay with cash upon delivery of your simulation models order.
+                    </p>
                   </div>
 
                   {/* Privacy Policy Note */}

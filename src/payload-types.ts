@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     'shipping-addresses': ShippingAddress;
+    orders: Order;
     media: Media;
     'home-page': HomePage;
     resources: Resource;
@@ -90,6 +91,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     'shipping-addresses': ShippingAddressesSelect<false> | ShippingAddressesSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
@@ -210,6 +212,60 @@ export interface ShippingAddress {
   country: string;
   deliveryNotes?: string | null;
   isDefault?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  orderNumber: string;
+  user: number | User;
+  items: {
+    product?: string | null;
+    productName: string;
+    productImage?: string | null;
+    sku?: string | null;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+    id?: string | null;
+  }[];
+  shippingAddress: {
+    fullName: string;
+    phone?: string | null;
+    addressLine1: string;
+    addressLine2?: string | null;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  billingAddress: {
+    fullName: string;
+    phone?: string | null;
+    addressLine1: string;
+    addressLine2?: string | null;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  pricing: {
+    subtotal: number;
+    discount?: number | null;
+    shippingAmount?: number | null;
+    taxAmount?: number | null;
+    totalAmount: number;
+    currency?: string | null;
+  };
+  paymentStatus?: ('pending' | 'paid' | 'failed') | null;
+  orderStatus?: ('confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled') | null;
+  payment?: string | null;
+  paymentMethod?: ('COD' | 'ONLINE' | 'BANK_TRANSFER') | null;
+  orderNotes?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -950,6 +1006,10 @@ export interface PayloadLockedDocument {
         value: number | ShippingAddress;
       } | null)
     | ({
+        relationTo: 'orders';
+        value: number | Order;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
       } | null)
@@ -1086,6 +1146,67 @@ export interface ShippingAddressesSelect<T extends boolean = true> {
   country?: T;
   deliveryNotes?: T;
   isDefault?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  orderNumber?: T;
+  user?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        productName?: T;
+        productImage?: T;
+        sku?: T;
+        quantity?: T;
+        unitPrice?: T;
+        totalPrice?: T;
+        id?: T;
+      };
+  shippingAddress?:
+    | T
+    | {
+        fullName?: T;
+        phone?: T;
+        addressLine1?: T;
+        addressLine2?: T;
+        city?: T;
+        state?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  billingAddress?:
+    | T
+    | {
+        fullName?: T;
+        phone?: T;
+        addressLine1?: T;
+        addressLine2?: T;
+        city?: T;
+        state?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  pricing?:
+    | T
+    | {
+        subtotal?: T;
+        discount?: T;
+        shippingAmount?: T;
+        taxAmount?: T;
+        totalAmount?: T;
+        currency?: T;
+      };
+  paymentStatus?: T;
+  orderStatus?: T;
+  payment?: T;
+  paymentMethod?: T;
+  orderNotes?: T;
   updatedAt?: T;
   createdAt?: T;
 }

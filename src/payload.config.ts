@@ -18,6 +18,7 @@ import { WorkshopsPage } from './collections/WorkshopsPage'
 import { TrainingCoursesPage } from './collections/TrainingCoursesPage'
 import { LeadSubmissions } from './collections/LeadSubmissions'
 import { Carts } from './collections/Carts'
+import { Orders } from './collections/Orders'
 import Header from './globals/Header'
 import Footer from './globals/Footer'
 
@@ -34,6 +35,7 @@ export default buildConfig({
   collections: [
     Users,
     ShippingAddresses,
+    Orders,
     Media,
     HomePage,
     Resources,
@@ -57,6 +59,6 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URI || 'file:./payload.db',
     },
-    push: false,
+    push: process.env.NODE_ENV !== 'production',
   }),
 })
