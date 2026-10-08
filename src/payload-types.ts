@@ -81,6 +81,7 @@ export interface Config {
     'training-courses-page': TrainingCoursesPage;
     'checkout-submissions': CheckoutSubmission;
     'lead-submissions': LeadSubmission;
+    carts: Cart;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -102,6 +103,7 @@ export interface Config {
     'training-courses-page': TrainingCoursesPageSelect<false> | TrainingCoursesPageSelect<true>;
     'checkout-submissions': CheckoutSubmissionsSelect<false> | CheckoutSubmissionsSelect<true>;
     'lead-submissions': LeadSubmissionsSelect<false> | LeadSubmissionsSelect<true>;
+    carts: CartsSelect<false> | CartsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -927,6 +929,33 @@ export interface LeadSubmission {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts".
+ */
+export interface Cart {
+  id: number;
+  /**
+   * User linked to this shopping cart
+   */
+  user: number | User;
+  items?:
+    | {
+        productId: string;
+        name: string;
+        price: number;
+        quantity: number;
+        imageUrl?: string | null;
+        variant?: string | null;
+        subtotal?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  totalItems?: number | null;
+  subtotal?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1004,6 +1033,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'lead-submissions';
         value: number | LeadSubmission;
+      } | null)
+    | ({
+        relationTo: 'carts';
+        value: number | Cart;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1840,6 +1873,29 @@ export interface LeadSubmissionsSelect<T extends boolean = true> {
   mobile?: T;
   source?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts_select".
+ */
+export interface CartsSelect<T extends boolean = true> {
+  user?: T;
+  items?:
+    | T
+    | {
+        productId?: T;
+        name?: T;
+        price?: T;
+        quantity?: T;
+        imageUrl?: T;
+        variant?: T;
+        subtotal?: T;
+        id?: T;
+      };
+  totalItems?: T;
+  subtotal?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -18,6 +18,7 @@ import { WorkshopsPage } from './collections/WorkshopsPage'
 import { TrainingCoursesPage } from './collections/TrainingCoursesPage'
 import { CheckoutSubmission } from './collections/CheckoutSubmission'
 import { LeadSubmissions } from './collections/LeadSubmissions'
+import { Carts } from './collections/Carts'
 import Header from './globals/Header'
 import Footer from './globals/Footer'
 
@@ -46,6 +47,7 @@ export default buildConfig({
     TrainingCoursesPage,
     CheckoutSubmission,
     LeadSubmissions,
+    Carts,
   ],
   globals: [Header, Footer],
   editor: lexicalEditor(),
