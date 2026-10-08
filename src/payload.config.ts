@@ -7,6 +7,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { HomePage } from './collections/HomePage'
 import { Resources } from './collections/Resources'
+
 import { ContactPage } from './collections/ContactPage'
 import { ContactSubmissions } from './collections/ContactSubmissions'
 import { ProductsPage } from './collections/ProductsPage'
@@ -29,6 +30,8 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+ 
+  
   collections: [
     Users,
     Media,
