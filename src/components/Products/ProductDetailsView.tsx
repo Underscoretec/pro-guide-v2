@@ -13,10 +13,9 @@ interface ProductDetailsViewProps {
 
 export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product }) => {
   const router = useRouter()
-  const { addToCart } = useCart()
+  const { items, addToCart, updateQuantity, isHydrated } = useCart()
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-  const [quantity, setQuantity] = useState(1)
   const [activeTab, setActiveTab] = useState<'description' | 'additional'>('description')
   const [isWishlisted, setIsWishlisted] = useState(false)
 
@@ -25,26 +24,43 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
       ? product.images
       : [product.imageUrl, '/images/prod2.jpg', '/images/detail_nose.jpg', '/images/photo_micro.jpg']
 
+  const productId =
+    product.id ||
+    product.slug ||
+    product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+
+  const cartItem = items.find(
+    (item) =>
+      item.id === productId ||
+      item.id === product.id ||
+      item.id === product.slug ||
+      item.name.toLowerCase() === product.name.toLowerCase()
+  )
+
+  const isInCart = isHydrated && Boolean(cartItem)
+  const currentQuantity = cartItem?.quantity || 1
+
   const handleAddToCart = () => {
     addToCart({
-      id: product.id,
+      id: productId,
       name: product.name,
       price: product.price,
       imageUrl: galleryImages[0] || product.imageUrl,
-      quantity,
+      quantity: 1,
     })
-    toast.success(`Added ${quantity} × ${product.name} to cart!`)
+    toast.success(`Added "${product.name}" to cart!`)
   }
 
-  const handleBuyNow = () => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      imageUrl: galleryImages[0] || product.imageUrl,
-      quantity,
-    })
-    router.push('/cart')
+  const handleIncrement = () => {
+    if (cartItem) {
+      updateQuantity(cartItem.id, 1)
+    }
+  }
+
+  const handleDecrement = () => {
+    if (cartItem && currentQuantity > 1) {
+      updateQuantity(cartItem.id, -1)
+    }
   }
 
   const handleAddToWishlist = () => {
@@ -68,9 +84,6 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
       toast.info('Link ready to share')
     }
   }
-
-  const incrementQty = () => setQuantity((q) => q + 1)
-  const decrementQty = () => setQuantity((q) => (q > 1 ? q - 1 : 1))
 
   return (
     <div className="bg-white text-[#1F2328] py-8 sm:py-12">
@@ -147,44 +160,56 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
               {product.shortDescription}
             </p>
 
-            {/* Quantity Selector + Add to Cart Row */}
+            {/* Quantity Selector or Add to Cart Row */}
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-7">
-              {/* Quantity Selector */}
-              <div className="flex items-center border border-[#E5E7EB] rounded-[3px] h-[44px] bg-white">
-                <button
-                  type="button"
-                  onClick={decrementQty}
-                  disabled={quantity <= 1}
-                  className={`w-9 h-full flex items-center justify-center text-lg font-bold select-none transition-colors ${
-                    quantity <= 1
-                      ? 'text-[#D1D5DB] cursor-not-allowed opacity-40'
-                      : 'text-[#6B7280] hover:text-[#1F2328] cursor-pointer'
-                  }`}
-                  aria-label="Decrease quantity"
-                >
-                  &minus;
-                </button>
-                <span className="w-10 text-center text-[14px] font-semibold text-[#1F2328] select-none">
-                  {quantity}
-                </span>
-                <button
-                  type="button"
-                  onClick={incrementQty}
-                  className="w-9 h-full flex items-center justify-center text-[#6B7280] hover:text-[#1F2328] text-lg font-bold select-none cursor-pointer transition-colors"
-                  aria-label="Increase quantity"
-                >
-                  &#43;
-                </button>
-              </div>
+              {isInCart && cartItem ? (
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                  {/* Quantity Stepper (Increase / Decrease) */}
+                  <div className="flex items-center border border-[#E5E7EB] rounded-[3px] h-[44px] bg-white">
+                    <button
+                      type="button"
+                      onClick={handleDecrement}
+                      disabled={currentQuantity <= 1}
+                      className={`w-9 h-full flex items-center justify-center text-lg font-bold select-none transition-colors ${
+                        currentQuantity <= 1
+                          ? 'text-[#D1D5DB] cursor-not-allowed opacity-40'
+                          : 'text-[#6B7280] hover:text-[#1F2328] cursor-pointer'
+                      }`}
+                      aria-label="Decrease quantity"
+                    >
+                      &minus;
+                    </button>
+                    <span className="w-10 text-center text-[14px] font-semibold text-[#1F2328] select-none">
+                      {currentQuantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleIncrement}
+                      className="w-9 h-full flex items-center justify-center text-[#6B7280] hover:text-[#1F2328] text-lg font-bold select-none cursor-pointer transition-colors"
+                      aria-label="Increase quantity"
+                    >
+                      &#43;
+                    </button>
+                  </div>
 
-              {/* Add to Cart button */}
-              <button
-                type="button"
-                onClick={handleAddToCart}
-                className="bg-[#5B1073] hover:bg-[#480c5c] text-white font-bold text-[12px] uppercase tracking-[1.4px] px-8 h-[44px] rounded-[3px] transition-colors shadow-xs flex items-center justify-center cursor-pointer min-w-[180px] sm:min-w-[200px]"
-              >
-                ADD TO CART
-              </button>
+                  {/* View Cart button */}
+                  <Link
+                    href="/cart"
+                    className="bg-[#5B1073] hover:bg-[#480c5c] text-white font-bold text-[12px] uppercase tracking-[1.4px] px-7 h-[44px] rounded-[3px] transition-colors shadow-xs flex items-center justify-center cursor-pointer min-w-[140px]"
+                  >
+                    VIEW CART
+                  </Link>
+                </div>
+              ) : (
+                /* Add to Cart button when not yet in cart */
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  className="bg-[#5B1073] hover:bg-[#480c5c] text-white font-bold text-[12px] uppercase tracking-[1.4px] px-8 h-[44px] rounded-[3px] transition-colors shadow-xs flex items-center justify-center cursor-pointer min-w-[180px] sm:min-w-[200px]"
+                >
+                  ADD TO CART
+                </button>
+              )}
             </div>
 
             {/* Actions: Add to Wishlist & Share */}
