@@ -17,7 +17,7 @@ export const defaultProductFamilies: ProductFamily[] = [
         imageUrl: '/images/prod1.jpg',
         description:
           'Learn to hold the drill, identify the landmarks and open the mastoid safely — where everyone begins.',
-        primaryButton: { text: 'Buy / Enquire', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
       },
       {
         name: 'Advance Model — Complete Bone',
@@ -26,7 +26,7 @@ export const defaultProductFamilies: ProductFamily[] = [
         imageUrl: '/images/detail_sigmoid.jpg',
         description:
           'The complete bone with middle and inner ear in place — for advanced surgeries and every exam that matters.',
-        primaryButton: { text: 'Buy / Enquire', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
       },
       {
         name: 'Cochlear Implant Model',
@@ -35,7 +35,7 @@ export const defaultProductFamilies: ProductFamily[] = [
         imageUrl: '/images/detail_macro.jpg',
         description:
           'Practise the delicate path to the cochlea and feel what a smooth electrode insertion should feel like — built for CI programmes and device training.',
-        primaryButton: { text: 'Buy / Enquire', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
       },
       {
         name: 'Task-Based Trainers',
@@ -50,7 +50,7 @@ export const defaultProductFamilies: ProductFamily[] = [
           { point: 'Stapedectomy Model' },
           { point: 'Ossiculoplasty Model' },
         ],
-        primaryButton: { text: 'Buy / Enquire', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
       },
     ],
   },
@@ -67,7 +67,7 @@ export const defaultProductFamilies: ProductFamily[] = [
         imageUrl: '/images/prod2.jpg',
         description:
           'Complete sinonasal anatomy for endoscopic sinus surgery training — from uncinectomy through sphenoidotomy, under real instruments.',
-        primaryButton: { text: 'Buy / Enquire', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
       },
       {
         name: 'Task-Based PNS Model',
@@ -76,7 +76,7 @@ export const defaultProductFamilies: ProductFamily[] = [
         imageUrl: '/images/prod3.jpg',
         description:
           'Focused FESS steps in a repeatable, consumable format for early endoscopic skills and instrument navigation.',
-        primaryButton: { text: 'Buy / Enquire', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
       },
     ],
   },
@@ -93,7 +93,7 @@ export const defaultProductFamilies: ProductFamily[] = [
         imageUrl: '/images/detail_nose.jpg',
         description:
           'Ostium identification, catheter navigation and balloon placement under endoscopic view.',
-        primaryButton: { text: 'Enquire', link: '/contact' },
+        primaryButton: { text: 'Buy', link: '/contact' },
       },
       {
         name: 'Frontal Balloon Sinuplasty Trainer',
@@ -102,7 +102,7 @@ export const defaultProductFamilies: ProductFamily[] = [
         imageUrl: '/images/prod3.jpg',
         description:
           'Practise the challenging frontal recess pathway with realistic anatomical curvature.',
-        primaryButton: { text: 'Enquire', link: '/contact' },
+        primaryButton: { text: 'Buy', link: '/contact' },
       },
       {
         name: 'Eustachian Tube Dilation Trainer',
@@ -111,7 +111,7 @@ export const defaultProductFamilies: ProductFamily[] = [
         imageUrl: '/images/detail_middleear.jpg',
         description:
           "The world's first Eustachian tube balloon dilation trainer for clinic procedure rehearsal.",
-        primaryButton: { text: 'Enquire', link: '/contact' },
+        primaryButton: { text: 'Buy', link: '/contact' },
       },
     ],
   },
@@ -129,7 +129,7 @@ export const defaultProductFamilies: ProductFamily[] = [
         imageUrl: '/images/prod4.jpg',
         description:
           'Laryngeal framework and airway anatomy for procedural demonstration, airway teaching and course use — with replaceable glottic cassettes for lesion work.',
-        primaryButton: { text: 'Buy / Enquire', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
       },
       {
         name: 'Labyrinth Model for the Epley Maneuver',
@@ -138,7 +138,7 @@ export const defaultProductFamilies: ProductFamily[] = [
         imageUrl: '/images/detail_ear.jpg',
         description:
           'A functional semicircular-canal model demonstrating otoconia movement through each stage of repositioning — for ENT, neurology and physiotherapy teaching.',
-        primaryButton: { text: 'Enquire', link: '/contact' },
+        primaryButton: { text: 'Buy', link: '/contact' },
       },
       {
         name: 'Pathology Variants & Patient-Specific Models',
@@ -147,8 +147,8 @@ export const defaultProductFamilies: ProductFamily[] = [
         imageUrl: '/images/detail_larynxtop.jpg',
         description:
           'Disease-state anatomy (cholesteatoma, sclerotic mastoid and more) at catalogue prices, and CT-to-model builds for rehearsing a specific patient’s surgery before you perform it.',
-        primaryButton: { text: 'Get Customized Model', link: '/customized-model' },
-        secondaryButton: { text: 'Discuss Variant', link: '/contact' },
+        primaryButton: { text: 'Buy', link: '/customized-model' },
+        secondaryButton: { text: 'Enquire', link: '/contact' },
       },
     ],
   },
