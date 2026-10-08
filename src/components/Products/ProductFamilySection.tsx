@@ -25,7 +25,7 @@ export const ProductFamilySection: React.FC<ProductFamilySectionProps> = ({
         isAlt ? 'bg-[#F8F8FA] border-t border-b border-line' : 'bg-white'
       }`}
     >
-      <div className="max-w-[1200px] mx-auto px-6">
+      <div className="max-w-[1320px] mx-auto px-4 sm:px-6">
         {/* Section Header */}
         <div className="text-center max-w-[760px] mx-auto mb-[34px]">
           <h2 className="text-[clamp(23px,2.6vw,31px)] font-bold text-ink">
@@ -38,8 +38,8 @@ export const ProductFamilySection: React.FC<ProductFamilySectionProps> = ({
           <div className="w-16 h-1 bg-gradient-to-r from-purple from-55% to-orange rounded-sm mx-auto mt-3.5 relative after:content-[''] after:absolute after:-right-3 after:-top-0.5 after:w-2 after:h-2 after:rounded-full after:bg-orange" />
         </div>
 
-        {/* Exactly 3 cards per line with identical card size */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Exactly 4 cards per line with identical card size */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {family.items.map((item, idx) => (
             <ProductCard key={idx} item={item} />
           ))}

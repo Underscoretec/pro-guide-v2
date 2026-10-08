@@ -25,7 +25,7 @@ export const Header: GlobalConfig = {
         {
           name: 'linkUrl',
           type: 'text',
-          defaultValue: '#workshops',
+          defaultValue: '/workshops',
           required: true,
         },
       ],
@@ -103,7 +103,7 @@ export const Header: GlobalConfig = {
     {
       name: 'cartUrl',
       type: 'text',
-      defaultValue: 'https://pro-guide.in/',
+      defaultValue: '/cart',
     },
     {
       name: 'loginButton',

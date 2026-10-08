@@ -269,30 +269,30 @@ export async function seed() {
             label: 'Learning',
             hasDropdown: true,
             dropdownItems: [
-              { label: 'About Faculty & Training', url: '/training-courses.html' },
-              { label: 'Otolaryngology Video Library', url: '/videos.html' },
-              { label: 'Why 3D Simulation Models', url: '/resources.html' },
+              { label: 'About Faculty & Training', url: '/training-courses' },
+              { label: 'Otolaryngology Video Library', url: '/videos' },
+              { label: 'Why 3D Simulation Models', url: '/resources' },
             ],
           },
           {
             label: 'Training Courses',
             hasDropdown: true,
             dropdownItems: [
-              { label: '3D Temporal Bone', url: '#workshops' },
-              { label: 'Paranasal Sinus', url: '#workshops' },
-              { label: 'Microlaryngoscopy & Laser Surgeries', url: '#workshops' },
-              { label: 'Types of Training Courses Conducted', url: '/training-courses.html' },
+              { label: '3D Temporal Bone', url: '/workshops#temporal' },
+              { label: 'Paranasal Sinus', url: '/workshops#sinus' },
+              { label: 'Microlaryngoscopy & Laser Surgeries', url: '/workshops#larynx' },
+              { label: 'Types of Training Courses Conducted', url: '/training-courses' },
             ],
           },
-          { label: 'Resources', url: '/resources.html' },
-          { label: 'Get Your Own Customized Model', url: '/customized-model.html' },
-          { label: 'Contact Us', url: '/contact.html' },
+          { label: 'Resources', url: '/resources' },
+          { label: 'Get Your Own Customized Model', url: '/customized-model' },
+          { label: 'Contact Us', url: '/contact' },
         ],
         buyNowButton: {
           text: 'Buy Now',
           url: '/products',
         },
-        cartUrl: 'https://pro-guide.in/',
+        cartUrl: '/cart',
         loginButton: {
           text: 'Login /Register',
           url: 'https://pro-guide.in/',
@@ -313,10 +313,10 @@ export async function seed() {
         logoUrl: '/images/logo_white.svg',
         quickLinksTitle: 'Quick Links',
         quickLinks: [
-          { label: 'Buy Now', url: '/products.html' },
-          { label: 'Cart', url: 'https://pro-guide.in/' },
-          { label: 'Resources', url: '/resources.html' },
-          { label: 'Get Your Own Customized Model', url: '/customized-model.html' },
+          { label: 'Buy Now', url: '/products' },
+          { label: 'Cart', url: '/cart' },
+          { label: 'Resources', url: '/resources' },
+          { label: 'Get Your Own Customized Model', url: '/customized-model' },
           { label: 'Login/Register', url: 'https://pro-guide.in/' },
         ],
         indianQuery: {
@@ -762,6 +762,403 @@ export async function seed() {
       data: productsPageData,
     })
     console.log('  = Updated existing ProductsPage document')
+  }
+
+  // 6. Seed WorkshopsPage Collection
+  console.log('🏥 Seeding WorkshopsPage Collection...')
+  const existingWorkshopsPage = await payload.find({
+    collection: 'workshops-page',
+    limit: 1,
+  })
+
+  const workshopsPageData: any = {
+    title: 'Explore Workshops',
+    heroDescription:
+      'Hands-on, station-based programmes where every delegate operates on their own model under faculty guidance. Registration and payment are handled on the ProGuide store.',
+    glimpses: {
+      imageUrl: '/images/ws_collage.jpg',
+      caption:
+        'Our first KBI SkillBridge workshop — Advanced Temporal Bone Dissection, 2 October 2026 at the KBI Skill Lab, Andheri East, under the aegis of AOI Mumbai West, ahead of Mumbai Manthan 3.0.',
+      brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+    },
+    temporalHeading: '3D Temporal Bone Workshops',
+    sinusHeading: 'Paranasal Sinus Workshops',
+    larynxHeading: 'Microlaryngoscopy and Laser Surgeries',
+    temporalWorkshops: [
+      {
+        title: 'Basic 3D Temporal Bone Dissection Workshop',
+        tagline: 'KBI SkillBridge',
+        meta: 'One-day, faculty-led hands-on · Dates & fees on registration',
+        imageUrl: '/images/ws_lab.jpg',
+        alt: 'Delegates at stations',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        title: 'Advanced Temporal Bone Dissection Workshop',
+        tagline: 'KBI SkillBridge',
+        meta: 'One-day, faculty-led hands-on · Dates & fees on registration',
+        imageUrl: '/images/ws_faculty.jpg',
+        alt: 'Faculty guidance at the microscope',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        title: 'Cochlear Implant Surgery Workshop',
+        tagline: 'KBI SkillBridge',
+        meta: 'One-day, faculty-led hands-on · Dates & fees on registration',
+        imageUrl: '/images/ws_lecture.jpg',
+        alt: 'Live faculty demonstration',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        title: 'Facial Nerve Workshop',
+        tagline: 'KBI SkillBridge',
+        meta: 'One-day, faculty-led hands-on · Dates & fees on registration',
+        imageUrl: '/images/ws_room2.jpg',
+        alt: 'Hands-on stations',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        title: 'Tympanoplasty Workshop',
+        tagline: 'KBI SkillBridge',
+        meta: 'One-day, faculty-led hands-on · Dates & fees on registration',
+        imageUrl: '/images/ws_skilllab.jpg',
+        alt: 'KBI Skill Lab',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+    ],
+    sinusWorkshops: [
+      {
+        title: 'Paranasal Sinuses Workshop',
+        tagline: 'KBI SkillBridge',
+        meta: 'One-day, faculty-led hands-on · Dates & fees on registration',
+        imageUrl: '/images/ws_room2.jpg',
+        alt: 'Endoscopic stations',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        title: 'Balloon Sinuplasty & Eustachian Tube Dilatation Workshop',
+        tagline: 'KBI SkillBridge',
+        meta: 'Single-day hands-on with didactic lectures and video demonstrations',
+        imageUrl: '/images/ws_lab.jpg',
+        alt: 'Workshop floor',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+    ],
+    larynxWorkshops: [
+      {
+        title: 'Larynx Workshop — Microlaryngoscopy & Laser Surgeries',
+        tagline: 'KBI SkillBridge',
+        meta: 'One-day, faculty-led hands-on · Dates & fees on registration',
+        imageUrl: '/images/ws_lecture.jpg',
+        alt: 'Faculty demonstration',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+    ],
+    larynxStats: [
+      { value: '1:1', label: 'Model per delegate' },
+      { value: '2 days', label: 'Typical hands-on format' },
+      { value: '10+', label: 'Procedures per workshop' },
+      { value: 'CME', label: 'Completion certificate' },
+    ],
+  }
+
+  if (existingWorkshopsPage.totalDocs === 0) {
+    await payload.create({
+      collection: 'workshops-page',
+      data: workshopsPageData,
+    })
+    console.log('  + Created WorkshopsPage document')
+  } else {
+    await payload.update({
+      collection: 'workshops-page',
+      id: existingWorkshopsPage.docs[0].id,
+      data: workshopsPageData,
+    })
+    console.log('  = Updated existing WorkshopsPage document')
+  }
+
+  // 7. Seed TrainingCoursesPage Collection
+  console.log('🎓 Seeding TrainingCoursesPage Collection...')
+  const existingTrainingCoursesPage = await payload.find({
+    collection: 'training-courses-page',
+    limit: 1,
+  })
+
+  const trainingCoursesPageData: any = {
+    title: 'About Training Courses — 2026 Workshop Series',
+    heroDescription:
+      'We are dedicated to building surgical confidence and reducing complications through specialized presurgical training. Our workshops provide hands-on training on simulation models of the temporal bone, paranasal sinuses and larynx, designed specifically for practicing surgeons. Each session is led by esteemed faculty members who provide one-to-one guidance.',
+    managementTeamTitle: 'The Management Team',
+    coursesSeriesTitle: '3D Surgical Simulation Workshops — 2026 Series',
+    coursesSeriesDescription:
+      'A comprehensive series of one-day, faculty-led, hands-on programs built on anatomically accurate 3D simulation models. Each workshop pairs live demonstration of every procedural step with supervised practice at fully equipped workstations — with one-to-one mentoring, continuous faculty feedback and participation certificates.',
+    managementTeam: [
+      {
+        initials: 'PN',
+        name: 'Dr. Prashant Naik',
+        role: 'MS (ENT), DLO',
+        bio: "Dr. Prashant's dedication to the field of otology is commendable. His innovative approach — including the creation of a precise 3D-printed replica of the temporal bone — showcases his commitment to advancing medical education and practice. He is an active member of the AAO-HNSF and the Politzer Society and a peer reviewer for the Otolaryngology–Head and Neck Surgery journal. His hands-on dissection workshops, coupled with his management of an open-access temporal bone dissection lab, offer invaluable resources for both aspiring and established otologists.",
+      },
+      {
+        initials: 'MK',
+        name: 'Dr. Milind Kirtane',
+        role: 'MS, DORL, DSc (Hon.) — Padma Shri Awardee',
+        bio: "One of India's foremost ENT and cochlear implant surgeons. Consulting ENT Surgeon at P. D. Hinduja National Hospital, Breach Candy and Saifee Hospital, Mumbai, and Honorary Surgeon at King Edward Memorial Hospital. A teacher to generations of otolaryngologists, his guidance anchors the clinical standards of every ProGuide training programme.",
+      },
+    ],
+    courses: [
+      {
+        category: 'Otology · Foundation',
+        title: 'Basic 3D Temporal Bone Dissection Workshop',
+        why: 'Temporal bone anatomy is complex and compact — safe otologic surgery requires precise 3-D orientation before live surgery. Bone model with mastoid air cells, middle ear cleft, facial nerve canal, cochlea, semicircular canals, sigmoid sinus and internal acoustic canal.',
+        procedures: [
+          { text: 'Identification of external anatomical landmarks' },
+          { text: 'Cortical mastoidectomy' },
+          { text: 'Posterior tympanotomy & cochleostomy' },
+          { text: 'Facial nerve decompression' },
+          { text: 'Cochlear implant dummy electrode insertion' },
+          { text: 'Atticotomy & modified radical mastoidectomy' },
+          { text: 'Labyrinthectomy & translabyrinthine approach' },
+          { text: "Endolymphatic sac approach & Bill's island" },
+        ],
+        fmt: 'One-day hands-on · Operating microscope, high-speed microdrill, suction-irrigation, full dissection set per workstation',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        category: 'Otology · Advanced',
+        title: 'Advanced Temporal Bone Dissection Workshop',
+        why: 'For surgeons who have mastered basic mastoid work — progressively structured dissection on a model with real-size inner ear, complete facial nerve, internal acoustic canal, sigmoid sinus and dura.',
+        procedures: [
+          { text: 'Facial nerve decompression & facial recess approach' },
+          { text: 'Labyrinthectomy' },
+          { text: 'Translabyrinthine approach' },
+          { text: "Bill's island technique" },
+          { text: 'Endolymphatic sac approach' },
+        ],
+        fmt: 'One-day hands-on · Microear instrument sets per workstation',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        category: 'Neurotology',
+        title: 'Facial Nerve Workshop',
+        why: 'The facial nerve follows an intricate path through the temporal bone — surgery on it demands exceptional precision. Trained on a model carrying the complete pathway of the nerve.',
+        procedures: [
+          { text: 'Decompression from first genu to stylomastoid foramen' },
+          { text: 'Re-routing of the facial nerve' },
+          { text: 'End-to-end nerve anastomosis' },
+          { text: 'Various types of nerve grafting' },
+        ],
+        fmt: 'One-day hands-on · Diamond burrs, nerve graft pieces, nerve suturing materials',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        category: 'Otology',
+        title: 'Tympanoplasty Workshop',
+        why: 'Tympanoplasty demands high surgical precision. The model carries a tympanic membrane with moderate central perforation — some models with absent or eroded incus for ossiculoplasty.',
+        procedures: [
+          { text: 'Endomeatal incision & tympanomeatal flap elevation' },
+          { text: 'Inlay graft technique & graft placement' },
+          { text: 'Myringotomy & grommet insertion' },
+          { text: 'Freshening perforation edges' },
+          { text: 'Ossiculoplasty when incus is absent' },
+        ],
+        fmt: 'One-day hands-on · Microear instruments, artificial grafts, gelfoam, grommets',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        category: 'Otology · Implant',
+        title: 'Cochlear Implant Surgery Workshop',
+        why: 'Cochlear implantation requires thorough anatomical understanding and atraumatic electrode insertion — practiced on a model with mastoid air cells, facial recess, round window niche, cochlea and facial nerve pathway.',
+        procedures: [
+          { text: 'Mastoid antrotomy & facial recess approach' },
+          { text: 'Round window approach' },
+          { text: 'Stimulator well creation' },
+          { text: 'Electrode array tunnelling' },
+          { text: 'Pediatric cochlear implantation techniques' },
+        ],
+        fmt: 'One-day hands-on · Dummy electrodes, microdrill with cutting & diamond burrs',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        category: 'Rhinology',
+        title: 'Paranasal Sinuses Workshop',
+        why: 'Sinus anatomy shows wide variation and endoscopic surgery demands strong three-dimensional orientation — trained on an artificial PNS model with septum, turbinates, uncinate process, bulla ethmoidalis, ostia and soft-tissue mucosa.',
+        procedures: [
+          { text: 'Septoplasty & uncinectomy' },
+          { text: 'Maxillary antrotomy' },
+          { text: 'Anterior & posterior ethmoidectomy' },
+          { text: 'Frontal recess approach' },
+          { text: 'Sphenoidectomy & transphenoidal approach' },
+        ],
+        fmt: 'One-day hands-on · Endoscopes, endoscopic instruments, monitor tower',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        category: 'Rhinology · Interventional',
+        title: 'Balloon Sinuplasty & Eustachian Tube Dilatation Workshop',
+        why: 'Balloon-based procedures demand high precision and clear anatomical orientation — practiced on a PNS model with ergonomically designed soft tissues for balloon catheterization.',
+        procedures: [
+          { text: 'Balloon sinuplasty of frontal sinuses' },
+          { text: 'Balloon sinuplasty of maxillary sinuses' },
+          { text: 'Eustachian tube dilatation' },
+        ],
+        fmt: 'Single-day hands-on with didactic lectures and video demonstrations · Balloon catheter instruments, nasal endoscopes',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+      {
+        category: 'Laryngology',
+        title: 'Larynx Workshop',
+        why: 'Laser technology has revolutionized laryngeal surgery, demanding refined motor skills for safe day-care outcomes — trained on a real-size 3D larynx model with replaceable glottic cassettes simulating various lesions.',
+        procedures: [
+          { text: 'Vocal cord nodule excision' },
+          { text: 'Partial cordectomy' },
+          { text: 'Laryngeal web excision' },
+        ],
+        fmt: 'One-day hands-on · Endoscopic instruments, laser machines, monitor tower',
+        brochureUrl: '/ProGuide_3D_Workshops_2026.pdf',
+        registrationUrl: 'https://pro-guide.in/',
+      },
+    ],
+    whyArtificialBone: {
+      title: 'Why Artificial Bone',
+      imageUrl: '/images/photo_micro.jpg',
+      checkList: [
+        {
+          title: 'Essential Skills for Surgical Procedures',
+          description:
+            'Mastering the anatomy of the temporal bone, larynx and paranasal sinuses is crucial before performing surgical procedures.',
+        },
+        {
+          title: 'The Need for 3D Simulation Models',
+          description:
+            'While cadaveric dissection is ideal, it is often unavailable. Realistic 3D models provide a superior alternative.',
+        },
+        {
+          title: 'Highly Detailed Temporal Bone Model',
+          description:
+            'Practice mastoid surgeries, facial nerve decompression and cochlear implant insertion.',
+        },
+        {
+          title: 'Accurate 3D Paranasal Sinus Model',
+          description:
+            'Over 90% anatomical accuracy with detailed sinus structures and soft tissue.',
+        },
+      ],
+      stats: [
+        { value: '100%', label: 'Safety in temporal bone laboratory' },
+        { value: '90%', label: 'Value for surgical experience' },
+        { value: '94%', label: 'External anatomical features' },
+        { value: '85%', label: 'Internal anatomical features' },
+        { value: '92%', label: 'Drill response vs cadaver temporal bone' },
+      ],
+    },
+  }
+
+  if (existingTrainingCoursesPage.totalDocs === 0) {
+    await payload.create({
+      collection: 'training-courses-page',
+      data: trainingCoursesPageData,
+    })
+    console.log('  + Created TrainingCoursesPage document')
+  } else {
+    await payload.update({
+      collection: 'training-courses-page',
+      id: existingTrainingCoursesPage.docs[0].id,
+      data: trainingCoursesPageData,
+    })
+    console.log('  = Updated existing TrainingCoursesPage document')
+  }
+
+  // 8. Seed ContactPage
+  console.log('Seeding ContactPage...')
+  const existingContactPage = await payload.find({
+    collection: 'contact-page',
+    limit: 1,
+  })
+
+  const contactPageData = {
+    title: 'Get In Touch',
+    heroDescription:
+      "Have questions or need assistance? We're here to help — workshops, models, bulk and institutional orders, or anything else.",
+    indianQueries: {
+      title: 'Contacts for Indian Queries',
+      name: 'Shelly Sequeira',
+      email: 'shelly@knowledgebridgeint.com',
+      phone: '9220522294',
+    },
+    internationalQueries: {
+      title: 'Contacts for International Queries',
+      name: 'Shashikumar Sambhoo',
+      email: 'svs@knowledgebridgeint.com',
+      phone: '+971 507863903 | +91 9820454543',
+    },
+    address: {
+      title: 'Address',
+      text: '506, Centre Point, 5th Floor, J.B. Nagar, Andheri Kurla Road, Andheri (East), Mumbai-400059, Maharashtra, India',
+    },
+    formDisclaimer:
+      'By clicking the button below, you agree to receive communications via Email/Call/WhatsApp/SMS from KnowledgeBridge about this programme and other relevant programmes.',
+  }
+
+  if (existingContactPage.totalDocs === 0) {
+    await payload.create({
+      collection: 'contact-page',
+      data: contactPageData,
+    })
+    console.log('  + Created ContactPage document')
+  } else {
+    await payload.update({
+      collection: 'contact-page',
+      id: existingContactPage.docs[0].id,
+      data: contactPageData,
+    })
+    console.log('  = Updated existing ContactPage document')
+  }
+
+  // 9. Seed CustomizedModelPage
+  console.log('Seeding CustomizedModelPage...')
+  const existingCustomizedModelPage = await payload.find({
+    collection: 'customized-model-page',
+    limit: 1,
+  })
+
+  const customizedModelPageData = {
+    title: 'Get Your Own Customized 3D Simulated Model',
+    heroDescription:
+      'We provide 3D simulated models as per your requirement. Fill in the details below and upload your DICOM file — our engineers will review the submission and get back to you within 48 working hours.',
+    dicomHelpText: 'dicom file (max. 50MB)',
+    dicomFormatInfo:
+      'Only DICOM (.dcom) files are supported. Minimum 0.6mm thick sections in all the three planes Sagittal, Axial, CORONAL',
+  }
+
+  if (existingCustomizedModelPage.totalDocs === 0) {
+    await payload.create({
+      collection: 'customized-model-page',
+      data: customizedModelPageData,
+    })
+    console.log('  + Created CustomizedModelPage document')
+  } else {
+    await payload.update({
+      collection: 'customized-model-page',
+      id: existingCustomizedModelPage.docs[0].id,
+      data: customizedModelPageData,
+    })
+    console.log('  = Updated existing CustomizedModelPage document')
   }
 
   console.log('✅ Full database seed completed successfully!')

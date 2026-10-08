@@ -8,7 +8,16 @@ import { ShippingAddresses } from './collections/ShippingAddresses'
 import { Media } from './collections/Media'
 import { HomePage } from './collections/HomePage'
 import { Resources } from './collections/Resources'
+
+import { ContactPage } from './collections/ContactPage'
+import { ContactSubmissions } from './collections/ContactSubmissions'
 import { ProductsPage } from './collections/ProductsPage'
+import { CustomizedModelPage } from './collections/CustomizedModelPage'
+import { CustomizedModelSubmissions } from './collections/CustomizedModelSubmissions'
+import { WorkshopsPage } from './collections/WorkshopsPage'
+import { TrainingCoursesPage } from './collections/TrainingCoursesPage'
+import { CheckoutSubmission } from './collections/CheckoutSubmission'
+import { LeadSubmissions } from './collections/LeadSubmissions'
 import Header from './globals/Header'
 import Footer from './globals/Footer'
 
@@ -22,7 +31,22 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, ShippingAddresses, Media, HomePage, Resources, ProductsPage],
+  collections: [
+    Users,
+    ShippingAddresses,
+    Media,
+    HomePage,
+    Resources,
+    ContactPage,
+    ContactSubmissions,
+    ProductsPage,
+    CustomizedModelPage,
+    CustomizedModelSubmissions,
+    WorkshopsPage,
+    TrainingCoursesPage,
+    CheckoutSubmission,
+    LeadSubmissions,
+  ],
   globals: [Header, Footer],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || 'fallback-secret-key-change-in-env',
@@ -33,6 +57,6 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URI || 'file:./payload.db',
     },
-    push:false,
+    push: false,
   }),
 })

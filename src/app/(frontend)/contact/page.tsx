@@ -1,8 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
-import { Header } from '@/components/Header/Header'
-import { Footer } from '@/components/Footer/Footer'
 import { ContactContent } from '@/components/Contact/ContactContent'
+import { getContactPage } from '@/lib/payload/contact'
 
 export const metadata: Metadata = {
   title: 'Contact Us | ProGuide',
@@ -10,14 +9,12 @@ export const metadata: Metadata = {
     'Contact ProGuide / KnowledgeBridge International — workshops, 3D simulation models, institutional orders.',
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const contactData = await getContactPage()
+
   return (
-    <>
-   
-      <main className="flex-1">
-        <ContactContent />
-      </main>
-    
-    </>
+    <main className="flex-1 bg-white">
+      <ContactContent data={contactData} />
+    </main>
   )
 }

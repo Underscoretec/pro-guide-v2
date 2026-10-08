@@ -5,6 +5,7 @@ import Header from '@/components/Header/Header'
 import Footer from '@/components/Footer/Footer'
 import { getHeader, getFooter } from '@/lib/payload/globals'
 import { getCurrentUser } from '@/lib/auth/session'
+import { CartProvider } from '@/context/CartContext'
 
 export const viewport: Viewport = {
   themeColor: '#4A148C',
@@ -35,9 +36,11 @@ export default async function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="antialiased font-sans text-ink bg-white min-h-screen flex flex-col">
-        <Header data={header} user={user ? { fullName: user.fullName, email: user.email } : null} />
-        {children}
-        <Footer footer={footer} />
+        <CartProvider>
+          <Header data={header} user={user ? { fullName: user.fullName, email: user.email } : null} />
+          {children}
+          <Footer footer={footer} />
+        </CartProvider>
       </body>
     </html>
   )
