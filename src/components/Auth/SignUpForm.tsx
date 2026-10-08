@@ -6,13 +6,19 @@ import { signUp, type AuthState } from '@/lib/auth/actions'
 import { Field, FormError, primaryButtonClass } from './AuthShell'
 import { FiUser, FiMapPin, FiUserPlus } from 'react-icons/fi'
 
-export const SignUpForm: React.FC = () => {
+export const SignUpForm: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
   const [state, action, pending] = useActionState<AuthState, FormData>(signUp, {})
   const v = state.values ?? {}
   const e = state.fieldErrors ?? {}
 
   return (
     <form action={action} className="space-y-6">
+      <input type="hidden" name="redirectTo" value={redirectTo || ''} />
+      {redirectTo === '/checkout' && (
+        <div className="bg-[#4A148C]/10 border border-[#4A148C]/25 text-[#4A148C] text-[13px] rounded-[6px] px-3.5 py-2.5 font-medium flex items-center gap-2">
+          <span>Create an account to complete your order. Your cart items are saved.</span>
+        </div>
+      )}
       <FormError message={state.error} />
 
       <fieldset className="space-y-4">
@@ -50,7 +56,10 @@ export const SignUpForm: React.FC = () => {
       </button>
       <p className="text-[13.5px] text-muted text-center pt-1">
         Already have an account?{' '}
-        <Link href="/sign-in" className="font-bold text-purple hover:text-purple-d hover:underline">
+        <Link
+          href={`/sign-in${redirectTo ? `?redirect=${encodeURIComponent(redirectTo)}` : ''}`}
+          className="font-bold text-purple hover:text-purple-d hover:underline"
+        >
           Sign in
         </Link>
       </p>
