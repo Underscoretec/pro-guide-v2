@@ -81,6 +81,7 @@ export interface Config {
     'training-courses-page': TrainingCoursesPage;
     'checkout-submissions': CheckoutSubmission;
     'lead-submissions': LeadSubmission;
+    'learning-bites-page': LearningBitesPage;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -102,6 +103,7 @@ export interface Config {
     'training-courses-page': TrainingCoursesPageSelect<false> | TrainingCoursesPageSelect<true>;
     'checkout-submissions': CheckoutSubmissionsSelect<false> | CheckoutSubmissionsSelect<true>;
     'lead-submissions': LeadSubmissionsSelect<false> | LeadSubmissionsSelect<true>;
+    'learning-bites-page': LearningBitesPageSelect<false> | LearningBitesPageSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -928,6 +930,39 @@ export interface LeadSubmission {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "learning-bites-page".
+ */
+export interface LearningBitesPage {
+  id: number;
+  title: string;
+  hero?: {
+    crumbHomeText?: string | null;
+    crumbCurrentText?: string | null;
+    title?: string | null;
+    description?: string | null;
+  };
+  sectionHeader?: {
+    heading?: string | null;
+    subheading?: string | null;
+  };
+  videoList?:
+    | {
+        title: string;
+        category?: string | null;
+        duration?: string | null;
+        thumbnail?: (number | null) | Media;
+        thumbnailUrl?: string | null;
+        videoUrl?: string | null;
+        description?: string | null;
+        metaText?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1005,6 +1040,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'lead-submissions';
         value: number | LeadSubmission;
+      } | null)
+    | ({
+        relationTo: 'learning-bites-page';
+        value: number | LearningBitesPage;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1842,6 +1881,42 @@ export interface LeadSubmissionsSelect<T extends boolean = true> {
   mobile?: T;
   source?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "learning-bites-page_select".
+ */
+export interface LearningBitesPageSelect<T extends boolean = true> {
+  title?: T;
+  hero?:
+    | T
+    | {
+        crumbHomeText?: T;
+        crumbCurrentText?: T;
+        title?: T;
+        description?: T;
+      };
+  sectionHeader?:
+    | T
+    | {
+        heading?: T;
+        subheading?: T;
+      };
+  videoList?:
+    | T
+    | {
+        title?: T;
+        category?: T;
+        duration?: T;
+        thumbnail?: T;
+        thumbnailUrl?: T;
+        videoUrl?: T;
+        description?: T;
+        metaText?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

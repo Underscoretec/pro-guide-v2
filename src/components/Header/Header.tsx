@@ -61,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
       hasDropdown: true,
       dropdownItems: [
         { label: 'About Faculty & Training', url: '/training-courses' },
-        { label: 'Otolaryngology Video Library', url: '/videos' },
+        { label: 'Learning Bites', url: '/videos' },
         { label: 'Why 3D Simulation Models', url: '/resources' },
       ],
     },
@@ -87,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
     if (label === 'Paranasal Sinus') return '/workshops#sinus'
     if (label === 'Microlaryngoscopy & Laser Surgeries') return '/workshops#larynx'
     if (label === 'Types of Training Courses Conducted' || label === 'About Faculty & Training') return '/training-courses'
-    if (label === 'Otolaryngology Video Library') return '/videos'
+    if (label === 'Otolaryngology Video Library' || label === 'Learning Bites') return '/videos'
     if (label === 'Why 3D Simulation Models' || label === 'Resources') return '/resources'
     if (url === '#workshops') return '/workshops'
     if (url === '#temporal') return '/workshops#temporal'

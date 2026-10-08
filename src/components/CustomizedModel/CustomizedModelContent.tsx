@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { toast, ToastContainer } from 'react-toastify'
+import countryList from 'country-list'
 import 'react-toastify/dist/ReactToastify.css'
 
 interface CustomizedModelContentProps {
@@ -280,28 +281,14 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
 
 
                     {/* Row 4: Clinic / Hospital / Institute / College Name */}
-                    <div className="relative">
-                      <select
-                        name="institutionName"
-                        value={formData.institutionName}
-                        onChange={handleInputChange}
-                        className={getSelectClass('institutionName')}
-                      >
-                        <option value="" disabled hidden>
-                          Clinic / Hospital / Institute / College Name *
-                        </option>
-                        <option value="Clinic">Clinic</option>
-                        <option value="Hospital">Hospital</option>
-                        <option value="Institute">Institute</option>
-                        <option value="College">College</option>
-                        <option value="Other">Other Organisation</option>
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-[#6B7280]">
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                          <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                        </svg>
-                      </div>
-                    </div>
+                    <input
+                      type="text"
+                      name="institutionName"
+                      placeholder="Clinic / Hospital / Institute / College Name *"
+                      value={formData.institutionName}
+                      onChange={handleInputChange}
+                      className={getInputClass('institutionName')}
+                    />
                   </div>
                 </div>
 
@@ -309,27 +296,15 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
                 <div>
                   <h2 className="text-[20px] font-semibold text-[#1F2328] mb-4">Address</h2>
                   <div className="space-y-3.5">
-                    {/* Row 5: Address dropdown */}
-                    <div className="relative">
-                      <select
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className={getSelectClass('address')}
-                      >
-                        <option value="" disabled hidden>
-                          Address *
-                        </option>
-                        <option value="Hospital Address">Hospital / Clinic Address</option>
-                        <option value="Residential Address">Residential Address</option>
-                        <option value="Institutional Address">Institutional Address</option>
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-[#6B7280]">
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                          <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                        </svg>
-                      </div>
-                    </div>
+                    {/* Row 5: Address */}
+                    <input
+                      type="text"
+                      name="address"
+                      placeholder="Address *"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      className={getInputClass('address')}
+                    />
 
                     {/* Row 6 */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -353,14 +328,28 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
 
                     {/* Row 7 */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                      <input
-                        type="text"
-                        name="country"
-                        placeholder="Country *"
-                        value={formData.country}
-                        onChange={handleInputChange}
-                        className={getInputClass('country')}
-                      />
+                      <div className="relative">
+                        <select
+                          name="country"
+                          value={formData.country}
+                          onChange={handleInputChange}
+                          className={getSelectClass('country')}
+                        >
+                          <option value="" disabled hidden>
+                            Country *
+                          </option>
+                          {countryList.getNames().map((cName) => (
+                            <option key={cName} value={cName}>
+                              {cName}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-[#6B7280]">
+                          <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                          </svg>
+                        </div>
+                      </div>
                       <input
                         type="text"
                         name="pincode"
