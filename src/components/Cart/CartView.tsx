@@ -164,7 +164,12 @@ export const CartView: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => updateQuantity(item.id, -1)}
-                            className="text-[#6B7280] hover:text-ink text-[16px] font-semibold leading-none cursor-pointer w-5 text-center transition-colors"
+                            disabled={item.quantity <= 1}
+                            className={`text-[16px] font-semibold leading-none w-5 text-center transition-colors ${
+                              item.quantity <= 1
+                                ? 'text-[#D1D5DB] cursor-not-allowed opacity-40'
+                                : 'text-[#6B7280] hover:text-ink cursor-pointer'
+                            }`}
                             aria-label={`Decrease quantity of ${item.name}`}
                           >
                             &minus;
