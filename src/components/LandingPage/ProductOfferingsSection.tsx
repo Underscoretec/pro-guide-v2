@@ -108,7 +108,7 @@ const defaultProducts = [
     price: 'Rs 20,000',
     gstNote: '+ 18% GST',
     cartUrl: 'https://pro-guide.in/',
-    detailsUrl: '/product.html?p=tb',
+    detailsUrl: '/products/tb',
   },
   {
     title: 'Paranasal Model with Bassettes',
@@ -120,7 +120,7 @@ const defaultProducts = [
     price: 'Rs 25,000',
     gstNote: '+ 18% GST',
     cartUrl: 'https://pro-guide.in/',
-    detailsUrl: '/product.html?p=pnsb',
+    detailsUrl: '/products/pnsb',
   },
   {
     title: 'Paranasal Model without base',
@@ -132,7 +132,7 @@ const defaultProducts = [
     price: 'Rs 20,000',
     gstNote: '+ 18% GST',
     cartUrl: 'https://pro-guide.in/',
-    detailsUrl: '/product.html?p=pns',
+    detailsUrl: '/products/pns',
   },
   {
     title: 'Larynx Model',
@@ -144,7 +144,7 @@ const defaultProducts = [
     price: 'Rs 20,000',
     gstNote: '+ 18% GST',
     cartUrl: 'https://pro-guide.in/',
-    detailsUrl: '/product.html?p=larynx',
+    detailsUrl: '/products/larynx',
   },
 ]
 
@@ -186,7 +186,8 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
           {productList.map((prod: any, idx: number) => {
             const mediaImage = typeof prod.image === 'object' && prod.image ? prod.image.url : null
             const imageSrc = mediaImage || prod.imageUrl || '/images/prod1.jpg'
-            const detailsHref = prod.detailsUrl || `/product.html?p=${prod.slug || ''}`
+            const detailsHref =
+              prod.detailsUrl || (prod.slug ? `/products/${prod.slug}` : '/products')
             const key = prod.id || prod.slug || idx
 
             // Resolve multiple images for slider
@@ -235,7 +236,7 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                   {/* Actions */}
                   <div className="flex gap-2 mt-3 pt-1">
                     <Link
-                      href="/products"
+                      href={detailsHref}
                       className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-white text-ink rounded-[5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
                     >
                       View Details

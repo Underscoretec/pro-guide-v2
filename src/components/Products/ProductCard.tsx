@@ -167,11 +167,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
     maximumFractionDigits: 2,
   })}`
 
+  const productSlug =
+    item.id ||
+    item.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '')
+
   return (
     <div className="bg-white border border-line rounded-[8px] overflow-hidden flex flex-col h-full transition-all duration-[180ms] hover:shadow-[0_14px_30px_rgba(31,35,40,0.12)] hover:-translate-y-[3px] group">
       {/* Uniform card image container with hover auto-slide */}
-      <div
-        className="relative aspect-[16/10] bg-[#F8F9FA] overflow-hidden border-b border-line/60 select-none group/img"
+      <Link
+        href={`/products/${productSlug}`}
+        className="relative aspect-[16/10] bg-[#F8F9FA] overflow-hidden border-b border-line/60 select-none group/img block"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => {
           setIsHovered(false)
@@ -209,7 +217,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
             ))}
           </div>
         )}
-      </div>
+      </Link>
 
       {/* Uniform card body */}
       <div className="p-4 sm:p-5 flex flex-col flex-1">
@@ -226,9 +234,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
           </span>
         </div>
 
-        <h3 className="text-[15.5px] sm:text-[16px] font-bold text-ink leading-[1.35] mb-2">
-          {item.name}
-        </h3>
+        <Link href={`/products/${productSlug}`}>
+          <h3 className="text-[15.5px] sm:text-[16px] font-bold text-ink hover:text-purple transition-colors leading-[1.35] mb-2">
+            {item.name}
+          </h3>
+        </Link>
 
         <p className="text-[13px] text-muted leading-[1.55] flex-1 mb-3">
           {item.description}
