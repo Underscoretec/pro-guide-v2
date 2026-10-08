@@ -16,8 +16,11 @@ import { CustomizedModelPage } from './collections/CustomizedModelPage'
 import { CustomizedModelSubmissions } from './collections/CustomizedModelSubmissions'
 import { WorkshopsPage } from './collections/WorkshopsPage'
 import { TrainingCoursesPage } from './collections/TrainingCoursesPage'
-import { CheckoutSubmission } from './collections/CheckoutSubmission'
 import { LeadSubmissions } from './collections/LeadSubmissions'
+import { LearningBitesPage } from './collections/LearningBitesPage'
+import { Carts } from './collections/Carts'
+import { Orders } from './collections/Orders'
+import { Products } from './collections/Products'
 import Header from './globals/Header'
 import Footer from './globals/Footer'
 
@@ -34,6 +37,8 @@ export default buildConfig({
   collections: [
     Users,
     ShippingAddresses,
+    Orders,
+    Products,
     Media,
     HomePage,
     Resources,
@@ -44,8 +49,9 @@ export default buildConfig({
     CustomizedModelSubmissions,
     WorkshopsPage,
     TrainingCoursesPage,
-    CheckoutSubmission,
     LeadSubmissions,
+    LearningBitesPage,
+    Carts,
   ],
   globals: [Header, Footer],
   editor: lexicalEditor(),

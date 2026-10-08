@@ -3,6 +3,7 @@
 import React, { useActionState, useState, useTransition } from 'react'
 import { verifyOtp, resendOtp, type AuthState } from '@/lib/auth/actions'
 import { Field, FormError, primaryButtonClass } from './AuthShell'
+import { FiCheckCircle, FiRefreshCw } from 'react-icons/fi'
 
 export const VerifyOtpForm: React.FC<{ email: string }> = ({ email }) => {
   const [state, action, pending] = useActionState<AuthState, FormData>(verifyOtp, {})
@@ -23,15 +24,27 @@ export const VerifyOtpForm: React.FC<{ email: string }> = ({ email }) => {
       <Field label="Email OTP" name="emailOtp" required inputMode="numeric" maxLength={6} autoComplete="one-time-code" placeholder="6-digit code" error={e.emailOtp} />
       <Field label="Phone OTP" name="phoneOtp" required inputMode="numeric" maxLength={6} autoComplete="one-time-code" placeholder="6-digit code" error={e.phoneOtp} />
       <button type="submit" disabled={pending} className={primaryButtonClass}>
-        {pending ? 'Verifying…' : 'Verify'}
+        <FiCheckCircle className="w-4 h-4" />
+        <span>{pending ? 'Verifying…' : 'Verify & Continue'}</span>
       </button>
-      <p className="text-[13.5px] text-muted text-center">
-        Didn’t get a code?{' '}
-        <button type="button" onClick={onResend} disabled={resending} className="font-semibold text-purple hover:underline disabled:opacity-60">
-          {resending ? 'Sending…' : 'Resend OTP'}
+      <div className="text-[13.5px] text-muted text-center pt-2">
+        <span>Didn’t get a code? </span>
+        <button
+          type="button"
+          onClick={onResend}
+          disabled={resending}
+          className="font-bold text-purple hover:text-purple-d hover:underline disabled:opacity-60 inline-flex items-center gap-1 cursor-pointer"
+        >
+          <FiRefreshCw className={`w-3.5 h-3.5 ${resending ? 'animate-spin' : ''}`} />
+          <span>{resending ? 'Sending…' : 'Resend OTP'}</span>
         </button>
-        {resent && <span className="block text-green mt-1">A new OTP has been sent.</span>}
-      </p>
+        {resent && (
+          <div className="flex items-center justify-center gap-1.5 text-green text-[13px] font-semibold mt-2">
+            <FiCheckCircle className="w-3.5 h-3.5" />
+            <span>A new OTP has been sent to your email & phone.</span>
+          </div>
+        )}
+      </div>
     </form>
   )
 }

@@ -7,7 +7,7 @@ import {
 } from '@/components/Products'
 import {
   getProductsPage,
-  defaultProductFamilies,
+  getUnifiedProductFamilies,
 } from '@/lib/payload/productsPage'
 
 export const metadata: Metadata = {
@@ -17,7 +17,10 @@ export const metadata: Metadata = {
 }
 
 export default async function ProductsPage() {
-  const pageData = await getProductsPage()
+  const [pageData, families] = await Promise.all([
+    getProductsPage(),
+    getUnifiedProductFamilies(),
+  ])
 
   const heroData = pageData?.hero || {
     crumbHomeText: 'Home',
@@ -26,11 +29,6 @@ export default async function ProductsPage() {
     description:
       'The complete OSSA+ Simulations catalogue — ENT simulation models across otology, rhinology, laryngology and vestibular training, cast in OSSA+ Composite™ by OSSA PLUS SIMULATION LLP. Store items can be purchased right away; everything else is a quick enquiry away.',
   }
-
-  const families =
-    pageData?.families && pageData.families.length > 0
-      ? pageData.families
-      : defaultProductFamilies
 
   const stageComparison = pageData?.stageComparison
 

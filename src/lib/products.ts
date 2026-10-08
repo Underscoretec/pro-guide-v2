@@ -196,6 +196,8 @@ export const PRODUCTS_CATALOG: Record<string, ProductDetailData> = {
   },
 }
 
+import { getPayloadClient } from '@/lib/payload/client'
+
 // Slugs mapping aliases
 const SLUG_ALIASES: Record<string, string> = {
   'paranasal-model-without-base': 'pns',
@@ -230,4 +232,101 @@ export function getProductBySlug(slug?: string | null): ProductDetailData {
 
   // Fallback to pns if not found
   return PRODUCTS_CATALOG['pns']
+}
+
+export async function getProductData(slug?: string | null): Promise<ProductDetailData> {
+  const defaultProduct = getProductBySlug(slug)
+
+  if (!slug) {
+    return defaultProduct
+  }
+
+  const cleanSlug = slug.toLowerCase().trim()
+  const resolvedKey = SLUG_ALIASES[cleanSlug] || cleanSlug
+
+  try {
+    const payload = await getPayloadClient()
+    const { docs } = await payload.find({
+      collection: 'products',
+      where: {
+        or: [
+          { slug: { equals: cleanSlug } },
+          { slug: { equals: resolvedKey } },
+        ],
+      },
+      depth: 1,
+      limit: 1,
+    })
+
+    if (docs.length > 0) {
+      const doc = docs[0] as any
+
+      // Process gallery images
+      let galleryImages: string[] = []
+      if (Array.isArray(doc.images) && doc.images.length > 0) {
+        galleryImages = doc.images
+          .map((img: any) =>
+            typeof img === 'string'
+              ? img
+              : img.url || img.imageUrl || img.image?.url || ''
+          )
+          .filter(Boolean)
+      }
+      const primaryImage =
+        doc.imageUrl || doc.image?.url || galleryImages[0] || defaultProduct.imageUrl
+      if (primaryImage && !galleryImages.includes(primaryImage)) {
+        galleryImages = [primaryImage, ...galleryImages]
+      }
+      if (galleryImages.length === 0) {
+        galleryImages = defaultProduct.images
+      }
+
+      // Process whyChoose array
+      let whyChoose = defaultProduct.whyChoose
+      if (Array.isArray(doc.whyChoose) && doc.whyChoose.length > 0) {
+        whyChoose = doc.whyChoose
+          .map((w: any) => (typeof w === 'string' ? w : w.point || ''))
+          .filter(Boolean)
+      }
+
+      // Process sampleList array
+      let sampleList = defaultProduct.sampleList
+      if (Array.isArray(doc.sampleList) && doc.sampleList.length > 0) {
+        sampleList = doc.sampleList
+          .map((s: any) => (typeof s === 'string' ? s : s.item || ''))
+          .filter(Boolean)
+      }
+
+      return {
+        id: String(doc.id || defaultProduct.id),
+        slug: doc.slug || resolvedKey,
+        name: doc.name || defaultProduct.name,
+        price: typeof doc.price === 'number' ? doc.price : defaultProduct.price,
+        category: doc.category || defaultProduct.category,
+        sku: doc.sku || defaultProduct.sku,
+        tags: Array.isArray(doc.tags) && doc.tags.length > 0 ? doc.tags : defaultProduct.tags,
+        imageUrl: primaryImage,
+        images: galleryImages,
+        shortDescription: doc.shortDescription || defaultProduct.shortDescription,
+        variant: doc.variant || defaultProduct.variant,
+        detailHeading: doc.detailHeading || defaultProduct.detailHeading,
+        detailParagraph1: doc.detailParagraph1 || defaultProduct.detailParagraph1,
+        detailParagraph2: doc.detailParagraph2 || defaultProduct.detailParagraph2,
+        whyChoose,
+        sampleList,
+        lining: doc.lining || defaultProduct.lining,
+        specifications: {
+          weight: doc.specifications?.weight || defaultProduct.specifications?.weight,
+          dimensions: doc.specifications?.dimensions || defaultProduct.specifications?.dimensions,
+          material: doc.specifications?.material || defaultProduct.specifications?.material,
+          variant: doc.specifications?.variant || defaultProduct.specifications?.variant,
+          compatibility: doc.specifications?.compatibility || defaultProduct.specifications?.compatibility,
+        },
+      }
+    }
+  } catch (err) {
+    console.warn('Could not load product from Payload, using default catalog:', err)
+  }
+
+  return defaultProduct
 }

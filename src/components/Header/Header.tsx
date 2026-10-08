@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
+import { FiShoppingCart } from 'react-icons/fi'
 
 interface HeaderProps {
   data?: any
@@ -14,7 +15,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ data, user }) => {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null)
+  const [openDropdownKey, setOpenDropdownKey] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   const isUrlActive = (url: string) => {
@@ -30,6 +31,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
     if (!path || path === '/') return 'Home'
     if (path.startsWith('/contact')) return 'Contact Us'
     if (path.startsWith('/customized-model')) return 'Get Your Own Customized Model'
+    if (path.startsWith('/3d-simulation')) return 'Why 3D Simulation Models'
     if (path.startsWith('/resources')) return 'Resources'
     if (path.startsWith('/training-courses') || path.startsWith('/workshops')) return 'Training Courses'
     if (path.startsWith('/videos')) return 'Learning'
@@ -61,8 +63,8 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
       hasDropdown: true,
       dropdownItems: [
         { label: 'About Faculty & Training', url: '/training-courses' },
-        { label: 'Otolaryngology Video Library', url: '/videos' },
-        { label: 'Why 3D Simulation Models', url: '/resources' },
+        { label: 'Learning Bites', url: '/videos' },
+        { label: 'Why 3D Simulation Models', url: '/3d-simulation' },
       ],
     },
     {
@@ -87,8 +89,9 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
     if (label === 'Paranasal Sinus') return '/workshops#sinus'
     if (label === 'Microlaryngoscopy & Laser Surgeries') return '/workshops#larynx'
     if (label === 'Types of Training Courses Conducted' || label === 'About Faculty & Training') return '/training-courses'
-    if (label === 'Otolaryngology Video Library') return '/videos'
-    if (label === 'Why 3D Simulation Models' || label === 'Resources') return '/resources'
+    if (label === 'Otolaryngology Video Library' || label === 'Learning Bites') return '/videos'
+    if (label === 'Why 3D Simulation Models') return '/3d-simulation'
+    if (label === 'Resources') return '/resources'
     if (url === '#workshops') return '/workshops'
     if (url === '#temporal') return '/workshops#temporal'
     if (url === '#sinus') return '/workshops#sinus'
@@ -112,11 +115,128 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
       ? data.buyNowButton.text
       : 'Explore Products'
   const buyNowUrl = sanitizeUrl(data?.buyNowButton?.url || '/products', 'Buy Now')
-  const cartUrl = data?.cartUrl || 'https://pro-guide.in/'
+  const cartUrl = data?.cartUrl || '/cart'
   const loginText = data?.loginButton?.text || 'Login /Register'
   const loginUrl = '/sign-in'
 
   const initial = (user?.fullName || user?.email || '?').trim().charAt(0).toUpperCase()
+
+  // Helper to render nav items for desktop (xl+) or tablet sub-bar (md to xl: 768px to 1280px)
+  const renderNavLinks = (prefix: string) => {
+    const activeNavLabel = getActiveNavLabel(pathname)
+    return navItems.map((item: any, idx: number) => {
+      const dropdownKey = `${prefix}-${idx}`
+      if (item.hasDropdown) {
+        const isOpen = openDropdownKey === dropdownKey
+        const isParentActive = item.label === activeNavLabel
+        return (
+          <div
+            key={idx}
+            className="relative group"
+            onMouseEnter={() => setOpenDropdownKey(dropdownKey)}
+            onMouseLeave={() => setOpenDropdownKey(null)}
+          >
+            <button
+              type="button"
+              onClick={() => setOpenDropdownKey(isOpen ? null : dropdownKey)}
+              className={`font-semibold text-[13px] md:text-[13.5px] px-[9px] py-1.5 rounded flex items-center gap-1 transition-colors whitespace-nowrap cursor-pointer ${
+                isParentActive
+                  ? 'text-purple bg-tint font-bold'
+                  : 'text-ink hover:text-purple hover:bg-tint'
+              }`}
+            >
+              {item.label} <span className="text-[10px] text-muted">&#x25BE;</span>
+            </button>
+            <div
+              className={`absolute top-full left-0 bg-white min-w-[250px] border border-line rounded-[6px] shadow-[0_14px_34px_rgba(31,35,40,0.14)] py-[6px] z-50 transition-all duration-150 ${
+                isOpen ? 'block opacity-100' : 'hidden opacity-0'
+              }`}
+            >
+              {item.dropdownItems?.map((dropItem: any, dropIdx: number) => {
+                const isDropActive = isUrlActive(dropItem.url)
+                return (
+                  <Link
+                    key={dropIdx}
+                    href={dropItem.url || '#'}
+                    onClick={() => setOpenDropdownKey(null)}
+                    className={`block px-4 py-[9px] text-[13.5px] transition-colors ${
+                      isDropActive
+                        ? 'text-purple bg-tint font-bold'
+                        : 'text-ink hover:bg-tint hover:text-purple'
+                    }`}
+                  >
+                    {dropItem.label}
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        )
+      }
+
+      const isActive = item.label === activeNavLabel
+      return (
+        <Link
+          key={idx}
+          href={item.url || '/'}
+          className={`font-semibold text-[13px] md:text-[13.5px] px-[9px] py-1.5 rounded transition-colors whitespace-nowrap ${
+            isActive
+              ? 'text-purple bg-tint font-bold'
+              : 'text-ink hover:text-purple hover:bg-tint'
+          }`}
+        >
+          {item.label}
+        </Link>
+      )
+    })
+  }
+
+  // Action buttons (Explore Products, Cart, Login/Profile)
+  const renderActionButtons = () => (
+    <>
+      {/* Unique Highlighted Products CTA Button */}
+      <Link
+        href={buyNowUrl}
+        className="relative inline-flex items-center gap-1.5 bg-gradient-to-r from-[#E67E22] via-[#F39C12] to-[#D35400] text-white text-[12.5px] md:text-[13px] font-extrabold px-[13px] md:px-[15px] py-2 rounded-[6px] shadow-[0_4px_14px_rgba(230,126,34,0.38)] hover:shadow-[0_6px_22px_rgba(230,126,34,0.55)] hover:scale-[1.03] active:scale-[0.97] transition-all duration-200 whitespace-nowrap group shrink-0"
+      >
+        <span>{buyNowText}</span>
+      </Link>
+
+      {/* Cart Icon */}
+      <Link
+        href={cartUrl}
+        title="Shopping Cart"
+        aria-label="Shopping Cart"
+        className="relative p-2 text-ink hover:text-purple transition-colors inline-flex items-center justify-center shrink-0"
+      >
+        <FiShoppingCart className="w-[22px] h-[22px]" />
+        {isHydrated && itemCount > 0 && (
+          <span className="absolute -top-0.5 -right-0.5 bg-purple text-white text-[10px] font-bold min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center leading-none shadow-sm">
+            {itemCount}
+          </span>
+        )}
+      </Link>
+
+      {/* Login / Register or Profile */}
+      {user ? (
+        <Link
+          href="/profile"
+          title="My Profile"
+          aria-label="My Profile"
+          className="w-9 h-9 rounded-full bg-orange-d text-white font-bold text-[14px] flex items-center justify-center hover:bg-orange transition-colors shrink-0"
+        >
+          {initial}
+        </Link>
+      ) : (
+        <Link
+          href={loginUrl}
+          className="border border-[#C9CDD3] rounded-[5px] px-3.5 md:px-4 py-[8px] text-[13px] md:text-[13.5px] font-bold text-ink hover:border-purple hover:text-purple hover:bg-tint transition-all whitespace-nowrap shrink-0"
+        >
+          {loginText}
+        </Link>
+      )}
+    </>
+  )
 
   return (
     <>
@@ -130,7 +250,8 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
 
       {/* Main Sticky Header */}
       <header className="sticky top-0 z-50 bg-white border-b border-line shadow-sm">
-        <div className="max-w-full mx-auto px-6 min-h-[64px] py-2 flex items-center gap-[18px] justify-between">
+        {/* Top Header Row */}
+        <div className="max-w-full mx-auto px-4 sm:px-6 min-h-[60px] md:min-h-[64px] py-2 flex items-center justify-between gap-3">
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0">
             <Image
@@ -140,142 +261,67 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
               height={50}
               priority
               unoptimized
-              className="h-[50px] w-auto block"
+              className="h-[44px] md:h-[50px] w-auto block"
             />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1 ml-auto">
-            {(() => {
-              const activeNavLabel = getActiveNavLabel(pathname)
-              return navItems.map((item: any, idx: number) => {
-                if (item.hasDropdown) {
-                  const isOpen = openDropdownIndex === idx
-                  const isParentActive = item.label === activeNavLabel
-                  return (
-                    <div
-                      key={idx}
-                      className="relative group"
-                      onMouseEnter={() => setOpenDropdownIndex(idx)}
-                      onMouseLeave={() => setOpenDropdownIndex(null)}
-                    >
-                      <button
-                        type="button"
-                        className={`font-semibold text-[13.5px] px-[9px] py-2 rounded flex items-center gap-1 transition-colors ${
-                          isParentActive
-                            ? 'text-purple bg-tint font-bold'
-                            : 'text-ink hover:text-purple hover:bg-tint'
-                        }`}
-                      >
-                        {item.label} <span className="text-[10px] text-muted">&#x25BE;</span>
-                      </button>
-                      <div
-                        className={`absolute top-full left-0 bg-white min-w-[250px] border border-line rounded-[6px] shadow-[0_14px_34px_rgba(31,35,40,0.14)] py-[6px] z-50 transition-all duration-150 ${
-                          isOpen ? 'block opacity-100' : 'hidden opacity-0'
-                        }`}
-                      >
-                        {item.dropdownItems?.map((dropItem: any, dropIdx: number) => {
-                          const isDropActive = isUrlActive(dropItem.url)
-                          return (
-                            <Link
-                              key={dropIdx}
-                              href={dropItem.url || '#'}
-                              onClick={() => setOpenDropdownIndex(null)}
-                              className={`block px-4 py-[9px] text-[13.5px] transition-colors ${
-                                isDropActive
-                                  ? 'text-purple bg-tint font-bold'
-                                  : 'text-ink hover:bg-tint hover:text-purple'
-                              }`}
-                            >
-                              {dropItem.label}
-                            </Link>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )
-                }
+          {/* XL Desktop Navigation (Home to Contact Us) - Visible ONLY on xl (>= 1280px) */}
+          <nav className="hidden xl:flex items-center gap-1 ml-auto">
+            {renderNavLinks('desktop')}
+          </nav>
 
-                const isActive = item.label === activeNavLabel
-                return (
-                  <Link
-                    key={idx}
-                    href={item.url || '/'}
-                    className={`font-semibold text-[13.5px] px-[9px] py-2 rounded transition-colors ${
-                      isActive
-                        ? 'text-purple bg-tint font-bold'
-                        : 'text-ink hover:text-purple hover:bg-tint'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                )
-              })
-            })()}
+          {/* Action Buttons (Explore Products, Cart, Login) - Visible on md and up (>= 768px) */}
+          <div className="hidden md:flex items-center gap-2 shrink-0 ml-auto xl:ml-3">
+            {renderActionButtons()}
+          </div>
 
-            {/* Unique Highlighted Products CTA Button */}
-            <Link
-              href={buyNowUrl}
-              className="relative inline-flex items-center gap-1.5 bg-gradient-to-r from-[#E67E22] via-[#F39C12] to-[#D35400] text-white text-[13px] font-extrabold px-[15px] py-2 rounded-[6px] shadow-[0_4px_14px_rgba(230,126,34,0.38)] hover:shadow-[0_6px_22px_rgba(230,126,34,0.55)] hover:scale-[1.04] active:scale-[0.97] transition-all duration-200 ml-1.5 overflow-hidden group"
-            >
-           
-              <span>{buyNowText}</span>
-            </Link>
-
-            {/* Cart Icon */}
+          {/* Mobile Right Controls (< 768px) */}
+          <div className="flex md:hidden items-center gap-2">
             <Link
               href={cartUrl}
               title="Shopping Cart"
-              className="relative text-[20px] px-[6px] py-1 text-ink hover:text-purple transition-colors ml-1 inline-flex items-center"
+              aria-label="Shopping Cart"
+              className="relative p-1.5 text-ink hover:text-purple transition-colors inline-flex items-center justify-center"
             >
-              &#128722;
+              <FiShoppingCart className="w-[21px] h-[21px]" />
               {isHydrated && itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-purple text-white text-[10px] font-bold min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center leading-none shadow-sm">
+                <span className="absolute -top-0.5 -right-0.5 bg-purple text-white text-[10px] font-bold min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center leading-none shadow-sm">
                   {itemCount}
                 </span>
               )}
             </Link>
 
-            {/* Login / Register */}
-            {user ? (
-              <Link
-                href="/profile"
-                title="My Profile"
-                aria-label="My Profile"
-                className="ml-1 w-9 h-9 rounded-full bg-orange-d text-white font-bold text-[14px] flex items-center justify-center hover:bg-orange transition-colors"
-              >
-                {initial}
-              </Link>
-            ) : (
-              <Link
-                href={loginUrl}
-                className="border border-[#C9CDD3] rounded-[5px] px-4 py-[9px] text-[13.5px] font-bold text-ink hover:border-purple hover:text-purple hover:bg-tint transition-all ml-1"
-              >
-                {loginText}
-              </Link>
-            )}
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-ink hover:text-purple rounded-md focus:outline-none"
-            aria-label="Toggle Navigation Menu"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {mobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
+            {/* Mobile Hamburger Button */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-1.5 text-ink hover:text-purple rounded-md focus:outline-none"
+              aria-label="Toggle Navigation Menu"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Dropdown Menu */}
+        {/* New Navigation Bar Under Header for 768px to 1280px Screen (md to xl) */}
+        <div className="hidden md:block xl:hidden border-t border-line bg-white">
+          <nav
+            aria-label="Secondary Navigation"
+            className="max-w-full mx-auto px-4 sm:px-6 py-1.5 flex items-center justify-start gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {renderNavLinks('subbar')}
+          </nav>
+        </div>
+
+        {/* Mobile Dropdown Menu (< 768px) */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-line bg-white px-6 py-4 shadow-lg space-y-3">
+          <div className="md:hidden border-t border-line bg-white px-6 py-4 shadow-lg space-y-3">
             <div className="flex items-center bg-[#F6F7F8] border border-line rounded-[6px] px-3 py-2 mb-3">
               <span className="text-muted text-sm mr-2">&#128269;</span>
               <input
@@ -333,7 +379,8 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-center bg-[#F4F4F6] text-ink text-[13.5px] font-bold py-2 rounded-[5px] flex items-center justify-center gap-2 hover:text-purple"
               >
-                <span>&#128722; Cart</span>
+                <FiShoppingCart className="w-[18px] h-[18px]" />
+                <span>Cart</span>
                 {isHydrated && itemCount > 0 && (
                   <span className="bg-purple text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
                     {itemCount}
@@ -345,7 +392,6 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-center bg-gradient-to-r from-[#E67E22] via-[#F39C12] to-[#D35400] text-white text-[13.5px] font-extrabold py-2.5 rounded-[6px] shadow-md flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all"
               >
-                
                 <span>{buyNowText}</span>
               </Link>
               {user ? (

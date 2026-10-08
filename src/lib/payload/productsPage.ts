@@ -1,6 +1,7 @@
 import { cache } from 'react'
 import { getPayloadClient } from './client'
 import type { ProductFamily } from '@/components/Products/ProductFamilySection'
+import type { ProductItem } from '@/components/Products/ProductCard'
 
 export const defaultProductFamilies: ProductFamily[] = [
   {
@@ -159,6 +160,7 @@ export const getProductsPage = cache(async () => {
     const res = await payload.find({
       collection: 'products-page',
       limit: 1,
+      depth: 2,
     })
     return res.docs[0] || null
   } catch (error) {
@@ -166,3 +168,87 @@ export const getProductsPage = cache(async () => {
     return null
   }
 })
+
+export const getCatalogProducts = cache(async () => {
+  try {
+    const payload = await getPayloadClient()
+    const res = await payload.find({
+      collection: 'products',
+      sort: 'displayOrder',
+      limit: 100,
+      depth: 2,
+    })
+    return res.docs || []
+  } catch (error) {
+    console.error('Error fetching Products from Payload:', error)
+    return []
+  }
+})
+
+export function mapProductDocToItem(doc: any): ProductItem {
+  const mediaUrl = typeof doc.image === 'object' && doc.image?.url ? doc.image.url : null
+  const imageUrl = mediaUrl || doc.imageUrl || '/images/prod1.jpg'
+
+  return {
+    id: doc.slug || String(doc.id),
+    name: doc.name,
+    badge: doc.badge || undefined,
+    price: typeof doc.price === 'number' ? doc.price : 20000,
+    imageUrl,
+    image: doc.image,
+    images: doc.images,
+    description: doc.shortDescription || undefined,
+    bulletPoints: doc.bulletPoints || undefined,
+    primaryButton: {
+      text: doc.primaryButtonText || 'Buy',
+      link: `/products/${doc.slug}`,
+    },
+    secondaryButton: {
+      text: doc.secondaryButtonText || 'Enquire',
+      link: doc.secondaryButtonLink || `/contact?product=${encodeURIComponent(doc.name)}`,
+    },
+  }
+}
+
+export async function getUnifiedProductFamilies(): Promise<ProductFamily[]> {
+  const catalogProducts = await getCatalogProducts()
+
+  if (catalogProducts.length === 0) {
+    return defaultProductFamilies
+  }
+
+  // Check if products have categories defined
+  const rawCategories = catalogProducts
+    .map((p: any) => (typeof p.category === 'string' ? p.category.trim() : ''))
+    .filter((cat: string): cat is string => Boolean(cat))
+
+  const categories: string[] = Array.from(new Set(rawCategories))
+
+  if (categories.length > 1) {
+    // If multiple categories exist, group products by category
+    return categories.map((cat: string, idx: number) => {
+      const items = catalogProducts
+        .filter((p: any) => typeof p.category === 'string' && p.category.trim() === cat)
+        .map(mapProductDocToItem)
+
+      return {
+        familyId: cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        title: cat,
+        subtitle: `Explore our ${cat} simulation models.`,
+        isAlt: idx % 2 === 1,
+        items,
+      }
+    })
+  }
+
+  // Single category or no category: show all products cleanly
+  return [
+    {
+      familyId: 'all-products',
+      title: (categories[0] as string | undefined) || 'Product Offerings',
+      subtitle: 'The complete surgical simulation models catalogue cast in OSSA+ Composite™.',
+      isAlt: false,
+      items: catalogProducts.map(mapProductDocToItem),
+    },
+  ]
+}

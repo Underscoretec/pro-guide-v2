@@ -1,7 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import { ProductDetailsView } from '@/components/Products'
-import { getProductBySlug } from '@/lib/products'
+import { getProductData } from '@/lib/products'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -9,7 +9,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const product = getProductBySlug(slug)
+  const product = await getProductData(slug)
 
   return {
     title: `${product.name} — 3D Simulation Models | ProGuide`,
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProductDetailPage({ params }: PageProps) {
   const { slug } = await params
-  const product = getProductBySlug(slug)
+  const product = await getProductData(slug)
 
   return (
     <main className="flex-1">

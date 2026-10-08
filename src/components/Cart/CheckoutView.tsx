@@ -1,127 +1,44 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useTransition } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
+import { AddressForm, type Address } from '@/components/Profile/AddressForm'
+import { setDefaultAddress, removeAddress } from '@/lib/profile/actions'
+import { createOrder } from '@/lib/orders/actions'
+import type { ShippingAddress } from '@/payload-types'
 
-interface FloatingFieldProps {
-  id?: string
-  label: string
-  name: string
-  value: string
-  onChange: (val: string) => void
-  onBlur?: () => void
-  error?: string
-  type?: string
-  required?: boolean
-  isTextarea?: boolean
-  rows?: number
-  className?: string
-  placeholder?: string
+export interface CheckoutUser {
+  id: number | string
+  fullName: string
+  email: string
+  phoneNumber?: string | null
 }
 
-const FloatingField: React.FC<FloatingFieldProps> = ({
-  id,
-  label,
-  name,
-  value,
-  onChange,
-  onBlur,
-  error,
-  type = 'text',
-  required = false,
-  isTextarea = false,
-  rows = 5,
-  className = '',
-  placeholder,
+export interface CheckoutViewProps {
+  user?: CheckoutUser | null
+  initialAddresses?: ShippingAddress[]
+}
+
+export const CheckoutView: React.FC<CheckoutViewProps> = ({
+  user,
+  initialAddresses = [],
 }) => {
-  const [isFocused, setIsFocused] = useState(false)
-  const hasValue = Boolean(value && value.trim().length > 0)
-  const isFloating = isFocused || hasValue || Boolean(error)
-
-  const displayPlaceholder = !isFloating
-    ? placeholder !== undefined
-      ? placeholder
-      : label
-    : ''
-
-  const borderClass = isFocused
-    ? 'border-2 border-[#5E007B]'
-    : error
-    ? 'border-2 border-[#DC2626]'
-    : 'border border-[#E5E7EB] hover:border-[#D1D5DB]'
-
-  const labelColorClass = isFocused
-    ? 'text-[#5E007B]'
-    : error
-    ? 'text-[#DC2626]'
-    : 'text-[#6B7280]'
-
-  return (
-    <div className={className}>
-      <div
-        className={`relative rounded-[2px] transition-all duration-150 ${borderClass} ${
-          isTextarea ? 'p-3.5 min-h-[130px]' : 'h-[46px] flex items-center px-3.5'
-        }`}
-      >
-        {/* Floating Label */}
-        {isFloating && (
-          <label
-            htmlFor={id || name}
-            className={`absolute -top-2.5 left-3 bg-white px-1 text-[11px] font-medium leading-none pointer-events-none transition-colors duration-150 select-none z-10 ${labelColorClass}`}
-          >
-            {label}
-          </label>
-        )}
-
-        {isTextarea ? (
-          <textarea
-            id={id || name}
-            name={name}
-            rows={rows}
-            value={value}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => {
-              setIsFocused(false)
-              onBlur?.()
-            }}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={displayPlaceholder}
-            className="w-full h-full bg-transparent border-none text-[13.5px] text-ink placeholder-[#9CA3AF] focus:outline-none resize-y min-h-[105px]"
-          />
-        ) : (
-          <input
-            id={id || name}
-            name={name}
-            type={type}
-            required={required}
-            value={value}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => {
-              setIsFocused(false)
-              onBlur?.()
-            }}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={displayPlaceholder}
-            className="w-full h-full bg-transparent border-none text-[13.5px] text-ink placeholder-[#9CA3AF] focus:outline-none"
-          />
-        )}
-      </div>
-
-      {/* Validation Error Message */}
-      {error && (
-        <p className="text-[11px] text-[#DC2626] mt-1 pl-1 font-medium flex items-center gap-1">
-          <span>&times;</span> {error}
-        </p>
-      )}
-    </div>
-  )
-}
-
-export const CheckoutView: React.FC = () => {
   const router = useRouter()
-  const { items, subtotal, clearCart } = useCart()
+  const { items, subtotal, clearCart, isHydrated } = useCart()
+
+  const [addresses, setAddresses] = useState<ShippingAddress[]>(initialAddresses)
+  const [selectedAddressId, setSelectedAddressId] = useState<number | string | null>(() => {
+    const def = initialAddresses.find((a) => a.isDefault) || initialAddresses[0]
+    return def?.id ?? null
+  })
+
+  const [isAddingNew, setIsAddingNew] = useState(false)
+  const [editingAddressId, setEditingAddressId] = useState<number | string | null>(null)
+  const [orderNotes, setOrderNotes] = useState('')
+  const [isActionPending, startTransition] = useTransition()
 
   const [currentStep, setCurrentStep] = useState<2 | 3>(2)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -133,127 +50,38 @@ export const CheckoutView: React.FC = () => {
     gst: number
     total: number
     date: string
+    deliveryAddress?: {
+      fullName: string
+      addressLine: string
+      city: string
+      state: string
+      postalCode: string
+      country: string
+      phone?: string
+    }
+    orderNotes?: string
   } | null>(null)
 
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    companyName: '',
-    country: '',
-    streetAddress1: '',
-    streetAddress2: '',
-    city: '',
-    postcode: '',
-    province: '',
-    phone: '',
-    email: '',
-    orderNotes: '',
-  })
+  // Sync addresses when server props update
+  useEffect(() => {
+    setAddresses(initialAddresses)
+  }, [initialAddresses])
 
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [touched, setTouched] = useState<Record<string, boolean>>({})
-
-  // Validate individual field
-  const validateField = (fieldName: string, value: string): string => {
-    switch (fieldName) {
-      case 'firstName':
-        if (!value.trim()) return 'First name is required'
-        return ''
-      case 'lastName':
-        if (!value.trim()) return 'Last name is required'
-        return ''
-      case 'country':
-        if (!value.trim()) return 'Country is required'
-        return ''
-      case 'streetAddress1':
-        if (!value.trim()) return 'Street address is required'
-        return ''
-      case 'city':
-        if (!value.trim()) return 'Town / City is required'
-        return ''
-      case 'postcode':
-        if (!value.trim()) return 'Postcode / PIN / ZIP is required'
-        if (!/^[a-zA-Z0-9\s-]{3,10}$/.test(value.trim())) {
-          return 'Enter a valid postcode (e.g. 400059)'
-        }
-        return ''
-      case 'province':
-        if (!value.trim()) return 'Province / State is required'
-        return ''
-      case 'phone':
-        if (!value.trim()) return 'Phone number is required'
-        if (!/^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]{6,15}$/.test(value.trim())) {
-          return 'Enter a valid phone number (min 10 digits)'
-        }
-        return ''
-      case 'email':
-        if (!value.trim()) return 'Email address is required'
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
-          return 'Enter a valid email address'
-        }
-        return ''
-      default:
-        return ''
+  // Maintain valid selectedAddressId
+  useEffect(() => {
+    if (addresses.length > 0) {
+      if (!selectedAddressId || !addresses.some((a) => a.id === selectedAddressId)) {
+        const def = addresses.find((a) => a.isDefault) || addresses[0]
+        setSelectedAddressId(def?.id ?? null)
+      }
+    } else {
+      setSelectedAddressId(null)
     }
-  }
-
-  const handleFieldChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    if (touched[field]) {
-      const err = validateField(field, value)
-      setErrors((prev) => ({ ...prev, [field]: err }))
-    }
-  }
-
-  const handleFieldBlur = (field: string) => {
-    setTouched((prev) => ({ ...prev, [field]: true }))
-    const err = validateField(field, formData[field as keyof typeof formData] || '')
-    setErrors((prev) => ({ ...prev, [field]: err }))
-  }
-
-  const validateAll = (): boolean => {
-    const newErrors: Record<string, string> = {}
-    const requiredFields = [
-      'firstName',
-      'lastName',
-      'country',
-      'streetAddress1',
-      'city',
-      'postcode',
-      'province',
-      'phone',
-      'email',
-    ]
-
-    requiredFields.forEach((field) => {
-      const val = formData[field as keyof typeof formData] || ''
-      const err = validateField(field, val)
-      if (err) newErrors[field] = err
-    })
-
-    setErrors(newErrors)
-    setTouched(
-      requiredFields.reduce((acc, f) => ({ ...acc, [f]: true }), {})
-    )
-
-    return Object.keys(newErrors).length === 0
-  }
-
-  // Display items: use active cart items or screenshot defaults
-  const displayItems =
-    items.length > 0
-      ? items
-      : [
-          { id: '1', name: 'Product 1', price: 20000, quantity: 1, imageUrl: '/images/prod1.jpg' },
-          { id: '2', name: 'Product 2', price: 20000, quantity: 1, imageUrl: '/images/prod2.jpg' },
-        ]
-
-  const computedSubtotal =
-    items.length > 0 ? subtotal : displayItems.reduce((acc, i) => acc + i.price * i.quantity, 0)
+  }, [addresses, selectedAddressId])
 
   const gstRate = 0.18
-  const computedGst = Math.round(computedSubtotal * gstRate)
-  const computedTotal = computedSubtotal + computedGst
+  const computedGst = Math.round(subtotal * gstRate)
+  const computedTotal = subtotal + computedGst
 
   const formatPrice = (amount: number) => {
     return `Rs ${amount.toLocaleString('en-IN', {
@@ -262,98 +90,122 @@ export const CheckoutView: React.FC = () => {
     })}`
   }
 
-  const finalItems = confirmedOrderSummary?.items || displayItems
-  const finalSubtotal = confirmedOrderSummary?.subtotal ?? computedSubtotal
-  const finalGst = confirmedOrderSummary?.gst ?? computedGst
-  const finalTotal = confirmedOrderSummary?.total ?? computedTotal
-  const orderDateFormatted =
-    confirmedOrderSummary?.date ||
-    (() => {
-      const now = new Date()
-      return `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`
-    })()
+  const handleSetDefault = (id: number | string) => {
+    startTransition(async () => {
+      await setDefaultAddress(id)
+      setSelectedAddressId(id)
+      router.refresh()
+    })
+  }
+
+  const handleRemoveAddress = (id: number | string) => {
+    if (!confirm('Are you sure you want to remove this address?')) return
+    startTransition(async () => {
+      await removeAddress(id)
+      if (selectedAddressId === id) {
+        const remaining = addresses.filter((a) => a.id !== id)
+        setSelectedAddressId(remaining[0]?.id ?? null)
+      }
+      router.refresh()
+    })
+  }
+
+  const handleAddressSaved = (newId?: string) => {
+    setIsAddingNew(false)
+    setEditingAddressId(null)
+    if (newId) {
+      setSelectedAddressId(Number(newId) || newId)
+    }
+    router.refresh()
+  }
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitError(null)
 
-    const isValid = validateAll()
-    if (!isValid) {
-      // Scroll to first error
-      const firstErrorField = document.querySelector('[name="' + Object.keys(errors)[0] + '"]')
-      firstErrorField?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    if (items.length === 0) {
+      setSubmitError('Your cart is empty. Please add products to your cart before placing an order.')
+      return
+    }
+
+    const selectedAddr = addresses.find((a) => a.id === selectedAddressId)
+    if (!selectedAddr) {
+      setSubmitError('Please select or add a shipping address before completing checkout.')
       return
     }
 
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('/api/checkout-submissions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const orderRes = await createOrder({
+        items: items.map((i) => ({
+          product: String(i.id),
+          productName: i.name,
+          productImage: i.imageUrl,
+          sku: `SKU-${i.id}`,
+          quantity: i.quantity || 1,
+          unitPrice: i.price,
+          totalPrice: (i.price || 0) * (i.quantity || 1),
+        })),
+        shippingAddress: {
+          fullName: user?.fullName || 'Customer',
+          phone: user?.phoneNumber || '',
+          addressLine1: selectedAddr.addressLine,
+          addressLine2: '',
+          city: selectedAddr.city,
+          state: selectedAddr.state,
+          postalCode: selectedAddr.postalCode,
+          country: selectedAddr.country || 'India',
         },
-        body: JSON.stringify({
-          firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim(),
-          companyName: formData.companyName.trim(),
-          country: formData.country.trim(),
-          streetAddress1: formData.streetAddress1.trim(),
-          streetAddress2: formData.streetAddress2.trim(),
-          city: formData.city.trim(),
-          postcode: formData.postcode.trim(),
-          province: formData.province.trim(),
-          phone: formData.phone.trim(),
-          email: formData.email.trim(),
-          orderNotes: formData.orderNotes.trim(),
-          items: displayItems.map((item) => ({
-            name: item.name,
-            quantity: item.quantity || 1,
-            price: item.price || 20000,
-            subtotal: (item.price || 20000) * (item.quantity || 1),
-          })),
-          subtotal: computedSubtotal,
-          shipping: 'Free shipping',
-          gst: computedGst,
-          total: computedTotal,
-          status: 'Pending',
-        }),
+        pricing: {
+          subtotal,
+          discount: 0,
+          shippingAmount: 0,
+          taxAmount: computedGst,
+          totalAmount: computedTotal,
+          currency: 'INR',
+        },
+        paymentMethod: 'COD',
+        orderNotes: orderNotes.trim() || undefined,
       })
 
-      const result = await response.json()
-
-      if (response.ok && (result.doc || result.id)) {
-        const orderId = result.doc?.id || result.id
+      if (orderRes.success && orderRes.order) {
         const now = new Date()
         const dd = String(now.getDate()).padStart(2, '0')
         const mm = String(now.getMonth() + 1).padStart(2, '0')
         const yyyy = now.getFullYear()
+
         setConfirmedOrderSummary({
-          items: [...displayItems],
-          subtotal: computedSubtotal,
+          items: [...items],
+          subtotal,
           gst: computedGst,
           total: computedTotal,
           date: `${dd}/${mm}/${yyyy}`,
+          deliveryAddress: {
+            fullName: user?.fullName || 'Customer',
+            addressLine: selectedAddr.addressLine,
+            city: selectedAddr.city,
+            state: selectedAddr.state,
+            postalCode: selectedAddr.postalCode,
+            country: selectedAddr.country,
+            phone: user?.phoneNumber || '',
+          },
+          orderNotes: orderNotes.trim() || undefined,
         })
-        setConfirmedOrderId(orderId)
+        setConfirmedOrderId(orderRes.order.orderNumber)
         clearCart()
         setCurrentStep(3)
         window.scrollTo({ top: 0, behavior: 'smooth' })
       } else {
-        const errMsg =
-          result.errors?.[0]?.message ||
-          result.message ||
-          'Failed to submit form to Payload. Please check the fields and try again.'
-        setSubmitError(errMsg)
+        setSubmitError(orderRes.error || 'Failed to place order. Please try again.')
       }
     } catch (err: any) {
-      console.error('Order submission error:', err)
-      setSubmitError('Network error while placing order. Please try again.')
+      console.error('Order creation error:', err)
+      setSubmitError(err?.message || 'Something went wrong while placing your order.')
     } finally {
       setIsSubmitting(false)
     }
   }
-
 
   return (
     <div className="bg-white min-h-[75vh] py-10 md:py-14">
@@ -412,8 +264,8 @@ export const CheckoutView: React.FC = () => {
           />
         </div>
 
-        {/* Step 3: Confirmation State */}
-        {currentStep === 3 ? (
+        {/* Step 3: Confirmation View */}
+        {currentStep === 3 && confirmedOrderSummary ? (
           <div className="py-6 animate-in fade-in duration-200">
             {/* Purple Circle with White Checkmark */}
             <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#5E007B] flex items-center justify-center mx-auto mb-6 text-white shadow-sm">
@@ -437,33 +289,62 @@ export const CheckoutView: React.FC = () => {
             </p>
 
             {/* Dashed Order Metadata Card */}
-            <div className="max-w-[700px] mx-auto rounded-[4px] border border-dashed border-[#D1D5DB] py-5 px-6 sm:px-8 mb-8 bg-white">
+            <div className="max-w-[760px] mx-auto rounded-[4px] border border-dashed border-[#D1D5DB] py-5 px-6 sm:px-8 mb-8 bg-white">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-4 text-left">
                 <div>
                   <div className="text-[11.5px] text-[#6B7280] mb-1">Order Number</div>
-                  <div className="text-[13.5px] font-bold text-ink">
-                    {confirmedOrderId || '13119'}
-                  </div>
+                  <div className="text-[13.5px] font-bold text-ink">{confirmedOrderId}</div>
                 </div>
                 <div>
                   <div className="text-[11.5px] text-[#6B7280] mb-1">Date</div>
-                  <div className="text-[13.5px] font-bold text-ink">{orderDateFormatted}</div>
+                  <div className="text-[13.5px] font-bold text-ink">
+                    {confirmedOrderSummary.date}
+                  </div>
                 </div>
                 <div>
                   <div className="text-[11.5px] text-[#6B7280] mb-1">Total</div>
                   <div className="text-[13.5px] font-bold text-ink">
-                    {formatPrice(finalTotal)}
+                    {formatPrice(confirmedOrderSummary.total)}
                   </div>
                 </div>
                 <div>
                   <div className="text-[11.5px] text-[#6B7280] mb-1">Payment Method</div>
-                  <div className="text-[13.5px] font-bold text-ink">Direct Bank Transfer</div>
+                  <div className="text-[13.5px] font-bold text-ink">Cash on Delivery (COD)</div>
                 </div>
               </div>
             </div>
 
+            {/* Delivery Address Details */}
+            {confirmedOrderSummary.deliveryAddress && (
+              <div className="max-w-[760px] mx-auto rounded-[4px] border border-[#E5E7EB] p-5 sm:p-6 mb-8 bg-[#F9FAFB]/60 text-left">
+                <h3 className="text-[12px] font-bold text-[#4B5563] uppercase tracking-wider mb-2">
+                  Delivering To:
+                </h3>
+                <div className="text-[14px] font-semibold text-ink">
+                  {confirmedOrderSummary.deliveryAddress.fullName}
+                </div>
+                <div className="text-[13px] text-[#4B5563] mt-0.5">
+                  {confirmedOrderSummary.deliveryAddress.addressLine},{' '}
+                  {confirmedOrderSummary.deliveryAddress.city},{' '}
+                  {confirmedOrderSummary.deliveryAddress.state},{' '}
+                  {confirmedOrderSummary.deliveryAddress.country} -{' '}
+                  {confirmedOrderSummary.deliveryAddress.postalCode}
+                </div>
+                {confirmedOrderSummary.deliveryAddress.phone && (
+                  <div className="text-[12.5px] text-[#6B7280] mt-1">
+                    Phone: {confirmedOrderSummary.deliveryAddress.phone}
+                  </div>
+                )}
+                {confirmedOrderSummary.orderNotes && (
+                  <div className="text-[12.5px] text-muted italic mt-2 border-t border-[#E5E7EB] pt-2">
+                    Order notes: {confirmedOrderSummary.orderNotes}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Order Details Card */}
-            <div className="max-w-[700px] mx-auto rounded-[4px] border border-[#E5E7EB] p-6 sm:p-8 bg-white">
+            <div className="max-w-[760px] mx-auto rounded-[4px] border border-[#E5E7EB] p-6 sm:p-8 bg-white">
               <h3 className="text-[13px] font-bold text-ink uppercase tracking-wider mb-6 text-left">
                 ORDER DETAILS
               </h3>
@@ -476,7 +357,7 @@ export const CheckoutView: React.FC = () => {
 
               {/* Product Items List */}
               <div className="divide-y divide-[#E5E7EB]/60">
-                {finalItems.map((item, idx) => {
+                {confirmedOrderSummary.items.map((item, idx) => {
                   const itemSubtotal = item.price * (item.quantity || 1)
                   return (
                     <div
@@ -495,53 +376,59 @@ export const CheckoutView: React.FC = () => {
 
               {/* Summary Rows */}
               <div className="border-t border-[#E5E7EB] text-[13px]">
-                {/* SUBTOTAL */}
                 <div className="py-3.5 flex justify-between items-center border-b border-[#E5E7EB]/60">
                   <span className="font-bold text-ink uppercase text-[12px] tracking-wider">
                     SUBTOTAL
                   </span>
-                  <span className="font-bold text-ink">{formatPrice(finalSubtotal)}</span>
+                  <span className="font-bold text-ink">
+                    {formatPrice(confirmedOrderSummary.subtotal)}
+                  </span>
                 </div>
 
-                {/* SUBTOTAL / Free shipping */}
                 <div className="py-3.5 flex justify-between items-center border-b border-[#E5E7EB]/60">
                   <span className="font-bold text-ink uppercase text-[12px] tracking-wider">
-                    SUBTOTAL
+                    SHIPPING
                   </span>
                   <span className="text-[#4B5563]">Free shipping</span>
                 </div>
 
-                {/* VAT */}
                 <div className="py-3.5 flex justify-between items-center border-b border-[#E5E7EB]/60">
                   <span className="font-bold text-ink uppercase text-[12px] tracking-wider">
-                    VAT
+                    GST (18%)
                   </span>
-                  <span className="text-[#4B5563]">{formatPrice(finalGst)}</span>
+                  <span className="text-[#4B5563]">{formatPrice(confirmedOrderSummary.gst)}</span>
                 </div>
 
-                {/* PAYMENT METHOD */}
                 <div className="py-3.5 flex justify-between items-center border-b border-[#E5E7EB]/60">
                   <span className="font-bold text-ink uppercase text-[12px] tracking-wider">
                     PAYMENT METHOD
                   </span>
-                  <span className="text-[#4B5563]">Direct bank transfer</span>
+                  <span className="text-[#4B5563]">Cash on Delivery (COD)</span>
                 </div>
 
-                {/* TOTAL */}
                 <div className="pt-4 flex justify-between items-center">
                   <span className="font-bold text-ink uppercase text-[13px] tracking-wider">
                     TOTAL
                   </span>
                   <span className="font-bold text-ink text-[14px]">
-                    {formatPrice(finalTotal)}
+                    {formatPrice(confirmedOrderSummary.total)}
                   </span>
                 </div>
+              </div>
+
+              <div className="mt-8 text-center">
+                <Link
+                  href="/products"
+                  className="inline-block bg-[#5E007B] hover:bg-[#430D60] text-white px-8 py-3 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-colors"
+                >
+                  Continue Shopping
+                </Link>
               </div>
             </div>
           </div>
         ) : (
-          /* Step 2: Main Shipping & Checkout Form Grid */
-          <form onSubmit={handlePlaceOrder} noValidate>
+          /* Step 2: Main Shipping & Checkout View */
+          <div>
             {submitError && (
               <div className="mb-6 p-4 bg-[#FEF2F2] border border-[#FCA5A5] rounded-[4px] text-[#991B1B] text-[13px] flex items-center justify-between">
                 <span>{submitError}</span>
@@ -555,245 +442,366 @@ export const CheckoutView: React.FC = () => {
               </div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-              {/* Left Section: Billing Details (lg:col-span-8) */}
-              <div className="lg:col-span-8 space-y-4">
-                <h2 className="text-[13px] font-bold text-ink uppercase tracking-wider mb-5">
-                  BILLING DETAILS
-                </h2>
-
-                {/* First Name & Last Name */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FloatingField
-                    label="First Name *"
-                    name="firstName"
-                    required
-                    value={formData.firstName}
-                    error={touched.firstName ? errors.firstName : undefined}
-                    onChange={(val) => handleFieldChange('firstName', val)}
-                    onBlur={() => handleFieldBlur('firstName')}
-                  />
-                  <FloatingField
-                    label="Last Name *"
-                    name="lastName"
-                    required
-                    value={formData.lastName}
-                    error={touched.lastName ? errors.lastName : undefined}
-                    onChange={(val) => handleFieldChange('lastName', val)}
-                    onBlur={() => handleFieldBlur('lastName')}
-                  />
-                </div>
-
-                {/* Company Name (optional) */}
-                <FloatingField
-                  label="Company Name (optional)"
-                  name="companyName"
-                  value={formData.companyName}
-                  onChange={(val) => handleFieldChange('companyName', val)}
-                />
-
-                {/* Country / Region * */}
-                <FloatingField
-                  label="Country / Region *"
-                  name="country"
-                  required
-                  value={formData.country}
-                  error={touched.country ? errors.country : undefined}
-                  onChange={(val) => handleFieldChange('country', val)}
-                  onBlur={() => handleFieldBlur('country')}
-                />
-
-                {/* Street Address 1 */}
-                <FloatingField
-                  label="Street Address *"
-                  name="streetAddress1"
-                  required
-                  value={formData.streetAddress1}
-                  error={touched.streetAddress1 ? errors.streetAddress1 : undefined}
-                  onChange={(val) => handleFieldChange('streetAddress1', val)}
-                  onBlur={() => handleFieldBlur('streetAddress1')}
-                />
-
-                {/* Street Address 2 */}
-                <FloatingField
-                  label="Apartment, suite, unit, etc. (optional)"
-                  name="streetAddress2"
-                  value={formData.streetAddress2}
-                  onChange={(val) => handleFieldChange('streetAddress2', val)}
-                />
-
-                {/* Town / City * */}
-                <FloatingField
-                  label="Town / City *"
-                  name="city"
-                  required
-                  value={formData.city}
-                  error={touched.city ? errors.city : undefined}
-                  onChange={(val) => handleFieldChange('city', val)}
-                  onBlur={() => handleFieldBlur('city')}
-                />
-
-                {/* Postcode / ZIP * */}
-                <FloatingField
-                  label="Postcode / ZIP *"
-                  name="postcode"
-                  required
-                  value={formData.postcode}
-                  error={touched.postcode ? errors.postcode : undefined}
-                  onChange={(val) => handleFieldChange('postcode', val)}
-                  onBlur={() => handleFieldBlur('postcode')}
-                />
-
-                {/* Province * */}
-                <FloatingField
-                  label="Province *"
-                  name="province"
-                  required
-                  value={formData.province}
-                  error={touched.province ? errors.province : undefined}
-                  onChange={(val) => handleFieldChange('province', val)}
-                  onBlur={() => handleFieldBlur('province')}
-                />
-
-                {/* Phone * */}
-                <FloatingField
-                  label="Phone *"
-                  name="phone"
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  error={touched.phone ? errors.phone : undefined}
-                  onChange={(val) => handleFieldChange('phone', val)}
-                  onBlur={() => handleFieldBlur('phone')}
-                />
-
-                {/* Your Mail * */}
-                <FloatingField
-                  label="Your Mail *"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  error={touched.email ? errors.email : undefined}
-                  onChange={(val) => handleFieldChange('email', val)}
-                  onBlur={() => handleFieldBlur('email')}
-                />
-
-                {/* Order Notes (optional) */}
-                <FloatingField
-                  label="Order Notes (optional)"
-                  name="orderNotes"
-                  isTextarea
-                  rows={5}
-                  value={formData.orderNotes}
-                  onChange={(val) => handleFieldChange('orderNotes', val)}
-                />
-              </div>
-
-              {/* Right Section: YOUR ORDER (lg:col-span-4) */}
-              <div className="lg:col-span-4 lg:sticky lg:top-24">
-                <div className="border border-[#E5E7EB] rounded-[2px] p-6 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-                  <h2 className="text-[13px] font-bold text-ink uppercase tracking-wider mb-6">
-                    YOUR ORDER
-                  </h2>
-
-                  {/* Header Row: PRODUCT / SUBTOTAL */}
-                  <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB] text-[11.5px] font-bold text-[#4B5563] uppercase tracking-wider">
-                    <span>PRODUCT</span>
-                    <span>SUBTOTAL</span>
-                  </div>
-
-                  {/* Products list */}
-                  <div className="divide-y divide-[#E5E7EB]/60">
-                    {displayItems.map((item, idx) => {
-                      const itemSubtotal = item.price * (item.quantity || 1)
-                      return (
-                        <div
-                          key={item.id || idx}
-                          className="flex items-center justify-between py-3 text-[13px]"
-                        >
-                          <span className="text-[#4B5563] pr-2">
-                            {item.name}
-                          </span>
-                          <span className="text-[#4B5563] whitespace-nowrap">
-                            {formatPrice(itemSubtotal)}
-                          </span>
-                        </div>
-                      )
-                    })}
-                  </div>
-
-                  {/* Order Totals List */}
-                  <div className="border-t border-[#E5E7EB] pt-1 space-y-3.5 text-[12.5px]">
-                    {/* Subtotal */}
-                    <div className="flex items-center justify-between py-2 border-b border-[#E5E7EB]">
-                      <span className="font-bold text-[#1F2328] uppercase tracking-wide">
-                        SUBTOTAL
-                      </span>
-                      <span className="text-[#1F2328] font-medium">
-                        {formatPrice(computedSubtotal)}
-                      </span>
-                    </div>
-
-                    {/* Shipping */}
-                    <div className="flex items-center justify-between py-2 border-b border-[#E5E7EB]">
-                      <span className="font-bold text-[#1F2328] uppercase tracking-wide">
-                        SHIPPING
-                      </span>
-                      <span className="text-[#1F2328] font-normal">
-                        Free shipping
-                      </span>
-                    </div>
-
-                    {/* GST - 18% */}
-                    <div className="flex items-center justify-between py-2 border-b border-[#E5E7EB]">
-                      <span className="font-bold text-[#1F2328] uppercase tracking-wide">
-                        GST - 18%
-                      </span>
-                      <span className="text-[#1F2328] font-medium">
-                        {formatPrice(computedGst)}
-                      </span>
-                    </div>
-
-                    {/* Grand Total */}
-                    <div className="flex items-center justify-between py-2.5 text-[13px]">
-                      <span className="font-extrabold text-[#1F2328] uppercase tracking-wide">
-                        TOTAL
-                      </span>
-                      <span className="font-bold text-[#1F2328] text-[14.5px]">
-                        {formatPrice(computedTotal)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Privacy Policy Note */}
-                <p className="text-[11.5px] text-[#4B5563] leading-[1.6] my-4">
-                  Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our{' '}
-                  <Link href="/privacy-policy" className="text-[#5E007B] hover:underline font-medium">
-                    privacy policy
-                  </Link>
-                  .
+            {isHydrated && items.length === 0 ? (
+              <div className="p-12 text-center border border-[#E5E7EB] rounded-[4px] bg-[#F9FAFB]">
+                <p className="text-[15px] text-[#4B5563] mb-4">
+                  Your cart is currently empty.
                 </p>
-
-                {/* PLACE ORDER Button */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-[#5E007B] hover:bg-[#430D60] active:scale-[0.99] text-white py-3.5 px-6 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-all shadow-sm cursor-pointer disabled:opacity-70 flex items-center justify-center gap-2"
+                <Link
+                  href="/products"
+                  className="inline-block bg-[#5E007B] hover:bg-[#430D60] text-white px-6 py-2.5 rounded-[3px] font-semibold text-[13px] uppercase tracking-wider transition-colors"
                 >
-                  {isSubmitting ? (
-                    <>
-                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>SUBMITTING ORDER...</span>
-                    </>
-                  ) : (
-                    'PLACE ORDER'
-                  )}
-                </button>
+                  View Products
+                </Link>
               </div>
-            </div>
-          </form>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+                {/* Left Section: Saved Addresses & Add Address Form */}
+                <div className="lg:col-span-8">
+                  <div className="bg-white border border-[#E5E7EB] rounded-[4px] p-6 shadow-xs">
+                    <div className="flex items-center justify-between pb-4 border-b border-[#E5E7EB] mb-5">
+                      <div>
+                        <h2 className="text-[14px] md:text-[15px] font-bold text-ink uppercase tracking-wider">
+                          SAVED ADDRESSES
+                        </h2>
+                        <p className="text-[12px] text-muted mt-0.5">
+                          Select the shipping address for this order
+                        </p>
+                      </div>
+                      {!isAddingNew && addresses.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setIsAddingNew(true)}
+                          className="text-[13px] font-bold text-[#5E007B] hover:underline cursor-pointer"
+                        >
+                          + Add New Address
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Address List */}
+                    {addresses.length === 0 && !isAddingNew ? (
+                      <div className="py-6 text-center">
+                        <p className="text-[13.5px] text-[#6B7280] mb-4">
+                          You have no saved addresses yet.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setIsAddingNew(true)}
+                          className="bg-[#5E007B] hover:bg-[#430D60] text-white px-5 py-2 rounded-[3px] text-[13px] font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                        >
+                          Add Shipping Address
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="space-y-3.5">
+                        {addresses.map((addr) => {
+                          const isSelected = selectedAddressId === addr.id
+                          const isEditing = editingAddressId === addr.id
+
+                          if (isEditing) {
+                            return (
+                              <div
+                                key={addr.id}
+                                className="border border-[#5E007B] rounded-[4px] overflow-hidden"
+                              >
+                                <div className="px-5 py-3 bg-[#F9FAFB] border-b border-[#E5E7EB] flex items-center justify-between">
+                                  <span className="text-[12px] font-bold text-ink uppercase tracking-wider">
+                                    Edit Address
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingAddressId(null)}
+                                    className="text-[12px] text-muted hover:text-ink cursor-pointer"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                                <AddressForm
+                                  address={addr as unknown as Address}
+                                  onDone={handleAddressSaved}
+                                  onCancel={() => setEditingAddressId(null)}
+                                />
+                              </div>
+                            )
+                          }
+
+                          return (
+                            <div
+                              key={addr.id}
+                              onClick={() => setSelectedAddressId(addr.id)}
+                              className={`p-4 sm:p-5 rounded-[4px] border transition-all cursor-pointer flex items-start gap-4 ${
+                                isSelected
+                                  ? 'border-[#5E007B] bg-[#FAF5FF]/40 shadow-xs'
+                                  : 'border-[#E5E7EB] hover:border-[#D1D5DB] bg-white'
+                              }`}
+                            >
+                              <input
+                                type="radio"
+                                id={`address-${addr.id}`}
+                                name="selectedAddress"
+                                checked={isSelected}
+                                onChange={() => setSelectedAddressId(addr.id)}
+                                className="mt-1 w-4 h-4 accent-[#5E007B] cursor-pointer"
+                              />
+
+                              <div className="flex-1 text-left min-w-0">
+                                <div className="flex flex-wrap items-center gap-2 mb-1">
+                                  <span className="font-bold text-[14px] text-ink">
+                                    {user?.fullName || 'Recipient'}
+                                  </span>
+                                  {addr.isDefault && (
+                                    <span className="text-[10px] font-bold uppercase tracking-wider bg-[#5E007B]/10 text-[#5E007B] px-2 py-0.5 rounded-full">
+                                      Default
+                                    </span>
+                                  )}
+                                  {isSelected && (
+                                    <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full">
+                                      Selected for Delivery
+                                    </span>
+                                  )}
+                                </div>
+
+                                <p className="text-[13px] text-[#4B5563] leading-relaxed">
+                                  {addr.addressLine}
+                                </p>
+                                <p className="text-[13px] text-[#4B5563]">
+                                  {addr.city}, {addr.state}, {addr.country} -{' '}
+                                  <span className="font-semibold text-ink">
+                                    {addr.postalCode}
+                                  </span>
+                                </p>
+
+                                {user?.phoneNumber && (
+                                  <p className="text-[12.5px] text-[#6B7280] mt-1">
+                                    <span className="font-medium text-ink">Phone:</span>{' '}
+                                    {user.phoneNumber}
+                                  </p>
+                                )}
+
+                                {addr.deliveryNotes && (
+                                  <p className="text-[12px] text-muted italic mt-1.5 bg-[#F9FAFB] p-2 rounded-[2px] border border-[#E5E7EB]/50">
+                                    Notes: {addr.deliveryNotes}
+                                  </p>
+                                )}
+
+                                <div className="flex items-center gap-3 mt-3 pt-2 border-t border-[#E5E7EB]/60 text-[12.5px]">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      setEditingAddressId(addr.id)
+                                    }}
+                                    className="font-semibold text-[#5E007B] hover:underline cursor-pointer"
+                                  >
+                                    Edit
+                                  </button>
+                                  {!addr.isDefault && (
+                                    <button
+                                      type="button"
+                                      disabled={isActionPending}
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleSetDefault(addr.id)
+                                      }}
+                                      className="text-muted hover:text-ink cursor-pointer disabled:opacity-50"
+                                    >
+                                      Set as Default
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    disabled={isActionPending}
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleRemoveAddress(addr.id)
+                                    }}
+                                    className="text-red-600 hover:text-red-700 cursor-pointer disabled:opacity-50"
+                                  >
+                                    Remove
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+
+                    {/* Add New Address Form Section Directly Under List */}
+                    {isAddingNew && (
+                      <div className="mt-6 pt-5 border-t border-[#E5E7EB]">
+                        <div className="border border-[#E5E7EB] rounded-[4px] overflow-hidden bg-white shadow-xs">
+                          <div className="px-6 py-3.5 bg-[#F9FAFB] border-b border-[#E5E7EB] flex items-center justify-between">
+                            <h3 className="text-[13px] font-bold text-ink uppercase tracking-wider">
+                              Add New Shipping Address
+                            </h3>
+                            <button
+                              type="button"
+                              onClick={() => setIsAddingNew(false)}
+                              className="text-[12.5px] font-semibold text-muted hover:text-ink cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                          <AddressForm
+                            onDone={handleAddressSaved}
+                            onCancel={() => setIsAddingNew(false)}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Order Notes / Instructions */}
+                    <div className="mt-6 pt-6 border-t border-[#E5E7EB]">
+                      <label
+                        htmlFor="orderNotes"
+                        className="block text-[13px] font-bold text-ink uppercase tracking-wider mb-2"
+                      >
+                        Order Notes (optional)
+                      </label>
+                      <textarea
+                        id="orderNotes"
+                        name="orderNotes"
+                        rows={3}
+                        value={orderNotes}
+                        onChange={(e) => setOrderNotes(e.target.value)}
+                        placeholder="Notes about your order, e.g. special instructions for delivery."
+                        className="w-full border border-[#E5E7EB] rounded-[3px] p-3 text-[13px] text-ink placeholder-[#9CA3AF] focus:outline-none focus:border-[#5E007B] focus:ring-1 focus:ring-[#5E007B]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Section: YOUR ORDER Summary */}
+                <div className="lg:col-span-4 lg:sticky lg:top-24">
+                  <div className="border border-[#E5E7EB] rounded-[2px] p-6 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+                    <h2 className="text-[13px] font-bold text-ink uppercase tracking-wider mb-6">
+                      YOUR ORDER
+                    </h2>
+
+                    {/* Header Row: PRODUCT / SUBTOTAL */}
+                    <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB] text-[11.5px] font-bold text-[#4B5563] uppercase tracking-wider">
+                      <span>PRODUCT</span>
+                      <span>SUBTOTAL</span>
+                    </div>
+
+                    {/* Products list */}
+                    <div className="divide-y divide-[#E5E7EB]/60">
+                      {items.map((item, idx) => {
+                        const itemSubtotal = item.price * (item.quantity || 1)
+                        return (
+                          <div
+                            key={item.id || idx}
+                            className="flex items-center justify-between py-3 text-[13px]"
+                          >
+                            <span className="text-[#4B5563] pr-2">
+                              {item.name}
+                              {item.quantity && item.quantity > 1 ? ` × ${item.quantity}` : ''}
+                            </span>
+                            <span className="text-[#4B5563] whitespace-nowrap">
+                              {formatPrice(itemSubtotal)}
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    {/* Order Totals List */}
+                    <div className="border-t border-[#E5E7EB] pt-1 space-y-3.5 text-[12.5px]">
+                      {/* Subtotal */}
+                      <div className="flex items-center justify-between py-2 border-b border-[#E5E7EB]">
+                        <span className="font-bold text-[#1F2328] uppercase tracking-wide">
+                          SUBTOTAL
+                        </span>
+                        <span className="text-[#1F2328] font-medium">
+                          {formatPrice(subtotal)}
+                        </span>
+                      </div>
+
+                      {/* Shipping */}
+                      <div className="flex items-center justify-between py-2 border-b border-[#E5E7EB]">
+                        <span className="font-bold text-[#1F2328] uppercase tracking-wide">
+                          SHIPPING
+                        </span>
+                        <span className="text-[#1F2328] font-normal">Free shipping</span>
+                      </div>
+
+                      {/* GST - 18% */}
+                      <div className="flex items-center justify-between py-2 border-b border-[#E5E7EB]">
+                        <span className="font-bold text-[#1F2328] uppercase tracking-wide">
+                          GST - 18%
+                        </span>
+                        <span className="text-[#1F2328] font-medium">
+                          {formatPrice(computedGst)}
+                        </span>
+                      </div>
+
+                      {/* Grand Total */}
+                      <div className="flex items-center justify-between py-2.5 text-[13px]">
+                        <span className="font-extrabold text-[#1F2328] uppercase tracking-wide">
+                          TOTAL
+                        </span>
+                        <span className="font-bold text-[#1F2328] text-[14.5px]">
+                          {formatPrice(computedTotal)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Payment Method Option (COD) */}
+                  <div className="mt-4 p-4 bg-[#FAF5FF] border border-[#E9D5FF] rounded-[3px]">
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        type="radio"
+                        id="payment-cod"
+                        name="paymentMethod"
+                        checked={true}
+                        readOnly
+                        className="w-4 h-4 accent-[#5E007B]"
+                      />
+                      <label htmlFor="payment-cod" className="text-[13px] font-bold text-ink cursor-pointer">
+                        Cash on Delivery (COD)
+                      </label>
+                    </div>
+                    <p className="text-[11.5px] text-[#6B7280] mt-1.5 pl-6.5 leading-relaxed">
+                      Pay with cash upon delivery of your simulation models order.
+                    </p>
+                  </div>
+
+                  {/* Privacy Policy Note */}
+                  <p className="text-[11.5px] text-[#4B5563] leading-[1.6] my-4">
+                    Your personal data will be used to process your order, support your experience
+                    throughout this website, and for other purposes described in our{' '}
+                    <Link
+                      href="/privacy-policy"
+                      className="text-[#5E007B] hover:underline font-medium"
+                    >
+                      privacy policy
+                    </Link>
+                    .
+                  </p>
+
+                  {/* PLACE ORDER Button */}
+                  <button
+                    type="button"
+                    onClick={handlePlaceOrder}
+                    disabled={isSubmitting || items.length === 0}
+                    className="w-full bg-[#5E007B] hover:bg-[#430D60] active:scale-[0.99] text-white py-3.5 px-6 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-all shadow-sm cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>PROCESSING...</span>
+                      </>
+                    ) : (
+                      'PLACE ORDER'
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>
