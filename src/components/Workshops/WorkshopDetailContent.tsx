@@ -423,7 +423,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                   </span>
                 </div>
 
-                <div className="space-y-2 pt-1">
+                <div className="pt-1">
                   <button
                     type="button"
                     onClick={handleAddToCart}
@@ -431,14 +431,6 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                   >
                     Add to Cart
                   </button>
-                  <a
-                    href={details.brochureUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full text-center border border-[#4A148C] text-[#4A148C] hover:bg-purple-50 font-semibold py-2.5 rounded-xl transition-colors text-xs"
-                  >
-                    Download Brochure
-                  </a>
                 </div>
               </div>
             </div>
