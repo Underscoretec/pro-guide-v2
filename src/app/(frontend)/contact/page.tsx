@@ -13,7 +13,7 @@ export default async function ContactPage() {
   const contactData = await getContactPage()
 
   return (
-    <main className="flex-1">
+    <main className="flex-1 bg-white">
       <ContactContent data={contactData} />
     </main>
   )

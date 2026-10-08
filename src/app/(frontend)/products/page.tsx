@@ -39,7 +39,7 @@ export default async function ProductsPage() {
       {/* Hero Banner */}
       <ProductsHero data={heroData} />
 
-      {/* Product Families with exactly 3 cards per line and uniform card size */}
+      {/* Product Families with exactly 4 cards per line and uniform card size */}
       {families.map((family: any, idx: number) => (
         <ProductFamilySection key={family.familyId || idx} family={family} />
       ))}

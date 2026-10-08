@@ -11,8 +11,8 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
 
   const quickLinksTitle = footer?.quickLinksTitle || 'Quick Links'
   const defaultQuickLinks = [
-    { label: 'Buy Now', url: '/products.html' },
-    { label: 'Cart', url: 'https://pro-guide.in/' },
+    { label: 'Buy Now', url: '/products' },
+    { label: 'Cart', url: '/cart' },
     { label: 'Resources', url: '/resources' },
     { label: 'Get Your Own Customized Model', url: '/customized-model' },
     { label: 'Login/Register', url: 'https://pro-guide.in/' },
@@ -69,15 +69,19 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
               {quickLinksTitle}
             </h4>
             <div className="space-y-[3px]">
-              {quickLinks.map((item: any, idx: number) => (
-                <Link
-                  key={idx}
-                  href={item.url || '#'}
-                  className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {quickLinks.map((item: any, idx: number) => {
+                const isCart = item.label?.toLowerCase() === 'cart'
+                const href = isCart ? '/cart' : item.url || '#'
+                return (
+                  <Link
+                    key={idx}
+                    href={href}
+                    className="block text-[#E7D8EE] hover:text-white hover:underline transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                )
+              })}
             </div>
           </div>
 
