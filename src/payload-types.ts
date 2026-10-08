@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     'shipping-addresses': ShippingAddress;
     orders: Order;
+    products: Product;
     media: Media;
     'home-page': HomePage;
     resources: Resource;
@@ -92,6 +93,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     'shipping-addresses': ShippingAddressesSelect<false> | ShippingAddressesSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
@@ -266,6 +268,57 @@ export interface Order {
   payment?: string | null;
   paymentMethod?: ('COD' | 'ONLINE' | 'BANK_TRANSFER') | null;
   orderNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  name: string;
+  /**
+   * URL identifier used in /products/[slug] and /product?p=[slug]
+   */
+  slug: string;
+  price: number;
+  category?: string | null;
+  sku?: string | null;
+  shortDescription?: string | null;
+  variant?: string | null;
+  imageUrl?: string | null;
+  image?: (number | null) | Media;
+  images?:
+    | {
+        url?: string | null;
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  detailHeading?: string | null;
+  detailParagraph1?: string | null;
+  detailParagraph2?: string | null;
+  whyChoose?:
+    | {
+        point: string;
+        id?: string | null;
+      }[]
+    | null;
+  sampleList?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
+  lining?: string | null;
+  specifications?: {
+    weight?: string | null;
+    dimensions?: string | null;
+    material?: string | null;
+    variant?: string | null;
+    compatibility?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1010,6 +1063,10 @@ export interface PayloadLockedDocument {
         value: number | Order;
       } | null)
     | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
       } | null)
@@ -1207,6 +1264,55 @@ export interface OrdersSelect<T extends boolean = true> {
   payment?: T;
   paymentMethod?: T;
   orderNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  price?: T;
+  category?: T;
+  sku?: T;
+  shortDescription?: T;
+  variant?: T;
+  imageUrl?: T;
+  image?: T;
+  images?:
+    | T
+    | {
+        url?: T;
+        image?: T;
+        id?: T;
+      };
+  detailHeading?: T;
+  detailParagraph1?: T;
+  detailParagraph2?: T;
+  whyChoose?:
+    | T
+    | {
+        point?: T;
+        id?: T;
+      };
+  sampleList?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
+  lining?: T;
+  specifications?:
+    | T
+    | {
+        weight?: T;
+        dimensions?: T;
+        material?: T;
+        variant?: T;
+        compatibility?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

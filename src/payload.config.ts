@@ -19,6 +19,7 @@ import { TrainingCoursesPage } from './collections/TrainingCoursesPage'
 import { LeadSubmissions } from './collections/LeadSubmissions'
 import { Carts } from './collections/Carts'
 import { Orders } from './collections/Orders'
+import { Products } from './collections/Products'
 import Header from './globals/Header'
 import Footer from './globals/Footer'
 
@@ -36,6 +37,7 @@ export default buildConfig({
     Users,
     ShippingAddresses,
     Orders,
+    Products,
     Media,
     HomePage,
     Resources,
