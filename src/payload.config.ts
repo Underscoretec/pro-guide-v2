@@ -17,6 +17,7 @@ import { CustomizedModelSubmissions } from './collections/CustomizedModelSubmiss
 import { WorkshopsPage } from './collections/WorkshopsPage'
 import { TrainingCoursesPage } from './collections/TrainingCoursesPage'
 import { LeadSubmissions } from './collections/LeadSubmissions'
+import { LearningBitesPage } from './collections/LearningBitesPage'
 import { Carts } from './collections/Carts'
 import { Orders } from './collections/Orders'
 import { Products } from './collections/Products'
@@ -49,6 +50,7 @@ export default buildConfig({
     WorkshopsPage,
     TrainingCoursesPage,
     LeadSubmissions,
+    LearningBitesPage,
     Carts,
   ],
   globals: [Header, Footer],
@@ -61,6 +63,6 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URI || 'file:./payload.db',
     },
-    push: process.env.NODE_ENV !== 'production',
+    push: false,
   }),
 })

@@ -31,6 +31,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
     if (!path || path === '/') return 'Home'
     if (path.startsWith('/contact')) return 'Contact Us'
     if (path.startsWith('/customized-model')) return 'Get Your Own Customized Model'
+    if (path.startsWith('/3d-simulation')) return 'Why 3D Simulation Models'
     if (path.startsWith('/resources')) return 'Resources'
     if (path.startsWith('/training-courses') || path.startsWith('/workshops')) return 'Training Courses'
     if (path.startsWith('/videos')) return 'Learning'
@@ -62,8 +63,8 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
       hasDropdown: true,
       dropdownItems: [
         { label: 'About Faculty & Training', url: '/training-courses' },
-        { label: 'Otolaryngology Video Library', url: '/videos' },
-        { label: 'Why 3D Simulation Models', url: '/resources' },
+        { label: 'Learning Bites', url: '/videos' },
+        { label: 'Why 3D Simulation Models', url: '/3d-simulation' },
       ],
     },
     {
@@ -88,8 +89,9 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
     if (label === 'Paranasal Sinus') return '/workshops#sinus'
     if (label === 'Microlaryngoscopy & Laser Surgeries') return '/workshops#larynx'
     if (label === 'Types of Training Courses Conducted' || label === 'About Faculty & Training') return '/training-courses'
-    if (label === 'Otolaryngology Video Library') return '/videos'
-    if (label === 'Why 3D Simulation Models' || label === 'Resources') return '/resources'
+    if (label === 'Otolaryngology Video Library' || label === 'Learning Bites') return '/videos'
+    if (label === 'Why 3D Simulation Models') return '/3d-simulation'
+    if (label === 'Resources') return '/resources'
     if (url === '#workshops') return '/workshops'
     if (url === '#temporal') return '/workshops#temporal'
     if (url === '#sinus') return '/workshops#sinus'
