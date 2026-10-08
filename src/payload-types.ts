@@ -664,6 +664,7 @@ export interface ProductsPage {
           | {
               name: string;
               badge?: string | null;
+              price?: number | null;
               image?: (number | null) | Media;
               imageUrl?: string | null;
               description?: string | null;
@@ -1580,6 +1581,7 @@ export interface ProductsPageSelect<T extends boolean = true> {
           | {
               name?: T;
               badge?: T;
+              price?: T;
               image?: T;
               imageUrl?: T;
               description?: T;

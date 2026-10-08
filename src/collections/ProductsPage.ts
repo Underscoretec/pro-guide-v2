@@ -54,6 +54,7 @@ export const ProductsPage: CollectionConfig = {
           fields: [
             { name: 'name', type: 'text', required: true },
             { name: 'badge', type: 'text' },
+            { name: 'price', type: 'number', label: 'Price (in INR)' },
             { name: 'image', type: 'upload', relationTo: 'media' },
             { name: 'imageUrl', type: 'text' },
             { name: 'description', type: 'textarea' },
