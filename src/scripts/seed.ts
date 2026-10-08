@@ -271,7 +271,7 @@ export async function seed() {
             dropdownItems: [
               { label: 'About Faculty & Training', url: '/training-courses' },
               { label: 'Learning Bites', url: '/videos' },
-              { label: 'Why 3D Simulation Models', url: '/resources' },
+              { label: 'Why 3D Simulation Models', url: '/3d-simulation' },
             ],
           },
           {
