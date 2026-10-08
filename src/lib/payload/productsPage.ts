@@ -159,6 +159,7 @@ export const getProductsPage = cache(async () => {
     const res = await payload.find({
       collection: 'products-page',
       limit: 1,
+      depth: 2,
     })
     return res.docs[0] || null
   } catch (error) {

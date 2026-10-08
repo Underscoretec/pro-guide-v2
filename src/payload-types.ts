@@ -291,8 +291,8 @@ export interface Product {
   image?: (number | null) | Media;
   images?:
     | {
-        url?: string | null;
         image?: (number | null) | Media;
+        url?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -412,6 +412,13 @@ export interface HomePage {
                   gstNote?: string | null;
                   image?: (number | null) | Media;
                   imageUrl?: string | null;
+                  images?:
+                    | {
+                        image?: (number | null) | Media;
+                        imageUrl?: string | null;
+                        id?: string | null;
+                      }[]
+                    | null;
                   alt?: string | null;
                   cartUrl?: string | null;
                   detailsUrl?: string | null;
@@ -432,6 +439,13 @@ export interface HomePage {
                   description: string;
                   image?: (number | null) | Media;
                   imageUrl?: string | null;
+                  images?:
+                    | {
+                        image?: (number | null) | Media;
+                        imageUrl?: string | null;
+                        id?: string | null;
+                      }[]
+                    | null;
                   alt?: string | null;
                   id?: string | null;
                 }[]
@@ -776,6 +790,13 @@ export interface ProductsPage {
               price?: number | null;
               image?: (number | null) | Media;
               imageUrl?: string | null;
+              images?:
+                | {
+                    image?: (number | null) | Media;
+                    imageUrl?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
               description?: string | null;
               bulletPoints?:
                 | {
@@ -1284,8 +1305,8 @@ export interface ProductsSelect<T extends boolean = true> {
   images?:
     | T
     | {
-        url?: T;
         image?: T;
+        url?: T;
         id?: T;
       };
   detailHeading?: T;
@@ -1414,6 +1435,13 @@ export interface HomePageSelect<T extends boolean = true> {
                     gstNote?: T;
                     image?: T;
                     imageUrl?: T;
+                    images?:
+                      | T
+                      | {
+                          image?: T;
+                          imageUrl?: T;
+                          id?: T;
+                        };
                     alt?: T;
                     cartUrl?: T;
                     detailsUrl?: T;
@@ -1435,6 +1463,13 @@ export interface HomePageSelect<T extends boolean = true> {
                     description?: T;
                     image?: T;
                     imageUrl?: T;
+                    images?:
+                      | T
+                      | {
+                          image?: T;
+                          imageUrl?: T;
+                          id?: T;
+                        };
                     alt?: T;
                     id?: T;
                   };
@@ -1802,6 +1837,13 @@ export interface ProductsPageSelect<T extends boolean = true> {
               price?: T;
               image?: T;
               imageUrl?: T;
+              images?:
+                | T
+                | {
+                    image?: T;
+                    imageUrl?: T;
+                    id?: T;
+                  };
               description?: T;
               bulletPoints?:
                 | T

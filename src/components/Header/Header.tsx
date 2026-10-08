@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
+import { FiShoppingCart } from 'react-icons/fi'
 
 interface HeaderProps {
   data?: any
@@ -203,11 +204,12 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
       <Link
         href={cartUrl}
         title="Shopping Cart"
-        className="relative text-[20px] px-[6px] py-1 text-ink hover:text-purple transition-colors inline-flex items-center shrink-0"
+        aria-label="Shopping Cart"
+        className="relative p-2 text-ink hover:text-purple transition-colors inline-flex items-center justify-center shrink-0"
       >
-        &#128722;
+        <FiShoppingCart className="w-[22px] h-[22px]" />
         {isHydrated && itemCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-purple text-white text-[10px] font-bold min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center leading-none shadow-sm">
+          <span className="absolute -top-0.5 -right-0.5 bg-purple text-white text-[10px] font-bold min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center leading-none shadow-sm">
             {itemCount}
           </span>
         )}
@@ -276,9 +278,10 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
             <Link
               href={cartUrl}
               title="Shopping Cart"
-              className="relative text-[20px] p-1.5 text-ink hover:text-purple transition-colors inline-flex items-center"
+              aria-label="Shopping Cart"
+              className="relative p-1.5 text-ink hover:text-purple transition-colors inline-flex items-center justify-center"
             >
-              &#128722;
+              <FiShoppingCart className="w-[21px] h-[21px]" />
               {isHydrated && itemCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-purple text-white text-[10px] font-bold min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center leading-none shadow-sm">
                   {itemCount}
@@ -374,7 +377,8 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-center bg-[#F4F4F6] text-ink text-[13.5px] font-bold py-2 rounded-[5px] flex items-center justify-center gap-2 hover:text-purple"
               >
-                <span>&#128722; Cart</span>
+                <FiShoppingCart className="w-[18px] h-[18px]" />
+                <span>Cart</span>
                 {isHydrated && itemCount > 0 && (
                   <span className="bg-purple text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
                     {itemCount}

@@ -191,20 +191,39 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
             const key = prod.id || prod.slug || idx
 
             // Resolve multiple images for slider
-            const slugKey = (prod.slug || '').toLowerCase()
-            const galleryFromSlug = productGalleries[slugKey] || []
             const customImages = Array.isArray(prod.images)
-              ? prod.images.map((img: any) =>
-                  typeof img === 'string' ? img : img?.url || img?.imageUrl
-                )
+              ? prod.images
+                  .map((img: any) =>
+                    typeof img === 'string'
+                      ? img
+                      : img?.image?.url || img?.imageUrl || img?.url || ''
+                  )
+                  .filter(Boolean)
               : []
-            const candidateImages = customImages.length > 0 ? customImages : galleryFromSlug
-            const images =
-              candidateImages.length > 0
-                ? candidateImages.includes(imageSrc)
-                  ? candidateImages
-                  : [imageSrc, ...candidateImages]
-                : [imageSrc]
+
+            const isCustomUpload =
+              (prod.image && typeof prod.image === 'object' && Boolean(prod.image.url)) ||
+              (typeof prod.imageUrl === 'string' &&
+                prod.imageUrl.trim() !== '' &&
+                !prod.imageUrl.startsWith('/images/prod') &&
+                !prod.imageUrl.startsWith('/images/detail_'))
+
+            let images: string[] = []
+            if (customImages.length === 1) {
+              // Exactly 1 image uploaded in gallery: DO NOT auto-slide
+              images = customImages
+            } else if (customImages.length > 1) {
+              // Multiple images uploaded in gallery: auto-slide
+              images = customImages
+            } else if (isCustomUpload || prod.image) {
+              // Single main image uploaded: DO NOT auto-slide
+              images = [imageSrc]
+            } else {
+              // Default demo fallback for unmodified static catalog cards
+              const slugKey = (prod.slug || '').toLowerCase()
+              const galleryFromSlug = productGalleries[slugKey] || []
+              images = galleryFromSlug.length > 0 ? galleryFromSlug : [imageSrc]
+            }
 
             return (
               <div

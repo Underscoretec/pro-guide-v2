@@ -265,11 +265,16 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
       let galleryImages: string[] = []
       if (Array.isArray(doc.images) && doc.images.length > 0) {
         galleryImages = doc.images
-          .map((img: any) => img.url || img.image?.url || '')
+          .map((img: any) =>
+            typeof img === 'string'
+              ? img
+              : img.url || img.imageUrl || img.image?.url || ''
+          )
           .filter(Boolean)
       }
-      const primaryImage = doc.imageUrl || doc.image?.url || defaultProduct.imageUrl
-      if (!galleryImages.includes(primaryImage)) {
+      const primaryImage =
+        doc.imageUrl || doc.image?.url || galleryImages[0] || defaultProduct.imageUrl
+      if (primaryImage && !galleryImages.includes(primaryImage)) {
         galleryImages = [primaryImage, ...galleryImages]
       }
       if (galleryImages.length === 0) {

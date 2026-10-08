@@ -66,29 +66,33 @@ export const Products: CollectionConfig = {
     {
       name: 'imageUrl',
       type: 'text',
-      label: 'Main Image URL (e.g. /images/prod1.jpg)',
+      label: 'Main / Featured Image URL (e.g. /images/prod1.jpg)',
     },
     {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
-      label: 'Main Image Upload (optional)',
+      label: 'Main / Featured Image Upload',
     },
     {
       name: 'images',
       type: 'array',
-      label: 'Gallery Images',
+      label: 'Multiple Product Images / Gallery (Thumbnails & Hover Slider)',
+      labels: {
+        singular: 'Product Image',
+        plural: 'Product Images',
+      },
       fields: [
-        {
-          name: 'url',
-          type: 'text',
-          label: 'Image URL',
-        },
         {
           name: 'image',
           type: 'upload',
           relationTo: 'media',
           label: 'Upload Image',
+        },
+        {
+          name: 'url',
+          type: 'text',
+          label: 'Image URL (optional if uploaded above)',
         },
       ],
     },
