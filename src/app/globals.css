@@ -247,7 +247,8 @@ section.purple h2 { color: #fff; }
 .wcard .wimg img { width: 100%; height: 100%; object-fit: cover; }
 .wcard .wbody { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .wcard .tagline { font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: #E67E22; font-weight: 800; }
-.wcard h3 { font-size: 16px; line-height: 1.4; font-weight: 700; color: var(--ink); }
+.wcard h3, .wcard h3 a { font-size: 16px; line-height: 1.4; font-weight: 700; color: #1F2328; text-decoration: none; }
+.wcard h3 a:hover { color: #1F2328; }
 .wcard .meta { font-size: 12.5px; color: var(--muted); }
 .wcard .actions { display: flex; gap: 8px; margin-top: auto; padding-top: 10px; }
 .wcard .actions .btn { flex: 1; padding: 9px 8px; font-size: 12px; }
