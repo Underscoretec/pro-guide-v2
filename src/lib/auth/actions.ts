@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { generatePayloadCookie } from 'payload'
 import { getPayloadClient } from '@/lib/payload/client'
-import { generateOtp, hashOtp, otpExpiry } from './otp'
+import { issueOtp, validateStoredOtp, clearOtp, type OtpStep } from '@/lib/authOtp'
 
 export type AuthState = {
   error?: string
@@ -52,6 +52,7 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
     where: { email: { equals: values.email } },
     limit: 1,
     depth: 0,
+    overrideAccess: true,
   })
   if (existing.totalDocs > 0) {
     return { fieldErrors: { email: 'An account with this email already exists' }, values }
@@ -59,9 +60,9 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
 
   let userId: number | string
   try {
-    const otp = generateOtp()
     const user = await payload.create({
       collection: 'users',
+      overrideAccess: true,
       data: {
         email: values.email,
         password,
@@ -71,10 +72,6 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
         institution: values.institution || undefined,
         isEmailVerified: false,
         isPhoneVerified: false,
-        emailOtpHash: hashOtp(otp),
-        emailOtpExpiresAt: otpExpiry(),
-        phoneOtpHash: hashOtp(otp),
-        phoneOtpExpiresAt: otpExpiry(),
       },
     })
     userId = user.id
@@ -82,6 +79,7 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
     try {
       await payload.create({
         collection: 'shipping-addresses',
+        overrideAccess: true,
         data: {
           user: user.id,
           addressLine: values.addressLine,
@@ -94,25 +92,29 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
       })
     } catch (err) {
       // don't leave a user without an address behind
-      await payload.delete({ collection: 'users', id: user.id })
+      await payload.delete({ collection: 'users', id: user.id, overrideAccess: true })
       throw err
     }
+
+    // Issue Step 1 OTP (Email verification)
+    await issueOtp(payload, userId, 'email')
   } catch (err) {
     console.error('Sign up failed', err)
     return { error: 'Could not create your account. Please try again.', values }
   }
 
-  redirect(`/verify-otp?email=${encodeURIComponent(values.email)}`)
+  redirect(`/verify-otp?email=${encodeURIComponent(values.email)}&step=email`)
 }
 
 export async function verifyOtp(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const email = str(formData, 'email').toLowerCase()
-  const emailOtp = str(formData, 'emailOtp')
-  const phoneOtp = str(formData, 'phoneOtp')
+  const step = (str(formData, 'step') || 'email') as OtpStep
+  const otp = str(formData, 'otp') || (step === 'email' ? str(formData, 'emailOtp') : str(formData, 'phoneOtp'))
 
   const fieldErrors: Record<string, string> = {}
-  if (!/^\d{6}$/.test(emailOtp)) fieldErrors.emailOtp = 'Enter the 6-digit email OTP'
-  if (!/^\d{6}$/.test(phoneOtp)) fieldErrors.phoneOtp = 'Enter the 6-digit phone OTP'
+  if (!otp || !/^\d{6}$/.test(otp)) {
+    fieldErrors.otp = `Enter the 6-digit ${step === 'email' ? 'email' : 'phone'} verification code`
+  }
   if (!email) return { error: 'Missing email. Please sign up again.' }
   if (Object.keys(fieldErrors).length) return { fieldErrors }
 
@@ -122,70 +124,91 @@ export async function verifyOtp(_prev: AuthState, formData: FormData): Promise<A
     where: { email: { equals: email } },
     limit: 1,
     depth: 0,
+    overrideAccess: true,
   })
   const user = docs[0]
   if (!user) return { error: 'Account not found. Please sign up again.' }
 
-  const now = Date.now()
-  const emailOk =
-    user.isEmailVerified ||
-    (user.emailOtpHash === hashOtp(emailOtp) &&
-      !!user.emailOtpExpiresAt &&
-      new Date(user.emailOtpExpiresAt).getTime() > now)
-  const phoneOk =
-    user.isPhoneVerified ||
-    (user.phoneOtpHash === hashOtp(phoneOtp) &&
-      !!user.phoneOtpExpiresAt &&
-      new Date(user.phoneOtpExpiresAt).getTime() > now)
-
-  if (!emailOk || !phoneOk) {
-    return {
-      fieldErrors: {
-        ...(emailOk ? {} : { emailOtp: 'Invalid or expired OTP' }),
-        ...(phoneOk ? {} : { phoneOtp: 'Invalid or expired OTP' }),
-      },
+  if (step === 'email') {
+    if (user.isEmailVerified) {
+      if (!user.isPhoneVerified) {
+        await issueOtp(payload, user.id, 'phone')
+        redirect(`/verify-otp?email=${encodeURIComponent(email)}&step=phone`)
+      } else {
+        redirect('/sign-in?verified=1')
+      }
     }
+
+    const validationError = validateStoredOtp(user, 'email', otp)
+    if (validationError) {
+      return { fieldErrors: { otp: validationError } }
+    }
+
+    await payload.update({
+      collection: 'users',
+      id: user.id,
+      overrideAccess: true,
+      data: {
+        isEmailVerified: true,
+      },
+    })
+    await clearOtp(payload, user.id, 'email')
+
+    // Automatically issue Step 2 (Phone OTP)
+    await issueOtp(payload, user.id, 'phone')
+
+    redirect(`/verify-otp?email=${encodeURIComponent(email)}&step=phone`)
   }
 
-  await payload.update({
-    collection: 'users',
-    id: user.id,
-    data: {
-      isEmailVerified: true,
-      isPhoneVerified: true,
-      emailOtpHash: null,
-      emailOtpExpiresAt: null,
-      phoneOtpHash: null,
-      phoneOtpExpiresAt: null,
-    },
-  })
+  if (step === 'phone') {
+    if (!user.isEmailVerified) {
+      redirect(`/verify-otp?email=${encodeURIComponent(email)}&step=email`)
+    }
 
-  redirect('/sign-in?verified=1')
+    if (user.isPhoneVerified) {
+      redirect('/sign-in?verified=1')
+    }
+
+    const validationError = validateStoredOtp(user, 'phone', otp)
+    if (validationError) {
+      return { fieldErrors: { otp: validationError } }
+    }
+
+    await payload.update({
+      collection: 'users',
+      id: user.id,
+      overrideAccess: true,
+      data: {
+        isPhoneVerified: true,
+      },
+    })
+    await clearOtp(payload, user.id, 'phone')
+
+    redirect('/sign-in?verified=1')
+  }
+
+  return {}
 }
 
-export async function resendOtp(email: string): Promise<AuthState> {
+export async function resendOtp(email: string, step: OtpStep = 'email'): Promise<AuthState> {
   const payload = await getPayloadClient()
   const { docs } = await payload.find({
     collection: 'users',
     where: { email: { equals: email.toLowerCase() } },
     limit: 1,
     depth: 0,
+    overrideAccess: true,
   })
   const user = docs[0]
   if (!user) return { error: 'Account not found.' }
 
-  const otp = generateOtp() // TODO: deliver via email / SMS
-  await payload.update({
-    collection: 'users',
-    id: user.id,
-    data: {
-      emailOtpHash: hashOtp(otp),
-      emailOtpExpiresAt: otpExpiry(),
-      phoneOtpHash: hashOtp(otp),
-      phoneOtpExpiresAt: otpExpiry(),
-    },
-  })
-  return {}
+  try {
+    await issueOtp(payload, user.id, step)
+    return {}
+  } catch (err) {
+    console.error(`Failed to resend ${step} OTP`, err)
+    return { error: 'Could not send verification code. Please try again.' }
+  }
 }
 
 export async function signIn(_prev: AuthState, formData: FormData): Promise<AuthState> {
@@ -197,13 +220,15 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
 
   let result
   try {
-    result = await payload.login({ collection: 'users', data: { email, password } })
+    result = await payload.login({ collection: 'users', data: { email, password }, overrideAccess: true })
   } catch {
     return { error: 'Invalid email or password', values: { email } }
   }
 
   if (!result.user.isEmailVerified || !result.user.isPhoneVerified) {
-    redirect(`/verify-otp?email=${encodeURIComponent(email)}`)
+    const nextStep: OtpStep = !result.user.isEmailVerified ? 'email' : 'phone'
+    await issueOtp(payload, result.user.id, nextStep)
+    redirect(`/verify-otp?email=${encodeURIComponent(email)}&step=${nextStep}`)
   }
 
   if (result.token) {
