@@ -15,7 +15,7 @@ export interface VideoItem {
   videoUrl?: string
 }
 
-interface VideosContentProps {
+interface LearningBitesContentProps {
   data?: any
 }
 
@@ -82,7 +82,7 @@ const defaultVideoList: VideoItem[] = [
   },
 ]
 
-export function VideosContent({ data }: VideosContentProps) {
+export function LearningBitesContent({ data }: LearningBitesContentProps) {
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null)
 
   const heroCrumbHome = data?.hero?.crumbHomeText || 'Home'
@@ -102,7 +102,7 @@ export function VideosContent({ data }: VideosContentProps) {
     id: v.id || `video-${index}`,
     title: v.title || 'Surgical Demonstration Video',
     description: v.description || 'Step-by-step surgical simulation video tutorial.',
-    metaText: v.metaText || 'Video library · Coming soon on this page',
+    metaText: v.metaText || 'Video library · Skill Lab Demonstration',
     category: v.category || 'Otology',
     duration: v.duration || '10 mins',
     thumbnailUrl: typeof v.thumbnail === 'object' && v.thumbnail?.url ? v.thumbnail.url : v.thumbnailUrl,
@@ -267,4 +267,4 @@ export function VideosContent({ data }: VideosContentProps) {
   )
 }
 
-export default VideosContent
+export default LearningBitesContent

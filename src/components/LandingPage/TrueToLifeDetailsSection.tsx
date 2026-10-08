@@ -164,9 +164,31 @@ export const TrueToLifeDetailsSection: React.FC<TrueToLifeDetailsProps> = ({ dat
 
   const resolveImages = (card: any, primarySrc: string): string[] => {
     if (Array.isArray(card.images) && card.images.length > 0) {
-      return card.images.map((img: any) =>
-        typeof img === 'string' ? img : img?.url || img?.image?.url || img?.imageUrl || primarySrc
-      )
+      const customImages = card.images
+        .map((img: any) =>
+          typeof img === 'string'
+            ? img
+            : img?.image?.url || img?.imageUrl || img?.url || ''
+        )
+        .filter(Boolean)
+
+      if (customImages.length === 1) {
+        return customImages
+      }
+      if (customImages.length > 1) {
+        return customImages
+      }
+    }
+
+    const isCustomUpload =
+      (card.image && typeof card.image === 'object' && Boolean(card.image.url)) ||
+      (typeof card.imageUrl === 'string' &&
+        card.imageUrl.trim() !== '' &&
+        !card.imageUrl.startsWith('/images/detail_') &&
+        !card.imageUrl.startsWith('/images/prod'))
+
+    if (isCustomUpload || (card.image && typeof card.image === 'object')) {
+      return [primarySrc]
     }
 
     if (detailGalleries[primarySrc]) {

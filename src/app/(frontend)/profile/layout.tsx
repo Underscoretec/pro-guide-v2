@@ -8,10 +8,10 @@ export default async function ProfileLayout({ children }: { children: React.Reac
   if (!user) redirect('/sign-in')
 
   return (
-    <main className="flex-1 bg-[#F1F1F1] py-8 px-4 sm:px-8">
-      <div className="max-w-[1400px] mx-auto grid gap-5 md:grid-cols-[320px_1fr]">
+    <main className="flex-1 bg-[#F8F8FA] py-8 sm:py-12 px-4 sm:px-6">
+      <div className="max-w-[1200px] mx-auto grid gap-6 md:grid-cols-[280px_1fr] items-start">
         <ProfileSidebar />
-        <div>{children}</div>
+        <div className="w-full">{children}</div>
       </div>
     </main>
   )

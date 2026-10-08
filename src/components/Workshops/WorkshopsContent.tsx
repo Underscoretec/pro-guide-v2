@@ -144,6 +144,11 @@ export const WorkshopsContent: React.FC<WorkshopsContentProps> = ({ data }) => {
     }))
   }
 
+  const getWorkshopSlug = (title: string) => {
+    if (!title) return 'basic-3d-temporal-bone-dissection-workshop'
+    return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+  }
+
   const temporalWorkshops = mapWorkshops(data?.temporalWorkshops, defaultTemporalWorkshops)
   const sinusWorkshops = mapWorkshops(data?.sinusWorkshops, defaultSinusWorkshops)
   const larynxWorkshops = mapWorkshops(data?.larynxWorkshops, defaultLarynxWorkshops)
@@ -183,27 +188,34 @@ export const WorkshopsContent: React.FC<WorkshopsContentProps> = ({ data }) => {
             <div className="rule" />
           </div>
           <div className="grid g3">
-            {temporalWorkshops.map((ws: any, idx: number) => (
-              <div key={idx} className="wcard">
-                <div className="wimg">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={ws.imageUrl} alt={ws.alt} />
-                </div>
-                <div className="wbody">
-                  <span className="tagline">{ws.tagline}</span>
-                  <h3>{ws.title}</h3>
-                  <div className="meta">{ws.meta}</div>
-                  <div className="actions">
-                    <a className="btn ghost" href={ws.brochureUrl} target="_blank" rel="noopener noreferrer">
-                      Download Brochure
-                    </a>
-                    <a className="btn" href={ws.registrationUrl} target="_blank" rel="noopener noreferrer">
-                      Register
-                    </a>
+            {temporalWorkshops.map((ws: any, idx: number) => {
+              const slug = getWorkshopSlug(ws.title)
+              return (
+                <div key={idx} className="wcard">
+                  <Link href={`/workshops/${slug}`} className="wimg block cursor-pointer">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={ws.imageUrl} alt={ws.alt} />
+                  </Link>
+                  <div className="wbody">
+                    <span className="tagline">{ws.tagline}</span>
+                    <h3>
+                      <Link href={`/workshops/${slug}`} className="text-[#1F2328] hover:text-[#1F2328] transition-colors">
+                        {ws.title}
+                      </Link>
+                    </h3>
+                    <div className="meta">{ws.meta}</div>
+                    <div className="actions">
+                      <a className="btn ghost" href={ws.brochureUrl} target="_blank" rel="noopener noreferrer">
+                        Download Brochure
+                      </a>
+                      <a className="btn" href={ws.registrationUrl} target="_blank" rel="noopener noreferrer">
+                        Register
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
@@ -215,27 +227,34 @@ export const WorkshopsContent: React.FC<WorkshopsContentProps> = ({ data }) => {
             <div className="rule" />
           </div>
           <div className="grid g3">
-            {sinusWorkshops.map((ws: any, idx: number) => (
-              <div key={idx} className="wcard">
-                <div className="wimg">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={ws.imageUrl} alt={ws.alt} />
-                </div>
-                <div className="wbody">
-                  <span className="tagline">{ws.tagline}</span>
-                  <h3>{ws.title}</h3>
-                  <div className="meta">{ws.meta}</div>
-                  <div className="actions">
-                    <a className="btn ghost" href={ws.brochureUrl} target="_blank" rel="noopener noreferrer">
-                      Download Brochure
-                    </a>
-                    <a className="btn" href={ws.registrationUrl} target="_blank" rel="noopener noreferrer">
-                      Register
-                    </a>
+            {sinusWorkshops.map((ws: any, idx: number) => {
+              const slug = getWorkshopSlug(ws.title)
+              return (
+                <div key={idx} className="wcard">
+                  <Link href={`/workshops/${slug}`} className="wimg block cursor-pointer">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={ws.imageUrl} alt={ws.alt} />
+                  </Link>
+                  <div className="wbody">
+                    <span className="tagline">{ws.tagline}</span>
+                    <h3>
+                      <Link href={`/workshops/${slug}`} className="text-[#1F2328] hover:text-[#1F2328] transition-colors">
+                        {ws.title}
+                      </Link>
+                    </h3>
+                    <div className="meta">{ws.meta}</div>
+                    <div className="actions">
+                      <a className="btn ghost" href={ws.brochureUrl} target="_blank" rel="noopener noreferrer">
+                        Download Brochure
+                      </a>
+                      <a className="btn" href={ws.registrationUrl} target="_blank" rel="noopener noreferrer">
+                        Register
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
@@ -247,27 +266,34 @@ export const WorkshopsContent: React.FC<WorkshopsContentProps> = ({ data }) => {
             <div className="rule" />
           </div>
           <div className="grid g3">
-            {larynxWorkshops.map((ws: any, idx: number) => (
-              <div key={idx} className="wcard">
-                <div className="wimg">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={ws.imageUrl} alt={ws.alt} />
-                </div>
-                <div className="wbody">
-                  <span className="tagline">{ws.tagline}</span>
-                  <h3>{ws.title}</h3>
-                  <div className="meta">{ws.meta}</div>
-                  <div className="actions">
-                    <a className="btn ghost" href={ws.brochureUrl} target="_blank" rel="noopener noreferrer">
-                      Download Brochure
-                    </a>
-                    <a className="btn" href={ws.registrationUrl} target="_blank" rel="noopener noreferrer">
-                      Register
-                    </a>
+            {larynxWorkshops.map((ws: any, idx: number) => {
+              const slug = getWorkshopSlug(ws.title)
+              return (
+                <div key={idx} className="wcard">
+                  <Link href={`/workshops/${slug}`} className="wimg block cursor-pointer">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={ws.imageUrl} alt={ws.alt} />
+                  </Link>
+                  <div className="wbody">
+                    <span className="tagline">{ws.tagline}</span>
+                    <h3>
+                      <Link href={`/workshops/${slug}`} className="text-[#1F2328] hover:text-[#1F2328] transition-colors">
+                        {ws.title}
+                      </Link>
+                    </h3>
+                    <div className="meta">{ws.meta}</div>
+                    <div className="actions">
+                      <a className="btn ghost" href={ws.brochureUrl} target="_blank" rel="noopener noreferrer">
+                        Download Brochure
+                      </a>
+                      <a className="btn" href={ws.registrationUrl} target="_blank" rel="noopener noreferrer">
+                        Register
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           <div className="statband mt-9">

@@ -11,7 +11,7 @@ export interface ProductItem {
   badge?: string
   image?: any
   imageUrl?: string
-  images?: (string | { image?: any; imageUrl?: string })[]
+  images?: (string | { image?: any; imageUrl?: string; url?: string })[]
   description?: string
   price?: number
   bulletPoints?: (string | { point: string })[]
@@ -89,18 +89,56 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const router = useRouter()
   const { addToCart } = useCart()
 
+  const firstGalleryImage =
+    Array.isArray(item.images) && item.images.length > 0
+      ? (typeof item.images[0] === 'string'
+          ? item.images[0]
+          : item.images[0]?.image?.url || item.images[0]?.imageUrl || item.images[0]?.url)
+      : null
+
   const imgSrc =
-    item.image?.url || item.imageUrl || (typeof item.image === 'string' ? item.image : '/images/prod1.jpg')
+    item.image?.url ||
+    item.imageUrl ||
+    firstGalleryImage ||
+    (typeof item.image === 'string' ? item.image : '/images/prod1.jpg')
   const altText = item.name || 'ProGuide 3D Simulation Model'
 
   // Resolve multiple images for hover slider
   const resolveImages = (): string[] => {
-    if (Array.isArray(item.images) && item.images.length > 0) {
-      return item.images.map((img) =>
-        typeof img === 'string' ? img : img?.image?.url || img?.imageUrl || imgSrc
-      )
+    // 1. If images array is provided in Payload
+    if (Array.isArray(item.images)) {
+      const customImages = item.images
+        .map((img: any) =>
+          typeof img === 'string'
+            ? img
+            : img?.image?.url || img?.imageUrl || img?.url || ''
+        )
+        .filter(Boolean)
+
+      // If user uploaded exactly 1 image: DO NOT auto-slide, show only that 1 image
+      if (customImages.length === 1) {
+        return customImages
+      }
+      // If user uploaded multiple images: auto-slide between them
+      if (customImages.length > 1) {
+        return customImages
+      }
     }
 
+    // 2. If user uploaded a single image via media upload or custom URL (and no multiple images):
+    // DO NOT auto-slide, show only that single image
+    const hasCustomUpload =
+      (item.image && typeof item.image === 'object' && Boolean(item.image.url)) ||
+      (typeof item.imageUrl === 'string' &&
+        item.imageUrl.trim() !== '' &&
+        !item.imageUrl.startsWith('/images/prod') &&
+        !item.imageUrl.startsWith('/images/detail_'))
+
+    if (hasCustomUpload || (item.image && typeof item.image === 'object')) {
+      return [imgSrc]
+    }
+
+    // 3. Fallback for static default catalog demo items (only when no custom image was uploaded)
     if (nameOrUrlGalleries[imgSrc]) {
       return nameOrUrlGalleries[imgSrc]
     }
@@ -267,14 +305,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
             onClick={handleBuy}
             className="flex-1 text-center bg-purple text-white px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer"
           >
-            Buy
+            {item.primaryButton?.text || 'Buy'}
           </button>
 
           <Link
             href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
             className="flex-1 text-center bg-white text-ink px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
           >
-            Enquire
+            {item.secondaryButton?.text || 'Enquire'}
           </Link>
         </div>
       </div>
