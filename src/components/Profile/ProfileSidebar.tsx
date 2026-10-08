@@ -23,8 +23,41 @@ export const ProfileSidebar: React.FC = () => {
       <div className="px-4 py-4 text-[16px] text-ink border-b border-line">Profile</div>
       {link('/profile/addresses', 'Saved Address', '📍')}
       {link('/profile/orders', 'My Orders', '📦')}
-      <form action={signOut}>
-        <button type="submit" className={`${item} text-ink hover:text-purple`}>
+      <form
+        action={signOut}
+        onSubmit={() => {
+          if (typeof window !== 'undefined') {
+            try {
+              const keys: string[] = []
+              for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i)
+                if (k && (k.startsWith('proguide_cart') || k === 'cart')) {
+                  keys.push(k)
+                }
+              }
+              keys.forEach((k) => localStorage.removeItem(k))
+            } catch {}
+          }
+        }}
+      >
+        <button
+          type="submit"
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              try {
+                const keys: string[] = []
+                for (let i = 0; i < localStorage.length; i++) {
+                  const k = localStorage.key(i)
+                  if (k && (k.startsWith('proguide_cart') || k === 'cart')) {
+                    keys.push(k)
+                  }
+                }
+                keys.forEach((k) => localStorage.removeItem(k))
+              } catch {}
+            }
+          }}
+          className={`${item} text-ink hover:text-purple cursor-pointer`}
+        >
           <span aria-hidden>↪</span>
           Logout
         </button>

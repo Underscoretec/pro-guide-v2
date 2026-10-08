@@ -38,8 +38,18 @@ interface CartContextType {
 
 export const DEFAULT_CART_ITEMS: CartItem[] = []
 
-const getStorageKey = (userId?: number | string | null) => {
-  return userId ? `proguide_cart_user_${userId}` : 'proguide_cart_guest'
+const clearAllLocalCartStorage = () => {
+  if (typeof window === 'undefined') return
+  try {
+    const keysToRemove: string[] = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)
+      if (k && (k.startsWith('proguide_cart') || k === 'cart')) {
+        keysToRemove.push(k)
+      }
+    }
+    keysToRemove.forEach((k) => localStorage.removeItem(k))
+  } catch {}
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -53,70 +63,75 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
   const [items, setItems] = useState<CartItem[]>([])
   const [isHydrated, setIsHydrated] = useState(false)
   const userId = user?.id ? String(user.id) : null
-  const currentKey = getStorageKey(userId)
   const activeUserIdRef = useRef<string | null>(userId)
 
-  // Clear deprecated legacy global cart key so dummy items are never retained
+  // Listen for user changes or logout events
   useEffect(() => {
-    try {
-      localStorage.removeItem('proguide_cart_v1')
-    } catch {}
-  }, [])
-
-  // When active user changes (login, logout, or account switch)
-  useEffect(() => {
-    const key = getStorageKey(userId)
     activeUserIdRef.current = userId
 
-    // 1. Immediately read user-scoped localStorage for instantaneous UI
-    let localItems: CartItem[] = []
+    if (!userId) {
+      // User is logged out: wipe all cart data from localStorage and reset items to empty
+      clearAllLocalCartStorage()
+      setItems([])
+      setIsHydrated(true)
+      return
+    }
+
+    // A user is logged in
+    const key = `proguide_cart_user_${userId}`
+
+    // Reset items state first so no previous user items can ever be shown
+    setItems([])
+
+    // 1. Read only this specific user's cached cart from localStorage
+    let userLocalItems: CartItem[] = []
     try {
       const stored = localStorage.getItem(key)
       if (stored) {
         const parsed = JSON.parse(stored)
         if (Array.isArray(parsed)) {
-          localItems = parsed
+          userLocalItems = parsed
         }
       }
     } catch {}
 
-    setItems(localItems)
+    if (userLocalItems.length > 0) {
+      setItems(userLocalItems)
+    }
     setIsHydrated(true)
 
-    // 2. If user is logged in, fetch authoritative cart from Payload DB
-    if (userId) {
-      getUserCart()
-        .then((serverItems) => {
-          // Verify this response is still for the active user
-          if (activeUserIdRef.current !== userId) return
+    // 2. Fetch authoritative cart from database for this user
+    getUserCart()
+      .then((serverItems) => {
+        // Ensure this response is still for the current active user
+        if (activeUserIdRef.current !== userId) return
 
-          if (Array.isArray(serverItems)) {
-            if (serverItems.length > 0) {
-              setItems(serverItems)
-              try {
-                localStorage.setItem(key, JSON.stringify(serverItems))
-              } catch {}
-            } else if (localItems.length > 0) {
-              // Local has items, sync to server
-              syncUserCart(localItems).catch(() => {})
-            }
-          }
-        })
-        .catch((err) => {
-          console.warn('Failed to load cart from server:', err)
-        })
-    }
+        if (Array.isArray(serverItems)) {
+          setItems(serverItems)
+          try {
+            localStorage.setItem(key, JSON.stringify(serverItems))
+          } catch {}
+        }
+      })
+      .catch((err) => {
+        console.warn('Failed to load user cart:', err)
+      })
   }, [userId])
 
   // Helper to persist changes both in user-scoped localStorage and Payload DB
   const persistItems = (newItems: CartItem[]) => {
     setItems(newItems)
-    try {
-      localStorage.setItem(currentKey, JSON.stringify(newItems))
-    } catch {}
 
     if (userId) {
+      const key = `proguide_cart_user_${userId}`
+      try {
+        localStorage.setItem(key, JSON.stringify(newItems))
+      } catch {}
       syncUserCart(newItems).catch(() => {})
+    } else {
+      try {
+        localStorage.setItem('proguide_cart_guest', JSON.stringify(newItems))
+      } catch {}
     }
   }
 
@@ -183,9 +198,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
   }
 
   const clearCart = () => {
-    persistItems([])
+    setItems([])
     if (userId) {
+      try {
+        localStorage.removeItem(`proguide_cart_user_${userId}`)
+      } catch {}
       clearUserCart().catch(() => {})
+    } else {
+      clearAllLocalCartStorage()
     }
   }
 
