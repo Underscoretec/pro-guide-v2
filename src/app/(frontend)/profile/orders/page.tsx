@@ -72,11 +72,11 @@ export default async function OrdersPage() {
                   <div className="flex items-center gap-2.5">
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-purple/10 text-purple border border-purple/20">
                       <FiCreditCard className="w-3 h-3" />
-                      <span>{order.paymentMethod || 'COD'}</span>
+                      <span>{order.paymentMethod || 'ONLINE'}</span>
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-green/10 text-green border border-green/20">
+                    <span className={`inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${order.orderStatus === 'pending_payment' ? 'bg-amber-100 text-amber-700 border border-amber-300' : 'bg-green/10 text-green border border-green/20'}`}>
                       <FiClock className="w-3 h-3" />
-                      <span>{order.orderStatus || 'confirmed'}</span>
+                      <span>{(order.orderStatus || 'pending_payment').replace(/_/g, ' ')}</span>
                     </span>
                   </div>
                 </div>

@@ -268,8 +268,11 @@ export interface Order {
     currency?: string | null;
   };
   paymentStatus?: ('pending' | 'paid' | 'failed') | null;
-  orderStatus?: ('confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled') | null;
+  orderStatus?: ('pending_payment' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled') | null;
   payment?: string | null;
+  razorpayOrderId?: string | null;
+  razorpayPaymentId?: string | null;
+  paymentFailureReason?: string | null;
   paymentMethod?: ('COD' | 'ONLINE' | 'BANK_TRANSFER') | null;
   orderNotes?: string | null;
   updatedAt: string;
@@ -1407,6 +1410,9 @@ export interface OrdersSelect<T extends boolean = true> {
   paymentStatus?: T;
   orderStatus?: T;
   payment?: T;
+  razorpayOrderId?: T;
+  razorpayPaymentId?: T;
+  paymentFailureReason?: T;
   paymentMethod?: T;
   orderNotes?: T;
   updatedAt?: T;
