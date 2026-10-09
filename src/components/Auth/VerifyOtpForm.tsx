@@ -5,7 +5,10 @@ import { verifyOtp, resendOtp, type AuthState } from '@/lib/auth/actions'
 import { Field, FormError, primaryButtonClass } from './AuthShell'
 import { FiCheckCircle, FiRefreshCw } from 'react-icons/fi'
 
-export const VerifyOtpForm: React.FC<{ email: string }> = ({ email }) => {
+export const VerifyOtpForm: React.FC<{ email: string; redirectTo?: string }> = ({
+  email,
+  redirectTo,
+}) => {
   const [state, action, pending] = useActionState<AuthState, FormData>(verifyOtp, {})
   const [resent, setResent] = useState(false)
   const [resending, startResend] = useTransition()
@@ -20,6 +23,7 @@ export const VerifyOtpForm: React.FC<{ email: string }> = ({ email }) => {
   return (
     <form action={action} className="space-y-4">
       <input type="hidden" name="email" value={email} />
+      <input type="hidden" name="redirectTo" value={redirectTo || ''} />
       <FormError message={state.error} />
       <Field label="Email OTP" name="emailOtp" required inputMode="numeric" maxLength={6} autoComplete="one-time-code" placeholder="6-digit code" error={e.emailOtp} />
       <Field label="Phone OTP" name="phoneOtp" required inputMode="numeric" maxLength={6} autoComplete="one-time-code" placeholder="6-digit code" error={e.phoneOtp} />

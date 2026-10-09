@@ -12,7 +12,9 @@ import {
   FiTruck,
   FiArrowRight,
   FiCheckCircle,
+  FiFileText,
 } from 'react-icons/fi'
+import { InvoiceDownloadButton } from '@/components/Orders/InvoiceDownloadButton'
 
 export const metadata: Metadata = { title: 'My Orders | ProGuide' }
 
@@ -116,6 +118,24 @@ export default async function OrdersPage() {
                       minimumFractionDigits: 2,
                     })}
                   </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-3.5 mt-3 border-t border-line/60">
+                  <div className="flex items-center gap-2.5">
+                    <InvoiceDownloadButton order={order} />
+                    <Link
+                      href={`/api/orders/${order.id || order.orderNumber}/invoice`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-purple hover:text-purple-d hover:bg-tint px-3 py-1.5 rounded-[5px] border border-purple/20 transition-all"
+                    >
+                      <FiFileText className="w-3.5 h-3.5" />
+                      <span>View Invoice</span>
+                    </Link>
+                  </div>
+                  <span className="text-[11.5px] text-muted">
+                    GST Tax Invoice
+                  </span>
                 </div>
               </div>
             )

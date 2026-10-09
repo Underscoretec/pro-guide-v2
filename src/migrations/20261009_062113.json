@@ -719,6 +719,27 @@
           "notNull": false,
           "autoincrement": false
         },
+        "razorpay_order_id": {
+          "name": "razorpay_order_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "razorpay_payment_id": {
+          "name": "razorpay_payment_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "payment_failure_reason": {
+          "name": "payment_failure_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "payment_method": {
           "name": "payment_method",
           "type": "text",
@@ -763,6 +784,13 @@
           "name": "orders_user_idx",
           "columns": [
             "user_id"
+          ],
+          "isUnique": false
+        },
+        "orders_razorpay_order_id_idx": {
+          "name": "orders_razorpay_order_id_idx",
+          "columns": [
+            "razorpay_order_id"
           ],
           "isUnique": false
         },
@@ -10440,6 +10468,6 @@
   "internal": {
     "indexes": {}
   },
-  "id": "57f74ecb-7162-4036-af96-d851fa028e5b",
+  "id": "781a7307-5743-4340-bda0-ad5756249ef0",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
