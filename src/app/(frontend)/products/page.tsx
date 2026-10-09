@@ -17,10 +17,8 @@ export const metadata: Metadata = {
 }
 
 export default async function ProductsPage() {
-  const [pageData, families] = await Promise.all([
-    getProductsPage(),
-    getUnifiedProductFamilies(),
-  ])
+  const pageData = await getProductsPage()
+  const families = await getUnifiedProductFamilies(pageData)
 
   const heroData = pageData?.hero || {
     crumbHomeText: 'Home',
