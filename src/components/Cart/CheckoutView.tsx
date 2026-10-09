@@ -7,8 +7,28 @@ import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
 import { AddressForm, type Address } from '@/components/Profile/AddressForm'
 import { setDefaultAddress, removeAddress } from '@/lib/profile/actions'
-import { createOrder } from '@/lib/orders/actions'
+import { createOnlineOrder } from '@/lib/orders/actions'
 import type { ShippingAddress } from '@/payload-types'
+
+declare global {
+  interface Window {
+    Razorpay?: new (options: Record<string, unknown>) => {
+      open: () => void
+      on: (event: string, cb: (response: any) => void) => void
+    }
+  }
+}
+
+const loadRazorpayScript = () =>
+  new Promise<boolean>((resolve) => {
+    if (typeof window === 'undefined') return resolve(false)
+    if (window.Razorpay) return resolve(true)
+    const script = document.createElement('script')
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+    script.onload = () => resolve(true)
+    script.onerror = () => resolve(false)
+    document.body.appendChild(script)
+  })
 
 export interface CheckoutUser {
   id: number | string
@@ -38,6 +58,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   const [isAddingNew, setIsAddingNew] = useState(false)
   const [editingAddressId, setEditingAddressId] = useState<number | string | null>(null)
   const [orderNotes, setOrderNotes] = useState('')
+  const [paymentPending, setPaymentPending] = useState(false)
   const [isActionPending, startTransition] = useTransition()
 
   const [currentStep, setCurrentStep] = useState<2 | 3>(2)
@@ -136,73 +157,118 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
     setIsSubmitting(true)
 
-    try {
-      const orderRes = await createOrder({
-        items: items.map((i) => ({
-          product: String(i.id),
-          productName: i.name,
-          productImage: i.imageUrl,
-          sku: `SKU-${i.id}`,
-          quantity: i.quantity || 1,
-          unitPrice: i.price,
-          totalPrice: (i.price || 0) * (i.quantity || 1),
-        })),
-        shippingAddress: {
+    const shippingAddress = {
+      fullName: user?.fullName || 'Customer',
+      phone: user?.phoneNumber || '',
+      addressLine1: selectedAddr.addressLine,
+      addressLine2: '',
+      city: selectedAddr.city,
+      state: selectedAddr.state,
+      postalCode: selectedAddr.postalCode,
+      country: selectedAddr.country || 'India',
+    }
+    const orderItems = items.map((i) => ({ product: String(i.id), quantity: i.quantity || 1 }))
+    const notes = orderNotes.trim() || undefined
+
+    const showConfirmation = (orderNumber: string, summary?: { subtotal: number; gst: number; total: number }) => {
+      const now = new Date()
+      const dd = String(now.getDate()).padStart(2, '0')
+      const mm = String(now.getMonth() + 1).padStart(2, '0')
+      const yyyy = now.getFullYear()
+
+      setConfirmedOrderSummary({
+        items: [...items],
+        subtotal: summary?.subtotal ?? subtotal,
+        gst: summary?.gst ?? computedGst,
+        total: summary?.total ?? computedTotal,
+        date: `${dd}/${mm}/${yyyy}`,
+        deliveryAddress: {
           fullName: user?.fullName || 'Customer',
-          phone: user?.phoneNumber || '',
-          addressLine1: selectedAddr.addressLine,
-          addressLine2: '',
+          addressLine: selectedAddr.addressLine,
           city: selectedAddr.city,
           state: selectedAddr.state,
           postalCode: selectedAddr.postalCode,
-          country: selectedAddr.country || 'India',
+          country: selectedAddr.country,
+          phone: user?.phoneNumber || '',
         },
-        pricing: {
-          subtotal,
-          discount: 0,
-          shippingAmount: 0,
-          taxAmount: computedGst,
-          totalAmount: computedTotal,
-          currency: 'INR',
-        },
-        paymentMethod: 'COD',
-        orderNotes: orderNotes.trim() || undefined,
+        orderNotes: notes,
       })
+      setConfirmedOrderId(orderNumber)
+      clearCart()
+      setCurrentStep(3)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
 
-      if (orderRes.success && orderRes.order) {
-        const now = new Date()
-        const dd = String(now.getDate()).padStart(2, '0')
-        const mm = String(now.getMonth() + 1).padStart(2, '0')
-        const yyyy = now.getFullYear()
-
-        setConfirmedOrderSummary({
-          items: [...items],
-          subtotal,
-          gst: computedGst,
-          total: computedTotal,
-          date: `${dd}/${mm}/${yyyy}`,
-          deliveryAddress: {
-            fullName: user?.fullName || 'Customer',
-            addressLine: selectedAddr.addressLine,
-            city: selectedAddr.city,
-            state: selectedAddr.state,
-            postalCode: selectedAddr.postalCode,
-            country: selectedAddr.country,
-            phone: user?.phoneNumber || '',
-          },
-          orderNotes: orderNotes.trim() || undefined,
-        })
-        setConfirmedOrderId(orderRes.order.orderNumber)
-        clearCart()
-        setCurrentStep(3)
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      } else {
-        setSubmitError(orderRes.error || 'Failed to place order. Please try again.')
+    try {
+      const res = await createOnlineOrder({ items: orderItems, shippingAddress, orderNotes: notes })
+      if (!res.success || !res.checkout) {
+        setSubmitError(res.error || 'Failed to start payment. Please try again.')
+        setIsSubmitting(false)
+        return
       }
+
+      const loaded = await loadRazorpayScript()
+      if (!loaded || !window.Razorpay) {
+        setSubmitError('Unable to load the payment gateway. Please check your connection and try again.')
+        setIsSubmitting(false)
+        return
+      }
+
+      const { checkout } = res
+      const rzp = new window.Razorpay({
+        key: checkout.keyId,
+        amount: checkout.amount,
+        currency: checkout.currency,
+        order_id: checkout.razorpayOrderId,
+        name: 'ProGuide',
+        description: `Order ${checkout.orderNumber}`,
+        prefill: {
+          name: user?.fullName || '',
+          email: user?.email || '',
+          contact: user?.phoneNumber || '',
+        },
+        theme: { color: '#5E007B' },
+        modal: {
+          ondismiss: () => {
+            setSubmitError('Payment was cancelled. You can try again whenever you are ready.')
+            setIsSubmitting(false)
+          },
+        },
+        handler: async (response: Record<string, string>) => {
+          try {
+            const verifyRes = await fetch('/api/payments/razorpay/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(response),
+            })
+            const data = await verifyRes.json()
+            if (verifyRes.ok && data.success) {
+              setPaymentPending(data.order?.paymentStatus !== 'paid')
+              showConfirmation(checkout.orderNumber)
+            } else {
+              setSubmitError(
+                `We could not confirm your payment yet. If money was deducted, your order ${checkout.orderNumber} will be confirmed automatically shortly.`,
+              )
+            }
+          } catch {
+            setSubmitError(
+              `We could not confirm your payment yet. If money was deducted, your order ${checkout.orderNumber} will be confirmed automatically shortly.`,
+            )
+          } finally {
+            setIsSubmitting(false)
+          }
+        },
+      })
+      rzp.on('payment.failed', (response: any) => {
+        setSubmitError(response?.error?.description || 'Payment failed. Please try again.')
+        setIsSubmitting(false)
+      })
+      rzp.open()
+      return
+    
     } catch (err: any) {
       console.error('Order creation error:', err)
       setSubmitError(err?.message || 'Something went wrong while placing your order.')
-    } finally {
       setIsSubmitting(false)
     }
   }
@@ -309,7 +375,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 </div>
                 <div>
                   <div className="text-[11.5px] text-[#6B7280] mb-1">Payment Method</div>
-                  <div className="text-[13.5px] font-bold text-ink">Cash on Delivery (COD)</div>
+                  <div className="text-[13.5px] font-bold text-ink">{`Online Payment (Razorpay)${paymentPending ? ' - payment confirmation pending' : ''}`}</div>
                 </div>
               </div>
             </div>
@@ -403,7 +469,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   <span className="font-bold text-ink uppercase text-[12px] tracking-wider">
                     PAYMENT METHOD
                   </span>
-                  <span className="text-[#4B5563]">Cash on Delivery (COD)</span>
+                  <span className="text-[#4B5563]">{`Online Payment (Razorpay)${paymentPending ? ' - payment confirmation pending' : ''}`}</span>
                 </div>
 
                 <div className="pt-4 flex justify-between items-center">
@@ -749,23 +815,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     </div>
                   </div>
 
-                  {/* Payment Method Option (COD) */}
+                  {/* Payment Method */}
                   <div className="mt-4 p-4 bg-[#FAF5FF] border border-[#E9D5FF] rounded-[3px]">
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="radio"
-                        id="payment-cod"
-                        name="paymentMethod"
-                        checked={true}
-                        readOnly
-                        className="w-4 h-4 accent-[#5E007B]"
-                      />
-                      <label htmlFor="payment-cod" className="text-[13px] font-bold text-ink cursor-pointer">
-                        Cash on Delivery (COD)
-                      </label>
-                    </div>
-                    <p className="text-[11.5px] text-[#6B7280] mt-1.5 pl-6.5 leading-relaxed">
-                      Pay with cash upon delivery of your simulation models order.
+                    <div className="text-[13px] font-bold text-ink">Online Payment (Razorpay)</div>
+                    <p className="text-[11.5px] text-[#6B7280] mt-1.5 leading-relaxed">
+                      Pay securely using UPI, cards, net banking or wallets.
                     </p>
                   </div>
 
@@ -795,7 +849,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                         <span>PROCESSING...</span>
                       </>
                     ) : (
-                      'PLACE ORDER'
+                      'PAY & PLACE ORDER'
                     )}
                   </button>
                 </div>
