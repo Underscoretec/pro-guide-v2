@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function CheckoutPage() {
   const user = await getCurrentUser()
   if (!user) {
-    redirect('/sign-in')
+    redirect('/sign-in?redirect=/checkout')
   }
 
   const payload = await getPayloadClient()

@@ -43,6 +43,8 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   if (!values.state) fieldErrors.state = 'State is required'
   if (!values.postalCode) fieldErrors.postalCode = 'Postal code is required'
 
+  const redirectTo = str(formData, 'redirectTo')
+
   if (Object.keys(fieldErrors).length) return { fieldErrors, values }
 
   const payload = await getPayloadClient()
@@ -102,13 +104,18 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
     return { error: 'Could not create your account. Please try again.', values }
   }
 
-  redirect(`/verify-otp?email=${encodeURIComponent(values.email)}`)
+  const params = new URLSearchParams({ email: values.email })
+  if (redirectTo && redirectTo.startsWith('/')) {
+    params.set('redirect', redirectTo)
+  }
+  redirect(`/verify-otp?${params.toString()}`)
 }
 
 export async function verifyOtp(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const email = str(formData, 'email').toLowerCase()
   const emailOtp = str(formData, 'emailOtp')
   const phoneOtp = str(formData, 'phoneOtp')
+  const redirectTo = str(formData, 'redirectTo')
 
   const fieldErrors: Record<string, string> = {}
   if (!/^\d{6}$/.test(emailOtp)) fieldErrors.emailOtp = 'Enter the 6-digit email OTP'
@@ -160,7 +167,11 @@ export async function verifyOtp(_prev: AuthState, formData: FormData): Promise<A
     },
   })
 
-  redirect('/sign-in?verified=1')
+  const params = new URLSearchParams({ verified: '1' })
+  if (redirectTo && redirectTo.startsWith('/')) {
+    params.set('redirect', redirectTo)
+  }
+  redirect(`/sign-in?${params.toString()}`)
 }
 
 export async function resendOtp(email: string): Promise<AuthState> {
@@ -191,6 +202,7 @@ export async function resendOtp(email: string): Promise<AuthState> {
 export async function signIn(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const email = str(formData, 'email').toLowerCase()
   const password = String(formData.get('password') ?? '')
+  const redirectTo = str(formData, 'redirectTo')
   if (!email || !password) return { error: 'Email and password are required', values: { email } }
 
   const payload = await getPayloadClient()
@@ -203,7 +215,11 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
   }
 
   if (!result.user.isEmailVerified || !result.user.isPhoneVerified) {
-    redirect(`/verify-otp?email=${encodeURIComponent(email)}`)
+    const params = new URLSearchParams({ email })
+    if (redirectTo && redirectTo.startsWith('/')) {
+      params.set('redirect', redirectTo)
+    }
+    redirect(`/verify-otp?${params.toString()}`)
   }
 
   if (result.token) {
@@ -226,7 +242,8 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
     })
   }
 
-  redirect('/')
+  const target = redirectTo && redirectTo.startsWith('/') ? redirectTo : '/'
+  redirect(target)
 }
 
 export async function signOut() {

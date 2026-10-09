@@ -270,6 +270,7 @@ export const Orders: CollectionConfig = {
       type: 'select',
       defaultValue: 'confirmed',
       options: [
+        { label: 'Pending Payment', value: 'pending_payment' },
         { label: 'Confirmed', value: 'confirmed' },
         { label: 'Processing', value: 'processing' },
         { label: 'Shipped', value: 'shipped' },
@@ -282,6 +283,22 @@ export const Orders: CollectionConfig = {
       name: 'payment',
       type: 'text',
       label: 'Payment ID / Reference',
+    },
+    {
+      name: 'razorpayOrderId',
+      type: 'text',
+      index: true,
+      label: 'Razorpay Order ID',
+    },
+    {
+      name: 'razorpayPaymentId',
+      type: 'text',
+      label: 'Razorpay Payment ID',
+    },
+    {
+      name: 'paymentFailureReason',
+      type: 'text',
+      label: 'Payment Failure Reason',
     },
     {
       name: 'paymentMethod',

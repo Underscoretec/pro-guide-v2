@@ -12,7 +12,9 @@ import {
   FiTruck,
   FiArrowRight,
   FiCheckCircle,
+  FiFileText,
 } from 'react-icons/fi'
+import { InvoiceDownloadButton } from '@/components/Orders/InvoiceDownloadButton'
 
 export const metadata: Metadata = { title: 'My Orders | ProGuide' }
 
@@ -72,11 +74,11 @@ export default async function OrdersPage() {
                   <div className="flex items-center gap-2.5">
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-purple/10 text-purple border border-purple/20">
                       <FiCreditCard className="w-3 h-3" />
-                      <span>{order.paymentMethod || 'COD'}</span>
+                      <span>{order.paymentMethod || 'ONLINE'}</span>
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-green/10 text-green border border-green/20">
+                    <span className={`inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${order.orderStatus === 'pending_payment' ? 'bg-amber-100 text-amber-700 border border-amber-300' : 'bg-green/10 text-green border border-green/20'}`}>
                       <FiClock className="w-3 h-3" />
-                      <span>{order.orderStatus || 'confirmed'}</span>
+                      <span>{(order.orderStatus || 'pending_payment').replace(/_/g, ' ')}</span>
                     </span>
                   </div>
                 </div>
@@ -116,6 +118,24 @@ export default async function OrdersPage() {
                       minimumFractionDigits: 2,
                     })}
                   </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-3.5 mt-3 border-t border-line/60">
+                  <div className="flex items-center gap-2.5">
+                    <InvoiceDownloadButton order={order} />
+                    <Link
+                      href={`/api/orders/${order.id || order.orderNumber}/invoice`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-purple hover:text-purple-d hover:bg-tint px-3 py-1.5 rounded-[5px] border border-purple/20 transition-all"
+                    >
+                      <FiFileText className="w-3.5 h-3.5" />
+                      <span>View Invoice</span>
+                    </Link>
+                  </div>
+                  <span className="text-[11.5px] text-muted">
+                    GST Tax Invoice
+                  </span>
                 </div>
               </div>
             )

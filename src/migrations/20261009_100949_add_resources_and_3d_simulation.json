@@ -4502,8 +4502,475 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_resources_hero": {
-      "name": "resources_blocks_resources_hero",
+    "resources_filter_tabs": {
+      "name": "resources_filter_tabs",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "resources_filter_tabs_order_idx": {
+          "name": "resources_filter_tabs_order_idx",
+          "columns": [
+            "_order"
+          ],
+          "isUnique": false
+        },
+        "resources_filter_tabs_parent_id_idx": {
+          "name": "resources_filter_tabs_parent_id_idx",
+          "columns": [
+            "_parent_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "resources_filter_tabs_parent_id_fk": {
+          "name": "resources_filter_tabs_parent_id_fk",
+          "tableFrom": "resources_filter_tabs",
+          "tableTo": "resources",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "resources_documents": {
+      "name": "resources_documents",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'workshop'"
+        },
+        "badge_text": {
+          "name": "badge_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "badge_color": {
+          "name": "badge_color",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'orange'"
+        },
+        "year_or_vol": {
+          "name": "year_or_vol",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "view_pdf_text": {
+          "name": "view_pdf_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'View PDF'"
+        },
+        "view_pdf_link": {
+          "name": "view_pdf_link",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'#'"
+        },
+        "download_pdf_text": {
+          "name": "download_pdf_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Download PDF'"
+        },
+        "download_pdf_link": {
+          "name": "download_pdf_link",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'#'"
+        },
+        "download_file_id": {
+          "name": "download_file_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "spine_badge_tag": {
+          "name": "spine_badge_tag",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "spine_title": {
+          "name": "spine_title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "spine_bg": {
+          "name": "spine_bg",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'purple'"
+        }
+      },
+      "indexes": {
+        "resources_documents_order_idx": {
+          "name": "resources_documents_order_idx",
+          "columns": [
+            "_order"
+          ],
+          "isUnique": false
+        },
+        "resources_documents_parent_id_idx": {
+          "name": "resources_documents_parent_id_idx",
+          "columns": [
+            "_parent_id"
+          ],
+          "isUnique": false
+        },
+        "resources_documents_download_file_idx": {
+          "name": "resources_documents_download_file_idx",
+          "columns": [
+            "download_file_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "resources_documents_download_file_id_media_id_fk": {
+          "name": "resources_documents_download_file_id_media_id_fk",
+          "tableFrom": "resources_documents",
+          "tableTo": "media",
+          "columnsFrom": [
+            "download_file_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "resources_documents_parent_id_fk": {
+          "name": "resources_documents_parent_id_fk",
+          "tableFrom": "resources_documents",
+          "tableTo": "resources",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "resources": {
+      "name": "resources",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'Resource Library & PDF Catalogues'"
+        },
+        "hero_crumb_home_text": {
+          "name": "hero_crumb_home_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Home'"
+        },
+        "hero_crumb_category_text": {
+          "name": "hero_crumb_category_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Resources'"
+        },
+        "hero_crumb_current_text": {
+          "name": "hero_crumb_current_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Brochures & Catalogues'"
+        },
+        "hero_title": {
+          "name": "hero_title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Resource Library & PDF Catalogues'"
+        },
+        "hero_description": {
+          "name": "hero_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Access and download verified educational materials, curriculum modules, and technical brochures for ProGuide''s Otolaryngology Head & Neck 3D simulation models and hands-on dissection workshops.'"
+        },
+        "hero_direct_pdf_download_text": {
+          "name": "hero_direct_pdf_download_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Direct PDF Download'"
+        },
+        "hero_direct_pdf_download_link": {
+          "name": "hero_direct_pdf_download_link",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'#'"
+        },
+        "hero_instant_viewer_text": {
+          "name": "hero_instant_viewer_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Instant In-Browser Viewer'"
+        },
+        "hero_instant_viewer_link": {
+          "name": "hero_instant_viewer_link",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'#'"
+        },
+        "section_header_title": {
+          "name": "section_header_title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Official ProGuide Brochures & Documents'"
+        },
+        "section_header_subtitle": {
+          "name": "section_header_subtitle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Review the comprehensive course itineraries, surgical dissection station setups, and complete product dimension tables.'"
+        },
+        "section_header_download_all_text": {
+          "name": "section_header_download_all_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Download All Package (.zip)'"
+        },
+        "section_header_download_all_link": {
+          "name": "section_header_download_all_link",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'#'"
+        },
+        "cta_banner_title": {
+          "name": "cta_banner_title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Require Institutional Course Packages or Printed Physical Catalogues?'"
+        },
+        "cta_banner_subtitle": {
+          "name": "cta_banner_subtitle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'ProGuide coordinates with ENT departments, teaching hospitals, and surgical skill labs worldwide to provide customized bulk models, workshop facilitation kits, and printed course syllabi.'"
+        },
+        "cta_banner_primary_btn_text": {
+          "name": "cta_banner_primary_btn_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Request Call Back'"
+        },
+        "cta_banner_primary_btn_link": {
+          "name": "cta_banner_primary_btn_link",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'/contact'"
+        },
+        "cta_banner_secondary_btn_text": {
+          "name": "cta_banner_secondary_btn_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Email Programme Co-ordinator'"
+        },
+        "cta_banner_secondary_btn_link": {
+          "name": "cta_banner_secondary_btn_link",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'mailto:info@pro-guide.in'"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))"
+        }
+      },
+      "indexes": {
+        "resources_updated_at_idx": {
+          "name": "resources_updated_at_idx",
+          "columns": [
+            "updated_at"
+          ],
+          "isUnique": false
+        },
+        "resources_created_at_idx": {
+          "name": "resources_created_at_idx",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "3d_simulation_blocks_resources_hero": {
+      "name": "3d_simulation_blocks_resources_hero",
       "columns": {
         "_order": {
           "name": "_order",
@@ -4547,7 +5014,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'Resources'"
+          "default": "'3D Simulation'"
         },
         "title": {
           "name": "title",
@@ -4574,22 +5041,22 @@
         }
       },
       "indexes": {
-        "resources_blocks_resources_hero_order_idx": {
-          "name": "resources_blocks_resources_hero_order_idx",
+        "3d_simulation_blocks_resources_hero_order_idx": {
+          "name": "3d_simulation_blocks_resources_hero_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_resources_hero_parent_id_idx": {
-          "name": "resources_blocks_resources_hero_parent_id_idx",
+        "3d_simulation_blocks_resources_hero_parent_id_idx": {
+          "name": "3d_simulation_blocks_resources_hero_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
           "isUnique": false
         },
-        "resources_blocks_resources_hero_path_idx": {
-          "name": "resources_blocks_resources_hero_path_idx",
+        "3d_simulation_blocks_resources_hero_path_idx": {
+          "name": "3d_simulation_blocks_resources_hero_path_idx",
           "columns": [
             "_path"
           ],
@@ -4597,10 +5064,10 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_resources_hero_parent_id_fk": {
-          "name": "resources_blocks_resources_hero_parent_id_fk",
-          "tableFrom": "resources_blocks_resources_hero",
-          "tableTo": "resources",
+        "3d_simulation_blocks_resources_hero_parent_id_fk": {
+          "name": "3d_simulation_blocks_resources_hero_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_resources_hero",
+          "tableTo": "3d_simulation",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -4615,8 +5082,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_why_simulation_points": {
-      "name": "resources_blocks_why_simulation_points",
+    "3d_simulation_blocks_why_simulation_points": {
+      "name": "3d_simulation_blocks_why_simulation_points",
       "columns": {
         "_order": {
           "name": "_order",
@@ -4655,15 +5122,15 @@
         }
       },
       "indexes": {
-        "resources_blocks_why_simulation_points_order_idx": {
-          "name": "resources_blocks_why_simulation_points_order_idx",
+        "3d_simulation_blocks_why_simulation_points_order_idx": {
+          "name": "3d_simulation_blocks_why_simulation_points_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_why_simulation_points_parent_id_idx": {
-          "name": "resources_blocks_why_simulation_points_parent_id_idx",
+        "3d_simulation_blocks_why_simulation_points_parent_id_idx": {
+          "name": "3d_simulation_blocks_why_simulation_points_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
@@ -4671,10 +5138,10 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_why_simulation_points_parent_id_fk": {
-          "name": "resources_blocks_why_simulation_points_parent_id_fk",
-          "tableFrom": "resources_blocks_why_simulation_points",
-          "tableTo": "resources_blocks_why_simulation",
+        "3d_simulation_blocks_why_simulation_points_parent_id_fk": {
+          "name": "3d_simulation_blocks_why_simulation_points_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_why_simulation_points",
+          "tableTo": "3d_simulation_blocks_why_simulation",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -4689,8 +5156,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_why_simulation": {
-      "name": "resources_blocks_why_simulation",
+    "3d_simulation_blocks_why_simulation": {
+      "name": "3d_simulation_blocks_why_simulation",
       "columns": {
         "_order": {
           "name": "_order",
@@ -4737,22 +5204,22 @@
         }
       },
       "indexes": {
-        "resources_blocks_why_simulation_order_idx": {
-          "name": "resources_blocks_why_simulation_order_idx",
+        "3d_simulation_blocks_why_simulation_order_idx": {
+          "name": "3d_simulation_blocks_why_simulation_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_why_simulation_parent_id_idx": {
-          "name": "resources_blocks_why_simulation_parent_id_idx",
+        "3d_simulation_blocks_why_simulation_parent_id_idx": {
+          "name": "3d_simulation_blocks_why_simulation_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
           "isUnique": false
         },
-        "resources_blocks_why_simulation_path_idx": {
-          "name": "resources_blocks_why_simulation_path_idx",
+        "3d_simulation_blocks_why_simulation_path_idx": {
+          "name": "3d_simulation_blocks_why_simulation_path_idx",
           "columns": [
             "_path"
           ],
@@ -4760,10 +5227,10 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_why_simulation_parent_id_fk": {
-          "name": "resources_blocks_why_simulation_parent_id_fk",
-          "tableFrom": "resources_blocks_why_simulation",
-          "tableTo": "resources",
+        "3d_simulation_blocks_why_simulation_parent_id_fk": {
+          "name": "3d_simulation_blocks_why_simulation_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_why_simulation",
+          "tableTo": "3d_simulation",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -4778,8 +5245,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_model_features_features": {
-      "name": "resources_blocks_model_features_features",
+    "3d_simulation_blocks_model_features_features": {
+      "name": "3d_simulation_blocks_model_features_features",
       "columns": {
         "_order": {
           "name": "_order",
@@ -4818,15 +5285,15 @@
         }
       },
       "indexes": {
-        "resources_blocks_model_features_features_order_idx": {
-          "name": "resources_blocks_model_features_features_order_idx",
+        "3d_simulation_blocks_model_features_features_order_idx": {
+          "name": "3d_simulation_blocks_model_features_features_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_model_features_features_parent_id_idx": {
-          "name": "resources_blocks_model_features_features_parent_id_idx",
+        "3d_simulation_blocks_model_features_features_parent_id_idx": {
+          "name": "3d_simulation_blocks_model_features_features_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
@@ -4834,10 +5301,10 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_model_features_features_parent_id_fk": {
-          "name": "resources_blocks_model_features_features_parent_id_fk",
-          "tableFrom": "resources_blocks_model_features_features",
-          "tableTo": "resources_blocks_model_features",
+        "3d_simulation_blocks_model_features_features_parent_id_fk": {
+          "name": "3d_simulation_blocks_model_features_features_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_model_features_features",
+          "tableTo": "3d_simulation_blocks_model_features",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -4852,8 +5319,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_model_features": {
-      "name": "resources_blocks_model_features",
+    "3d_simulation_blocks_model_features": {
+      "name": "3d_simulation_blocks_model_features",
       "columns": {
         "_order": {
           "name": "_order",
@@ -4900,22 +5367,22 @@
         }
       },
       "indexes": {
-        "resources_blocks_model_features_order_idx": {
-          "name": "resources_blocks_model_features_order_idx",
+        "3d_simulation_blocks_model_features_order_idx": {
+          "name": "3d_simulation_blocks_model_features_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_model_features_parent_id_idx": {
-          "name": "resources_blocks_model_features_parent_id_idx",
+        "3d_simulation_blocks_model_features_parent_id_idx": {
+          "name": "3d_simulation_blocks_model_features_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
           "isUnique": false
         },
-        "resources_blocks_model_features_path_idx": {
-          "name": "resources_blocks_model_features_path_idx",
+        "3d_simulation_blocks_model_features_path_idx": {
+          "name": "3d_simulation_blocks_model_features_path_idx",
           "columns": [
             "_path"
           ],
@@ -4923,10 +5390,10 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_model_features_parent_id_fk": {
-          "name": "resources_blocks_model_features_parent_id_fk",
-          "tableFrom": "resources_blocks_model_features",
-          "tableTo": "resources",
+        "3d_simulation_blocks_model_features_parent_id_fk": {
+          "name": "3d_simulation_blocks_model_features_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_model_features",
+          "tableTo": "3d_simulation",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -4941,8 +5408,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_temporal_bone_procedures_procedures": {
-      "name": "resources_blocks_temporal_bone_procedures_procedures",
+    "3d_simulation_blocks_temporal_bone_procedures_procedures": {
+      "name": "3d_simulation_blocks_temporal_bone_procedures_procedures",
       "columns": {
         "_order": {
           "name": "_order",
@@ -4974,15 +5441,15 @@
         }
       },
       "indexes": {
-        "resources_blocks_temporal_bone_procedures_procedures_order_idx": {
-          "name": "resources_blocks_temporal_bone_procedures_procedures_order_idx",
+        "3d_simulation_blocks_temporal_bone_procedures_procedures_order_idx": {
+          "name": "3d_simulation_blocks_temporal_bone_procedures_procedures_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_temporal_bone_procedures_procedures_parent_id_idx": {
-          "name": "resources_blocks_temporal_bone_procedures_procedures_parent_id_idx",
+        "3d_simulation_blocks_temporal_bone_procedures_procedures_parent_id_idx": {
+          "name": "3d_simulation_blocks_temporal_bone_procedures_procedures_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
@@ -4990,10 +5457,10 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_temporal_bone_procedures_procedures_parent_id_fk": {
-          "name": "resources_blocks_temporal_bone_procedures_procedures_parent_id_fk",
-          "tableFrom": "resources_blocks_temporal_bone_procedures_procedures",
-          "tableTo": "resources_blocks_temporal_bone_procedures",
+        "3d_simulation_blocks_temporal_bone_procedures_procedures_parent_id_fk": {
+          "name": "3d_simulation_blocks_temporal_bone_procedures_procedures_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_temporal_bone_procedures_procedures",
+          "tableTo": "3d_simulation_blocks_temporal_bone_procedures",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -5008,8 +5475,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_temporal_bone_procedures": {
-      "name": "resources_blocks_temporal_bone_procedures",
+    "3d_simulation_blocks_temporal_bone_procedures": {
+      "name": "3d_simulation_blocks_temporal_bone_procedures",
       "columns": {
         "_order": {
           "name": "_order",
@@ -5071,29 +5538,29 @@
         }
       },
       "indexes": {
-        "resources_blocks_temporal_bone_procedures_order_idx": {
-          "name": "resources_blocks_temporal_bone_procedures_order_idx",
+        "3d_simulation_blocks_temporal_bone_procedures_order_idx": {
+          "name": "3d_simulation_blocks_temporal_bone_procedures_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_temporal_bone_procedures_parent_id_idx": {
-          "name": "resources_blocks_temporal_bone_procedures_parent_id_idx",
+        "3d_simulation_blocks_temporal_bone_procedures_parent_id_idx": {
+          "name": "3d_simulation_blocks_temporal_bone_procedures_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
           "isUnique": false
         },
-        "resources_blocks_temporal_bone_procedures_path_idx": {
-          "name": "resources_blocks_temporal_bone_procedures_path_idx",
+        "3d_simulation_blocks_temporal_bone_procedures_path_idx": {
+          "name": "3d_simulation_blocks_temporal_bone_procedures_path_idx",
           "columns": [
             "_path"
           ],
           "isUnique": false
         },
-        "resources_blocks_temporal_bone_procedures_image_idx": {
-          "name": "resources_blocks_temporal_bone_procedures_image_idx",
+        "3d_simulation_blocks_temporal_bone_procedures_image_idx": {
+          "name": "3d_simulation_blocks_temporal_bone_procedures_image_idx",
           "columns": [
             "image_id"
           ],
@@ -5101,9 +5568,9 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_temporal_bone_procedures_image_id_media_id_fk": {
-          "name": "resources_blocks_temporal_bone_procedures_image_id_media_id_fk",
-          "tableFrom": "resources_blocks_temporal_bone_procedures",
+        "3d_simulation_blocks_temporal_bone_procedures_image_id_media_id_fk": {
+          "name": "3d_simulation_blocks_temporal_bone_procedures_image_id_media_id_fk",
+          "tableFrom": "3d_simulation_blocks_temporal_bone_procedures",
           "tableTo": "media",
           "columnsFrom": [
             "image_id"
@@ -5114,10 +5581,10 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "resources_blocks_temporal_bone_procedures_parent_id_fk": {
-          "name": "resources_blocks_temporal_bone_procedures_parent_id_fk",
-          "tableFrom": "resources_blocks_temporal_bone_procedures",
-          "tableTo": "resources",
+        "3d_simulation_blocks_temporal_bone_procedures_parent_id_fk": {
+          "name": "3d_simulation_blocks_temporal_bone_procedures_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_temporal_bone_procedures",
+          "tableTo": "3d_simulation",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -5132,8 +5599,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_sinus_procedures_procedures": {
-      "name": "resources_blocks_sinus_procedures_procedures",
+    "3d_simulation_blocks_sinus_procedures_procedures": {
+      "name": "3d_simulation_blocks_sinus_procedures_procedures",
       "columns": {
         "_order": {
           "name": "_order",
@@ -5165,15 +5632,15 @@
         }
       },
       "indexes": {
-        "resources_blocks_sinus_procedures_procedures_order_idx": {
-          "name": "resources_blocks_sinus_procedures_procedures_order_idx",
+        "3d_simulation_blocks_sinus_procedures_procedures_order_idx": {
+          "name": "3d_simulation_blocks_sinus_procedures_procedures_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_sinus_procedures_procedures_parent_id_idx": {
-          "name": "resources_blocks_sinus_procedures_procedures_parent_id_idx",
+        "3d_simulation_blocks_sinus_procedures_procedures_parent_id_idx": {
+          "name": "3d_simulation_blocks_sinus_procedures_procedures_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
@@ -5181,10 +5648,10 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_sinus_procedures_procedures_parent_id_fk": {
-          "name": "resources_blocks_sinus_procedures_procedures_parent_id_fk",
-          "tableFrom": "resources_blocks_sinus_procedures_procedures",
-          "tableTo": "resources_blocks_sinus_procedures",
+        "3d_simulation_blocks_sinus_procedures_procedures_parent_id_fk": {
+          "name": "3d_simulation_blocks_sinus_procedures_procedures_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_sinus_procedures_procedures",
+          "tableTo": "3d_simulation_blocks_sinus_procedures",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -5199,8 +5666,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_sinus_procedures": {
-      "name": "resources_blocks_sinus_procedures",
+    "3d_simulation_blocks_sinus_procedures": {
+      "name": "3d_simulation_blocks_sinus_procedures",
       "columns": {
         "_order": {
           "name": "_order",
@@ -5262,29 +5729,29 @@
         }
       },
       "indexes": {
-        "resources_blocks_sinus_procedures_order_idx": {
-          "name": "resources_blocks_sinus_procedures_order_idx",
+        "3d_simulation_blocks_sinus_procedures_order_idx": {
+          "name": "3d_simulation_blocks_sinus_procedures_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_sinus_procedures_parent_id_idx": {
-          "name": "resources_blocks_sinus_procedures_parent_id_idx",
+        "3d_simulation_blocks_sinus_procedures_parent_id_idx": {
+          "name": "3d_simulation_blocks_sinus_procedures_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
           "isUnique": false
         },
-        "resources_blocks_sinus_procedures_path_idx": {
-          "name": "resources_blocks_sinus_procedures_path_idx",
+        "3d_simulation_blocks_sinus_procedures_path_idx": {
+          "name": "3d_simulation_blocks_sinus_procedures_path_idx",
           "columns": [
             "_path"
           ],
           "isUnique": false
         },
-        "resources_blocks_sinus_procedures_image_idx": {
-          "name": "resources_blocks_sinus_procedures_image_idx",
+        "3d_simulation_blocks_sinus_procedures_image_idx": {
+          "name": "3d_simulation_blocks_sinus_procedures_image_idx",
           "columns": [
             "image_id"
           ],
@@ -5292,9 +5759,9 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_sinus_procedures_image_id_media_id_fk": {
-          "name": "resources_blocks_sinus_procedures_image_id_media_id_fk",
-          "tableFrom": "resources_blocks_sinus_procedures",
+        "3d_simulation_blocks_sinus_procedures_image_id_media_id_fk": {
+          "name": "3d_simulation_blocks_sinus_procedures_image_id_media_id_fk",
+          "tableFrom": "3d_simulation_blocks_sinus_procedures",
           "tableTo": "media",
           "columnsFrom": [
             "image_id"
@@ -5305,10 +5772,10 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "resources_blocks_sinus_procedures_parent_id_fk": {
-          "name": "resources_blocks_sinus_procedures_parent_id_fk",
-          "tableFrom": "resources_blocks_sinus_procedures",
-          "tableTo": "resources",
+        "3d_simulation_blocks_sinus_procedures_parent_id_fk": {
+          "name": "3d_simulation_blocks_sinus_procedures_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_sinus_procedures",
+          "tableTo": "3d_simulation",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -5323,8 +5790,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_larynx_procedures_procedures": {
-      "name": "resources_blocks_larynx_procedures_procedures",
+    "3d_simulation_blocks_larynx_procedures_procedures": {
+      "name": "3d_simulation_blocks_larynx_procedures_procedures",
       "columns": {
         "_order": {
           "name": "_order",
@@ -5356,15 +5823,15 @@
         }
       },
       "indexes": {
-        "resources_blocks_larynx_procedures_procedures_order_idx": {
-          "name": "resources_blocks_larynx_procedures_procedures_order_idx",
+        "3d_simulation_blocks_larynx_procedures_procedures_order_idx": {
+          "name": "3d_simulation_blocks_larynx_procedures_procedures_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_larynx_procedures_procedures_parent_id_idx": {
-          "name": "resources_blocks_larynx_procedures_procedures_parent_id_idx",
+        "3d_simulation_blocks_larynx_procedures_procedures_parent_id_idx": {
+          "name": "3d_simulation_blocks_larynx_procedures_procedures_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
@@ -5372,10 +5839,10 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_larynx_procedures_procedures_parent_id_fk": {
-          "name": "resources_blocks_larynx_procedures_procedures_parent_id_fk",
-          "tableFrom": "resources_blocks_larynx_procedures_procedures",
-          "tableTo": "resources_blocks_larynx_procedures",
+        "3d_simulation_blocks_larynx_procedures_procedures_parent_id_fk": {
+          "name": "3d_simulation_blocks_larynx_procedures_procedures_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_larynx_procedures_procedures",
+          "tableTo": "3d_simulation_blocks_larynx_procedures",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -5390,8 +5857,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_larynx_procedures": {
-      "name": "resources_blocks_larynx_procedures",
+    "3d_simulation_blocks_larynx_procedures": {
+      "name": "3d_simulation_blocks_larynx_procedures",
       "columns": {
         "_order": {
           "name": "_order",
@@ -5453,29 +5920,29 @@
         }
       },
       "indexes": {
-        "resources_blocks_larynx_procedures_order_idx": {
-          "name": "resources_blocks_larynx_procedures_order_idx",
+        "3d_simulation_blocks_larynx_procedures_order_idx": {
+          "name": "3d_simulation_blocks_larynx_procedures_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_larynx_procedures_parent_id_idx": {
-          "name": "resources_blocks_larynx_procedures_parent_id_idx",
+        "3d_simulation_blocks_larynx_procedures_parent_id_idx": {
+          "name": "3d_simulation_blocks_larynx_procedures_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
           "isUnique": false
         },
-        "resources_blocks_larynx_procedures_path_idx": {
-          "name": "resources_blocks_larynx_procedures_path_idx",
+        "3d_simulation_blocks_larynx_procedures_path_idx": {
+          "name": "3d_simulation_blocks_larynx_procedures_path_idx",
           "columns": [
             "_path"
           ],
           "isUnique": false
         },
-        "resources_blocks_larynx_procedures_image_idx": {
-          "name": "resources_blocks_larynx_procedures_image_idx",
+        "3d_simulation_blocks_larynx_procedures_image_idx": {
+          "name": "3d_simulation_blocks_larynx_procedures_image_idx",
           "columns": [
             "image_id"
           ],
@@ -5483,9 +5950,9 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_larynx_procedures_image_id_media_id_fk": {
-          "name": "resources_blocks_larynx_procedures_image_id_media_id_fk",
-          "tableFrom": "resources_blocks_larynx_procedures",
+        "3d_simulation_blocks_larynx_procedures_image_id_media_id_fk": {
+          "name": "3d_simulation_blocks_larynx_procedures_image_id_media_id_fk",
+          "tableFrom": "3d_simulation_blocks_larynx_procedures",
           "tableTo": "media",
           "columnsFrom": [
             "image_id"
@@ -5496,10 +5963,10 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "resources_blocks_larynx_procedures_parent_id_fk": {
-          "name": "resources_blocks_larynx_procedures_parent_id_fk",
-          "tableFrom": "resources_blocks_larynx_procedures",
-          "tableTo": "resources",
+        "3d_simulation_blocks_larynx_procedures_parent_id_fk": {
+          "name": "3d_simulation_blocks_larynx_procedures_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_larynx_procedures",
+          "tableTo": "3d_simulation",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -5514,8 +5981,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_variants_variants_list": {
-      "name": "resources_blocks_variants_variants_list",
+    "3d_simulation_blocks_variants_variants_list": {
+      "name": "3d_simulation_blocks_variants_variants_list",
       "columns": {
         "_order": {
           "name": "_order",
@@ -5561,15 +6028,15 @@
         }
       },
       "indexes": {
-        "resources_blocks_variants_variants_list_order_idx": {
-          "name": "resources_blocks_variants_variants_list_order_idx",
+        "3d_simulation_blocks_variants_variants_list_order_idx": {
+          "name": "3d_simulation_blocks_variants_variants_list_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_variants_variants_list_parent_id_idx": {
-          "name": "resources_blocks_variants_variants_list_parent_id_idx",
+        "3d_simulation_blocks_variants_variants_list_parent_id_idx": {
+          "name": "3d_simulation_blocks_variants_variants_list_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
@@ -5577,10 +6044,10 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_variants_variants_list_parent_id_fk": {
-          "name": "resources_blocks_variants_variants_list_parent_id_fk",
-          "tableFrom": "resources_blocks_variants_variants_list",
-          "tableTo": "resources_blocks_variants",
+        "3d_simulation_blocks_variants_variants_list_parent_id_fk": {
+          "name": "3d_simulation_blocks_variants_variants_list_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_variants_variants_list",
+          "tableTo": "3d_simulation_blocks_variants",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -5595,8 +6062,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_variants": {
-      "name": "resources_blocks_variants",
+    "3d_simulation_blocks_variants": {
+      "name": "3d_simulation_blocks_variants",
       "columns": {
         "_order": {
           "name": "_order",
@@ -5643,22 +6110,22 @@
         }
       },
       "indexes": {
-        "resources_blocks_variants_order_idx": {
-          "name": "resources_blocks_variants_order_idx",
+        "3d_simulation_blocks_variants_order_idx": {
+          "name": "3d_simulation_blocks_variants_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_variants_parent_id_idx": {
-          "name": "resources_blocks_variants_parent_id_idx",
+        "3d_simulation_blocks_variants_parent_id_idx": {
+          "name": "3d_simulation_blocks_variants_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
           "isUnique": false
         },
-        "resources_blocks_variants_path_idx": {
-          "name": "resources_blocks_variants_path_idx",
+        "3d_simulation_blocks_variants_path_idx": {
+          "name": "3d_simulation_blocks_variants_path_idx",
           "columns": [
             "_path"
           ],
@@ -5666,10 +6133,10 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_variants_parent_id_fk": {
-          "name": "resources_blocks_variants_parent_id_fk",
-          "tableFrom": "resources_blocks_variants",
-          "tableTo": "resources",
+        "3d_simulation_blocks_variants_parent_id_fk": {
+          "name": "3d_simulation_blocks_variants_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_variants",
+          "tableTo": "3d_simulation",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -5684,8 +6151,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources_blocks_doctor_acknowledgment": {
-      "name": "resources_blocks_doctor_acknowledgment",
+    "3d_simulation_blocks_doctor_acknowledgment": {
+      "name": "3d_simulation_blocks_doctor_acknowledgment",
       "columns": {
         "_order": {
           "name": "_order",
@@ -5769,29 +6236,29 @@
         }
       },
       "indexes": {
-        "resources_blocks_doctor_acknowledgment_order_idx": {
-          "name": "resources_blocks_doctor_acknowledgment_order_idx",
+        "3d_simulation_blocks_doctor_acknowledgment_order_idx": {
+          "name": "3d_simulation_blocks_doctor_acknowledgment_order_idx",
           "columns": [
             "_order"
           ],
           "isUnique": false
         },
-        "resources_blocks_doctor_acknowledgment_parent_id_idx": {
-          "name": "resources_blocks_doctor_acknowledgment_parent_id_idx",
+        "3d_simulation_blocks_doctor_acknowledgment_parent_id_idx": {
+          "name": "3d_simulation_blocks_doctor_acknowledgment_parent_id_idx",
           "columns": [
             "_parent_id"
           ],
           "isUnique": false
         },
-        "resources_blocks_doctor_acknowledgment_path_idx": {
-          "name": "resources_blocks_doctor_acknowledgment_path_idx",
+        "3d_simulation_blocks_doctor_acknowledgment_path_idx": {
+          "name": "3d_simulation_blocks_doctor_acknowledgment_path_idx",
           "columns": [
             "_path"
           ],
           "isUnique": false
         },
-        "resources_blocks_doctor_acknowledgment_image_idx": {
-          "name": "resources_blocks_doctor_acknowledgment_image_idx",
+        "3d_simulation_blocks_doctor_acknowledgment_image_idx": {
+          "name": "3d_simulation_blocks_doctor_acknowledgment_image_idx",
           "columns": [
             "image_id"
           ],
@@ -5799,9 +6266,9 @@
         }
       },
       "foreignKeys": {
-        "resources_blocks_doctor_acknowledgment_image_id_media_id_fk": {
-          "name": "resources_blocks_doctor_acknowledgment_image_id_media_id_fk",
-          "tableFrom": "resources_blocks_doctor_acknowledgment",
+        "3d_simulation_blocks_doctor_acknowledgment_image_id_media_id_fk": {
+          "name": "3d_simulation_blocks_doctor_acknowledgment_image_id_media_id_fk",
+          "tableFrom": "3d_simulation_blocks_doctor_acknowledgment",
           "tableTo": "media",
           "columnsFrom": [
             "image_id"
@@ -5812,10 +6279,10 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "resources_blocks_doctor_acknowledgment_parent_id_fk": {
-          "name": "resources_blocks_doctor_acknowledgment_parent_id_fk",
-          "tableFrom": "resources_blocks_doctor_acknowledgment",
-          "tableTo": "resources",
+        "3d_simulation_blocks_doctor_acknowledgment_parent_id_fk": {
+          "name": "3d_simulation_blocks_doctor_acknowledgment_parent_id_fk",
+          "tableFrom": "3d_simulation_blocks_doctor_acknowledgment",
+          "tableTo": "3d_simulation",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -5830,8 +6297,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "resources": {
-      "name": "resources",
+    "3d_simulation": {
+      "name": "3d_simulation",
       "columns": {
         "id": {
           "name": "id",
@@ -5846,7 +6313,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'Resources Page'"
+          "default": "'3D Simulation Page'"
         },
         "seo_title": {
           "name": "seo_title",
@@ -5887,15 +6354,15 @@
         }
       },
       "indexes": {
-        "resources_updated_at_idx": {
-          "name": "resources_updated_at_idx",
+        "3d_simulation_updated_at_idx": {
+          "name": "3d_simulation_updated_at_idx",
           "columns": [
             "updated_at"
           ],
           "isUnique": false
         },
-        "resources_created_at_idx": {
-          "name": "resources_created_at_idx",
+        "3d_simulation_created_at_idx": {
+          "name": "3d_simulation_created_at_idx",
           "columns": [
             "created_at"
           ],
@@ -9083,6 +9550,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "3d_simulation_id": {
+          "name": "3d_simulation_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "contact_page_id": {
           "name": "contact_page_id",
           "type": "integer",
@@ -9222,6 +9696,13 @@
           "name": "payload_locked_documents_rels_resources_id_idx",
           "columns": [
             "resources_id"
+          ],
+          "isUnique": false
+        },
+        "payload_locked_documents_rels_3d_simulation_id_idx": {
+          "name": "payload_locked_documents_rels_3d_simulation_id_idx",
+          "columns": [
+            "3d_simulation_id"
           ],
           "isUnique": false
         },
@@ -9394,6 +9875,19 @@
           "tableTo": "resources",
           "columnsFrom": [
             "resources_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_3d_simulation_fk": {
+          "name": "payload_locked_documents_rels_3d_simulation_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "3d_simulation",
+          "columnsFrom": [
+            "3d_simulation_id"
           ],
           "columnsTo": [
             "id"
@@ -10468,6 +10962,6 @@
   "internal": {
     "indexes": {}
   },
-  "id": "781a7307-5743-4340-bda0-ad5756249ef0",
+  "id": "fd715626-535b-4ecd-aea0-afddc196b447",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
