@@ -22,7 +22,9 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
   const galleryImages =
     product.images && product.images.length > 0
       ? product.images
-      : [product.imageUrl, '/images/prod2.jpg', '/images/detail_nose.jpg', '/images/photo_micro.jpg']
+      : product.imageUrl
+      ? [product.imageUrl]
+      : ['/images/prod1.jpg']
 
   const productId =
     product.id ||
@@ -129,13 +131,58 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
             </div>
 
             {/* Main Featured Image Box */}
-            <div className="flex-1 aspect-square bg-[#F3F4F6] rounded-[3px] p-6 sm:p-12 flex items-center justify-center relative overflow-hidden select-none">
+            <div className="flex-1 aspect-square bg-[#F3F4F6] rounded-[3px] p-6 sm:p-12 flex items-center justify-center relative overflow-hidden select-none group/mainimg">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={galleryImages[selectedImageIndex] || galleryImages[0]}
                 alt={product.name}
                 className="w-full h-full object-contain mix-blend-multiply max-h-[460px] transition-all duration-300"
               />
+
+              {/* Prev / Next Slide Arrows (when multiple images exist) */}
+              {galleryImages.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedImageIndex((prev) =>
+                        prev === 0 ? galleryImages.length - 1 : prev - 1
+                      )
+                    }
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-ink shadow-md flex items-center justify-center transition-all opacity-80 hover:opacity-100 cursor-pointer"
+                    aria-label="Previous image"
+                  >
+                    &#10094;
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedImageIndex((prev) =>
+                        prev === galleryImages.length - 1 ? 0 : prev + 1
+                      )
+                    }
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-ink shadow-md flex items-center justify-center transition-all opacity-80 hover:opacity-100 cursor-pointer"
+                    aria-label="Next image"
+                  >
+                    &#10095;
+                  </button>
+
+                  {/* Slide Indicator Dots */}
+                  <div className="absolute bottom-3 left-0 right-0 flex justify-center items-center gap-1.5">
+                    {galleryImages.map((_, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => setSelectedImageIndex(i)}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          i === selectedImageIndex ? 'w-5 bg-orange' : 'w-1.5 bg-[#9CA3AF]/60'
+                        }`}
+                        aria-label={`Go to slide ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -322,16 +369,18 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
           {activeTab === 'description' ? (
             <div>
               <h2 className="text-[15.5px] font-bold text-[#1F2328] mb-3">
-                {product.detailHeading || 'Sed do eiusmod tempor incididunt ut labore'}
+                {product.detailHeading || product.name}
               </h2>
               <p className="text-[13px] text-[#6B7280] leading-[1.75] mb-4">
                 {product.detailParagraph1 ||
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'}
+                  product.shortDescription ||
+                  'Engineered for comprehensive hands-on surgical simulation workshops with life-like tactile and visual feedback.'}
               </p>
-              <p className="text-[13px] text-[#6B7280] leading-[1.75] mb-8">
-                {product.detailParagraph2 ||
-                  'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.'}
-              </p>
+              {product.detailParagraph2 && (
+                <p className="text-[13px] text-[#6B7280] leading-[1.75] mb-8">
+                  {product.detailParagraph2}
+                </p>
+              )}
 
               {/* Two Column Feature Comparison */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
@@ -342,11 +391,13 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
                   </h3>
                   <ul className="space-y-2 text-[12.5px] text-[#6B7280]">
                     {(
-                      product.whyChoose || [
-                        'Creat by cotton fibric with soft and smooth',
-                        'Simple, Configurable (e.g. size, color, etc.), bundled',
-                        'Downloadable/Digital Products, Virtual Products',
-                      ]
+                      product.whyChoose && product.whyChoose.length > 0
+                        ? product.whyChoose
+                        : [
+                            'Cast in authentic OSSA+ Composite™ replicating human bone tactile feedback',
+                            'Anatomically validated landmarks by senior otolaryngologists',
+                            'Clean, repeatable surgical workstation training eliminating cadaveric hazards',
+                          ]
                     ).map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5">
                         <span className="text-[#9CA3AF] text-[13px] select-none leading-tight font-serif">
@@ -358,18 +409,20 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
                   </ul>
                 </div>
 
-                {/* Right Column: Sample Number List */}
+                {/* Right Column: Key Highlights List */}
                 <div>
                   <h3 className="text-[14px] font-bold text-[#1F2328] mb-3">
-                    Sample Number List
+                    Key Highlights
                   </h3>
                   <ol className="space-y-2 text-[12.5px] text-[#6B7280]">
                     {(
-                      product.sampleList || [
-                        'Create Store-specific attrittbutes on the fly',
-                        'Simple, Configurable (e.g. size, color, etc.), bundled',
-                        'Downloadable/Digital Products, Virtual Products',
-                      ]
+                      product.sampleList && product.sampleList.length > 0
+                        ? product.sampleList
+                        : [
+                            'Standardized anatomical fidelity for surgical training and fellowship exams',
+                            'Compatible with standard surgical instrumentation and drills',
+                            'Modular consumables for cost-effective repeated workshops',
+                          ]
                     ).map((item, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <span className="font-semibold text-[#1F2328] w-3 shrink-0">
@@ -385,10 +438,11 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
               {/* Lining / Material Note */}
               <div className="mt-8 pt-2">
                 <h3 className="text-[14px] font-bold text-[#1F2328] mb-1.5">
-                  Lining
+                  Material & Composition
                 </h3>
                 <p className="text-[12.5px] text-[#6B7280]">
-                  {product.lining || '100% Polyester, Main: 100% Polyester.'}
+                  {product.lining ||
+                    'OSSA+ Composite™ Mineralized Bone Matrix & Surgical Grade Polymers.'}
                 </p>
               </div>
             </div>
