@@ -8,6 +8,7 @@ import { ShippingAddresses } from './collections/ShippingAddresses'
 import { Media } from './collections/Media'
 import { HomePage } from './collections/HomePage'
 import { Resources } from './collections/Resources'
+import { ThreeDSimulation } from './collections/ThreeDSimulation'
 
 import { ContactPage } from './collections/ContactPage'
 import { ContactSubmissions } from './collections/ContactSubmissions'
@@ -42,6 +43,7 @@ export default buildConfig({
     Media,
     HomePage,
     Resources,
+    ThreeDSimulation,
     ContactPage,
     ContactSubmissions,
     ProductsPage,
@@ -63,6 +65,6 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URI || 'file:./payload.db',
     },
-    push: process.env.NODE_ENV !== 'production',
+    push: false,
   }),
 })

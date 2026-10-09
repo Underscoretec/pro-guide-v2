@@ -24,13 +24,19 @@ export default async function ThreeDSimulationPage() {
 
   try {
     const payload = await getPayload({ config })
-    const res = await payload.find({
-      collection: 'resources',
+    let res = await payload.find({
+      collection: '3d-simulation' as any,
       limit: 1,
     })
+    if (!res.docs || res.docs.length === 0) {
+      res = await payload.find({
+        collection: 'resources',
+        limit: 1,
+      })
+    }
     resourcesData = res.docs[0] || null
   } catch (error) {
-    console.error('Error fetching resources data from Payload for 3D Simulation:', error)
+    console.error('Error fetching 3D Simulation data from Payload:', error)
   }
 
   // Helper to extract block data by slug
