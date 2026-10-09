@@ -252,25 +252,27 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
-      {/* Top Banner - Dark Purple (Exact color & style from Image 1) */}
-      <div className="bg-[#4A148C] text-white py-10 md:py-14 px-6 shadow-md">
-        <div className="max-w-[1200px] mx-auto">
-          <h1 className="text-2xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">
-            {details.title}
-          </h1>
-          <p className="text-purple-200 text-sm md:text-base font-normal max-w-3xl">
-            {details.subtitle}
-          </p>
+      {/* Top Banner - Dark Purple */}
+      <div className="bg-[#4A148C] text-white pt-10 pb-16 md:pt-12 md:pb-24 px-4 sm:px-6 lg:px-8 shadow-md relative">
+        <div className="max-w-[1360px] mx-auto">
+          <div className="max-w-2xl lg:max-w-[820px]">
+            <h1 className="text-2xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">
+              {details.title}
+            </h1>
+            <p className="text-purple-200 text-sm md:text-base font-normal leading-relaxed">
+              {details.subtitle}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Main Container */}
-      <div className="max-w-[1200px] mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-start">
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_380px] gap-8 items-start">
           {/* Left Column: Back button + Tabbed Details */}
-          <div>
+          <div className="pt-4">
             {/* Back Link */}
-            <div className="mb-6">
+            <div className="mb-5">
               <Link
                 href="/workshops"
                 className="inline-flex items-center text-[13.5px] font-medium text-gray-600 hover:text-[#4A148C] transition-colors"
@@ -280,14 +282,14 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
             </div>
 
             {/* Tabs Header */}
-            <div className="bg-white border border-gray-200 rounded-t-xl overflow-hidden flex border-b">
+            <div className="bg-white border border-gray-200 rounded-t-xl overflow-hidden flex divide-x divide-gray-200 shadow-sm">
               <button
                 type="button"
                 onClick={() => setActiveTab('details')}
-                className={`flex-1 py-3 px-4 text-center font-semibold text-sm transition-all border-b-2 ${
+                className={`flex-1 py-3.5 px-4 text-center font-bold text-sm transition-all border-b-2 ${
                   activeTab === 'details'
-                    ? 'border-[#E67E22] text-[#4A148C] bg-[#FFF5F7]'
-                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    ? 'border-[#4A148C] text-[#4A148C] bg-[#F6F0FA]'
+                    : 'border-transparent text-gray-700 hover:text-[#4A148C] hover:bg-gray-50'
                 }`}
               >
                 Personal Details
@@ -295,10 +297,10 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
               <button
                 type="button"
                 onClick={() => setActiveTab('experience')}
-                className={`flex-1 py-3 px-4 text-center font-semibold text-sm transition-all border-b-2 ${
+                className={`flex-1 py-3.5 px-4 text-center font-bold text-sm transition-all border-b-2 ${
                   activeTab === 'experience'
-                    ? 'border-[#E67E22] text-[#4A148C] bg-[#FFF5F7]'
-                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    ? 'border-[#4A148C] text-[#4A148C] bg-[#F6F0FA]'
+                    : 'border-transparent text-gray-700 hover:text-[#4A148C] hover:bg-gray-50'
                 }`}
               >
                 Professional Experience
@@ -306,18 +308,18 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
               <button
                 type="button"
                 onClick={() => setActiveTab('philosophy')}
-                className={`flex-1 py-3 px-4 text-center font-semibold text-sm transition-all border-b-2 ${
+                className={`flex-1 py-3.5 px-4 text-center font-bold text-sm transition-all border-b-2 ${
                   activeTab === 'philosophy'
-                    ? 'border-[#E67E22] text-[#4A148C] bg-[#FFF5F7]'
-                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    ? 'border-[#4A148C] text-[#4A148C] bg-[#F6F0FA]'
+                    : 'border-transparent text-gray-700 hover:text-[#4A148C] hover:bg-gray-50'
                 }`}
               >
                 Teaching Philosophy
               </button>
             </div>
 
-            {/* Tab Content Box (matching the soft pink/purple tint background in Image 1) */}
-            <div className="bg-[#FFF8FA] border border-t-0 border-gray-200 rounded-b-xl p-6 md:p-8 space-y-8 shadow-sm">
+            {/* Tab Content Box (matching the soft purple tint background) */}
+            <div className="bg-[#FAF7FC] border border-t-0 border-gray-200 rounded-b-xl p-6 md:p-8 space-y-7 shadow-sm">
               {activeTab === 'details' && (
                 <>
                   {/* Designation / Target Audience */}
@@ -338,7 +340,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                     <div className="space-y-4">
                       {details.academicContent.subheadings.map((sub, sIdx) => (
                         <div key={sIdx} className="space-y-1.5">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-purple-900">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-[#4A148C]">
                             {sub.title}
                           </h4>
                           <ul className="list-disc list-inside space-y-1.5 text-sm text-gray-700 leading-relaxed">
@@ -393,33 +395,36 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
             </div>
           </div>
 
-          {/* Right Column: Floating Sidebar Card (Exact design from Image 1) */}
-          <div className="sticky top-24">
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
+          {/* Right Column: Floating Sidebar Card overlapping top banner */}
+          <div className="lg:-mt-28 xl:-mt-32 z-20 sticky top-6">
+            <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xl overflow-hidden transition-all">
               {/* Card Image Banner */}
-              <div className="relative h-48 w-full overflow-hidden">
+              <div className="relative h-56 w-full overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={details.imageUrl}
                   alt={details.title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-3 right-3 bg-[#4A148C] text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow">
+                <div className="absolute top-3.5 right-3.5 bg-[#4A148C] text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-3.5 py-1 rounded-full shadow-md z-10">
                   {details.category}
                 </div>
               </div>
 
               {/* Card Body */}
               <div className="p-5 space-y-4">
-                <div className="flex items-center justify-between text-xs text-gray-600 border-b border-gray-100 pb-3">
-                  <span className="flex items-center gap-1 font-medium">
-                    ⏱️ {details.duration}
+                <div className="flex items-center justify-between text-xs font-medium text-gray-700 border-b border-gray-100 pb-3.5">
+                  <span className="flex items-center gap-1.5">
+                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    {details.duration}
                   </span>
-                  <span className="flex items-center gap-1 font-medium">
-                    👥 {details.learners}
+                  <span className="flex items-center gap-1.5">
+                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    {details.learners}
                   </span>
-                  <span className="text-base" title="India & International">
-                    🇮🇳
+                  <span className="inline-flex items-center" title="India">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="https://flagcdn.com/w40/in.png" alt="India Flag" className="w-5 h-3.5 rounded-[2px] shadow-sm object-cover" />
                   </span>
                 </div>
 
@@ -427,7 +432,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                   <button
                     type="button"
                     onClick={handleAddToCart}
-                    className="block w-full text-center bg-[#4A148C] hover:bg-[#3b0764] text-white font-bold py-3 rounded-xl transition-all shadow-md hover:shadow-lg text-sm cursor-pointer"
+                    className="w-full text-center bg-[#4A148C] hover:bg-[#380e6b] text-white font-bold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg text-sm cursor-pointer active:scale-[0.99]"
                   >
                     Add to Cart
                   </button>
