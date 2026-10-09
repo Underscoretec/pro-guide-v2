@@ -25,7 +25,7 @@ export const SignUpForm: React.FC = () => {
           <Field label="Email" name="email" type="email" required autoComplete="email" placeholder="john.doe@example.com" defaultValue={v.email} error={e.email} />
           <Field label="Phone Number" name="phoneNumber" type="tel" inputMode="tel" required autoComplete="tel" placeholder="+91XXXXXXXXXX" defaultValue={v.phoneNumber} error={e.phoneNumber} />
           <Field className="sm:col-span-2" label="Institution / School / College" name="institution" placeholder="e.g. AIIMS, New Delhi" defaultValue={v.institution} error={e.institution} />
-          <Field label="Password" name="password" type="password" required autoComplete="new-password" placeholder="At least 6 characters" error={e.password} />
+          <Field label="Password" name="password" type="password" required autoComplete="new-password" placeholder="At least 8 characters" error={e.password} />
           <Field label="Confirm Password" name="confirmPassword" type="password" required autoComplete="new-password" placeholder="Confirm your password" error={e.confirmPassword} />
         </div>
       </fieldset>
