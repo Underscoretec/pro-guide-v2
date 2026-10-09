@@ -172,11 +172,11 @@ export const getProductsPage = cache(async () => {
     const res = await payload.find({
       collection: 'products-page',
       limit: 1,
-      depth: 2,
+      depth: 1,
     })
     return res.docs[0] || null
-  } catch (error) {
-    console.error('Error fetching ProductsPage from Payload:', error)
+  } catch (_error) {
+    // Return null silently if products-page collection table is non-existent or erroring
     return null
   }
 })
@@ -233,22 +233,41 @@ export function mapPageFamilyItemToProductItem(item: any): ProductItem {
 }
 
 export function mapProductDocToItem(doc: any): ProductItem {
-  const mediaUrl = typeof doc.image === 'object' && doc.image?.url ? doc.image.url : null
+  let mediaUrl = ''
+  if (typeof doc.image === 'object' && doc.image?.url) {
+    mediaUrl = doc.image.url
+  } else if (typeof doc.image === 'string') {
+    mediaUrl = doc.image
+  }
   const imageUrl = mediaUrl || doc.imageUrl || '/images/prod1.jpg'
+  const slug = doc.slug || String(doc.id)
+
+  const galleryImages: string[] = []
+  if (imageUrl) {
+    galleryImages.push(imageUrl)
+  }
+  if (Array.isArray(doc.images)) {
+    for (const imgObj of doc.images) {
+      const u = typeof imgObj === 'string' ? imgObj : imgObj?.image?.url || imgObj?.imageUrl || imgObj?.url
+      if (u && !galleryImages.includes(u)) {
+        galleryImages.push(u)
+      }
+    }
+  }
 
   return {
-    id: doc.slug || String(doc.id),
+    id: slug,
     name: doc.name,
     badge: doc.badge || undefined,
     price: typeof doc.price === 'number' ? doc.price : 20000,
     imageUrl,
     image: doc.image,
-    images: doc.images,
-    description: doc.shortDescription || undefined,
-    bulletPoints: doc.bulletPoints || undefined,
+    images: galleryImages.length > 0 ? galleryImages : undefined,
+    description: doc.shortDescription || doc.description || undefined,
+    bulletPoints: Array.isArray(doc.bulletPoints) ? doc.bulletPoints : undefined,
     primaryButton: {
       text: doc.primaryButtonText || 'Buy',
-      link: `/products/${doc.slug}`,
+      link: `/products/${slug}`,
     },
     secondaryButton: {
       text: doc.secondaryButtonText || 'Enquire',
@@ -258,158 +277,78 @@ export function mapProductDocToItem(doc: any): ProductItem {
 }
 
 export async function getUnifiedProductFamilies(pageData?: any): Promise<ProductFamily[]> {
-  const [catalogProducts, pageDoc] = await Promise.all([
-    getCatalogProducts(),
-    pageData ? Promise.resolve(pageData) : getProductsPage(),
-  ])
+  const catalogProducts = await getCatalogProducts()
 
-  // 1. Check if user configured families directly in Products Page
-  const pageFamilies: any[] = Array.isArray(pageDoc?.families) ? pageDoc.families : []
-  const hasPageFamilies =
-    pageFamilies.length > 0 &&
-    pageFamilies.some((f) => Array.isArray(f.items) && f.items.length > 0)
+  // 1. If dynamic products exist in Payload 'products' collection, show ONLY dynamic products
+  if (catalogProducts && catalogProducts.length > 0) {
+    const dynamicFamilies: ProductFamily[] = defaultProductFamilies.map((defFamily) => ({
+      familyId: defFamily.familyId,
+      title: defFamily.title,
+      subtitle: defFamily.subtitle,
+      isAlt: defFamily.isAlt,
+      items: [], // Start empty so NO dummy cards are included when dynamic products are present
+    }))
 
-  // Format page families
-  const formattedPageFamilies: ProductFamily[] = pageFamilies.map((f: any, idx: number) => ({
-    familyId: f.familyId || `family-${idx + 1}`,
-    title: f.title || `Family 0${idx + 1}`,
-    subtitle: f.subtitle || undefined,
-    isAlt: f.isAlt ?? idx % 2 === 1,
-    items: Array.isArray(f.items) ? f.items.map(mapPageFamilyItemToProductItem) : [],
-  }))
+    for (const prodDoc of catalogProducts) {
+      const item = mapProductDocToItem(prodDoc)
+      const slug = (prodDoc.slug || '').toLowerCase()
+      const cat = (prodDoc.category || '').toLowerCase()
 
-  const getFamilyCategoryKey = (f: { familyId?: string; title?: string }) => {
-    const t = (f.title || '').toLowerCase()
-    const fid = (f.familyId || '').toLowerCase()
-    if (
-      fid.includes('otology') ||
-      t.includes('otology') ||
-      t.includes('temporal bone') ||
-      t.includes('family 01')
-    )
-      return 'otology'
-    if (
-      fid.includes('rhinology') ||
-      (t.includes('rhinology') && !t.includes('interventional')) ||
-      t.includes('pns') ||
-      t.includes('sinus') ||
-      t.includes('family 02')
-    )
-      return 'rhinology'
-    if (
-      fid.includes('balloon') ||
-      t.includes('balloon') ||
-      t.includes('interventional') ||
-      t.includes('family 03')
-    )
-      return 'balloon'
-    if (
-      fid.includes('laryngology') ||
-      t.includes('laryngology') ||
-      t.includes('vestibular') ||
-      t.includes('custom') ||
-      t.includes('family 04')
-    )
-      return 'laryngology-custom'
-    return null
-  }
-
-  // If user configured families in Products Page:
-  if (hasPageFamilies) {
-    const mergedFamilies = defaultProductFamilies.map((defFamily) => {
-      const match = formattedPageFamilies.find((pf) => {
-        const pfKey = getFamilyCategoryKey(pf)
-        return pfKey && pfKey === defFamily.familyId
+      // Find target family by matching category or familyId
+      let targetFamily = dynamicFamilies.find((f) => {
+        const fid = (f.familyId || '').toLowerCase()
+        const ftitle = (f.title || '').toLowerCase()
+        return (
+          (cat && (fid.includes(cat) || ftitle.includes(cat))) ||
+          (slug && (slug.includes(fid) || fid.includes(slug)))
+        )
       })
-      if (match && match.items.length > 0) {
-        return {
-          ...defFamily,
-          title: match.title || defFamily.title,
-          subtitle: match.subtitle || defFamily.subtitle,
-          isAlt: match.isAlt ?? defFamily.isAlt,
-          items: match.items,
+
+      // Fallback matching logic based on keywords in slug or category
+      if (!targetFamily) {
+        if (slug.includes('tb') || slug.includes('mastoid') || slug.includes('bone') || cat.includes('otology')) {
+          targetFamily = dynamicFamilies[0]
+        } else if (slug.includes('pns') || cat.includes('rhinology')) {
+          targetFamily = dynamicFamilies[1]
+        } else if (slug.includes('balloon') || cat.includes('balloon')) {
+          targetFamily = dynamicFamilies[2]
+        } else if (slug.includes('larynx') || cat.includes('laryngology') || cat.includes('vestibular')) {
+          targetFamily = dynamicFamilies[3]
+        } else {
+          targetFamily = dynamicFamilies[0]
         }
       }
-      return defFamily
-    })
 
-    // Add any custom page families that didn't match the 4 standard ones
-    for (const pf of formattedPageFamilies) {
-      if (!getFamilyCategoryKey(pf) && pf.items.length > 0) {
-        mergedFamilies.push(pf)
+      if (targetFamily) {
+        targetFamily.items.push(item)
       }
     }
 
-    // Integrate any catalogProducts if present
-    if (catalogProducts.length > 0) {
-      for (const prod of catalogProducts) {
-        const item = mapProductDocToItem(prod)
-        const cat = (prod.category || '').toLowerCase()
-        const targetFamily = mergedFamilies.find((f) => {
-          const k = getFamilyCategoryKey(f)
-          return (
-            (k && cat.includes(k)) ||
-            (f.title && f.title.toLowerCase().includes(cat)) ||
-            (f.familyId && cat.includes(f.familyId))
-          )
-        })
-        if (targetFamily) {
-          const existingIdx = targetFamily.items.findIndex(
-            (i) =>
-              i.name.toLowerCase() === item.name.toLowerCase() ||
-              (item.id && i.id === item.id)
-          )
-          if (existingIdx > -1) {
-            targetFamily.items[existingIdx] = item
-          } else {
-            targetFamily.items.push(item)
-          }
-        }
-      }
+    const activeFamilies = dynamicFamilies.filter((f) => f.items.length > 0)
+    if (activeFamilies.length > 0) {
+      return activeFamilies
     }
-
-    return mergedFamilies
   }
 
-  // If no page families, but catalogProducts are present:
-  if (catalogProducts.length > 0) {
-    const rawCategories = catalogProducts
-      .map((p: any) => (typeof p.category === 'string' ? p.category.trim() : ''))
-      .filter((cat: string): cat is string => Boolean(cat))
-
-    const categories: string[] = Array.from(new Set(rawCategories))
-
-    if (categories.length > 1) {
-      return categories.map((cat: string, idx: number) => {
-        const items = catalogProducts
-          .filter(
-            (p: any) =>
-              typeof p.category === 'string' && p.category.trim() === cat
-          )
-          .map(mapProductDocToItem)
-
+  // 2. If pageData has explicitly configured families with items, map them
+  if (pageData?.families && Array.isArray(pageData.families) && pageData.families.length > 0) {
+    const hasCustomItems = pageData.families.some(
+      (fam: any) => Array.isArray(fam.items) && fam.items.length > 0
+    )
+    if (hasCustomItems) {
+      return pageData.families.map((fam: any, idx: number) => {
+        const defaultDef = defaultProductFamilies[idx] || defaultProductFamilies[0]
         return {
-          familyId: cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-          title: cat,
-          subtitle: `Explore our ${cat} simulation models.`,
-          isAlt: idx % 2 === 1,
-          items,
+          familyId: fam.familyId || defaultDef.familyId,
+          title: fam.title || defaultDef.title,
+          subtitle: fam.subtitle || defaultDef.subtitle,
+          isAlt: fam.isAlt !== undefined ? fam.isAlt : defaultDef.isAlt,
+          items: Array.isArray(fam.items) ? fam.items.map(mapPageFamilyItemToProductItem) : [],
         }
       })
     }
-
-    return [
-      {
-        familyId: 'all-products',
-        title: (categories[0] as string | undefined) || 'Product Offerings',
-        subtitle:
-          'The complete surgical simulation models catalogue cast in OSSA+ Composite™.',
-        isAlt: false,
-        items: catalogProducts.map(mapProductDocToItem),
-      },
-    ]
   }
 
-  // Fallback to default product families
+  // 3. Fallback: Only show dummy fallback product families if NO dynamic data is available
   return defaultProductFamilies
 }

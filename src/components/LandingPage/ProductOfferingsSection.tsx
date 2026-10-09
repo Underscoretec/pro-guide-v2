@@ -271,17 +271,17 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                   {/* Actions */}
                   <div className="flex gap-2 mt-3 pt-1">
                     <Link
-                      href={detailsHref}
+                      href={prod.secondaryButtonLink || detailsHref}
                       className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-white text-ink rounded-[5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
                     >
-                      View Details
+                      {prod.secondaryButtonText || 'View Details'}
                     </Link>
                     <button
                       type="button"
                       onClick={(e) => handleAddToCart(e, prod, imageSrc)}
                       className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-purple text-white rounded-[5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all cursor-pointer"
                     >
-                      Add to Cart
+                      {prod.primaryButtonText === 'Buy' ? 'Add to Cart' : prod.primaryButtonText || 'Add to Cart'}
                     </button>
                   </div>
                 </div>
