@@ -261,7 +261,7 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
 
             {/* Actions: Add to Wishlist & Share */}
             <div className="flex items-center gap-7 mb-7 text-[11.5px] font-bold tracking-[1.2px] text-[#1F2328] uppercase select-none">
-              <button
+              {/* <button
                 type="button"
                 onClick={handleAddToWishlist}
                 className={`flex items-center gap-2 cursor-pointer transition-colors ${
@@ -282,8 +282,8 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
                   />
                 </svg>
                 {isWishlisted ? 'WISHLISTED' : 'ADD TO WISHLIST'}
-              </button>
-
+              </button> */}
+{/* 
               <button
                 type="button"
                 onClick={handleShare}
@@ -303,7 +303,7 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
                   />
                 </svg>
                 SHARE
-              </button>
+              </button> */}
             </div>
 
             {/* Meta Information */}

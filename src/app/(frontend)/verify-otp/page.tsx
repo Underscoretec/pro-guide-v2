@@ -8,9 +8,9 @@ export const metadata: Metadata = { title: 'Verify OTP | ProGuide' }
 export default async function VerifyOtpPage({
   searchParams,
 }: {
-  searchParams: Promise<{ email?: string }>
+  searchParams: Promise<{ email?: string; redirect?: string }>
 }) {
-  const { email } = await searchParams
+  const { email, redirect: redirectTo } = await searchParams
   if (!email) redirect('/sign-up')
 
   return (
@@ -18,7 +18,7 @@ export default async function VerifyOtpPage({
       title="Verify your account"
       subtitle={`Enter the OTPs sent to ${email} and your phone number.`}
     >
-      <VerifyOtpForm email={email} />
+      <VerifyOtpForm email={email} redirectTo={redirectTo} />
     </AuthShell>
   )
 }

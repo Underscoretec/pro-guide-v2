@@ -38,18 +38,27 @@ interface CartContextType {
 
 export const DEFAULT_CART_ITEMS: CartItem[] = []
 
-const clearAllLocalCartStorage = () => {
-  if (typeof window === 'undefined') return
-  try {
-    const keysToRemove: string[] = []
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i)
-      if (k && (k.startsWith('proguide_cart') || k === 'cart')) {
-        keysToRemove.push(k)
+const GUEST_CART_KEY = 'proguide_cart_guest'
+const getUserCartKey = (id: string | number) => `proguide_cart_user_${id}`
+
+// Helper to merge guest cart items into an existing user cart
+const mergeCartItems = (base: CartItem[], incoming: CartItem[]): CartItem[] => {
+  if (!incoming || incoming.length === 0) return base || []
+  if (!base || base.length === 0) return incoming
+
+  const result = [...base]
+  for (const item of incoming) {
+    const idx = result.findIndex((r) => r.id === item.id || r.name === item.name)
+    if (idx > -1) {
+      result[idx] = {
+        ...result[idx],
+        quantity: (result[idx].quantity || 1) + (item.quantity || 1),
       }
+    } else {
+      result.push(item)
     }
-    keysToRemove.forEach((k) => localStorage.removeItem(k))
-  } catch {}
+  }
+  return result
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -63,30 +72,67 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
   const [items, setItems] = useState<CartItem[]>([])
   const [isHydrated, setIsHydrated] = useState(false)
   const userId = user?.id ? String(user.id) : null
+  const prevUserIdRef = useRef<string | null | undefined>(undefined)
   const activeUserIdRef = useRef<string | null>(userId)
 
-  // Listen for user changes or logout events
+  // Listen for user changes (login, logout, initial load)
   useEffect(() => {
     activeUserIdRef.current = userId
+    const prevUserId = prevUserIdRef.current
+    prevUserIdRef.current = userId
 
-    if (!userId) {
-      // User is logged out: wipe all cart data from localStorage and reset items to empty
-      clearAllLocalCartStorage()
+    // CASE 1: User explicitly logged out (was logged in with an ID, now userId is null)
+    if (prevUserId !== undefined && prevUserId !== null && userId === null) {
+      try {
+        localStorage.removeItem(getUserCartKey(prevUserId))
+        localStorage.removeItem(GUEST_CART_KEY)
+      } catch {}
       setItems([])
       setIsHydrated(true)
       return
     }
 
-    // A user is logged in
-    const key = `proguide_cart_user_${userId}`
+    // CASE 2: Guest user (not logged in)
+    if (!userId) {
+      let guestItems: CartItem[] = []
+      try {
+        const stored = localStorage.getItem(GUEST_CART_KEY)
+        if (stored) {
+          const parsed = JSON.parse(stored)
+          if (Array.isArray(parsed)) {
+            guestItems = parsed
+          }
+        }
+      } catch {}
+      setItems(guestItems)
+      setIsHydrated(true)
+      return
+    }
 
-    // Reset items state first so no previous user items can ever be shown
-    setItems([])
+    // CASE 3: User is logged in
+    const userKey = getUserCartKey(userId)
 
-    // 1. Read only this specific user's cached cart from localStorage
+    // Check if there was an active guest cart to migrate/merge
+    let guestItems: CartItem[] = []
+    try {
+      const guestStored = localStorage.getItem(GUEST_CART_KEY)
+      if (guestStored) {
+        const parsed = JSON.parse(guestStored)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          guestItems = parsed
+        }
+      }
+    } catch {}
+
+    // Also check current items in memory if guestItems was already in state
+    if (guestItems.length === 0 && items.length > 0 && prevUserId === null) {
+      guestItems = items
+    }
+
+    // Read user's cached cart from localStorage
     let userLocalItems: CartItem[] = []
     try {
-      const stored = localStorage.getItem(key)
+      const stored = localStorage.getItem(userKey)
       if (stored) {
         const parsed = JSON.parse(stored)
         if (Array.isArray(parsed)) {
@@ -95,22 +141,45 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
       }
     } catch {}
 
-    if (userLocalItems.length > 0) {
-      setItems(userLocalItems)
-    }
+    // Merge guest items with user local items immediately for instant UI
+    const initialMerged = mergeCartItems(userLocalItems, guestItems)
+    setItems(initialMerged)
     setIsHydrated(true)
 
-    // 2. Fetch authoritative cart from database for this user
+    if (guestItems.length > 0) {
+      // Save merged locally and clean guest cart so it doesn't merge multiple times
+      try {
+        localStorage.setItem(userKey, JSON.stringify(initialMerged))
+        localStorage.removeItem(GUEST_CART_KEY)
+      } catch {}
+    }
+
+    // Fetch authoritative user cart from database and merge
     getUserCart()
       .then((serverItems) => {
-        // Ensure this response is still for the current active user
         if (activeUserIdRef.current !== userId) return
 
-        if (Array.isArray(serverItems)) {
-          setItems(serverItems)
-          try {
-            localStorage.setItem(key, JSON.stringify(serverItems))
-          } catch {}
+        const validServerItems = Array.isArray(serverItems) ? serverItems : []
+
+        let finalMerged: CartItem[]
+        if (validServerItems.length > 0) {
+          // If server has items, merge them with any guest or locally cached items
+          finalMerged = mergeCartItems(validServerItems, guestItems.length > 0 ? guestItems : initialMerged)
+        } else {
+          // If server is empty (e.g. brand new user), preserve the user/guest items
+          finalMerged = initialMerged
+        }
+
+        setItems(finalMerged)
+
+        try {
+          localStorage.setItem(userKey, JSON.stringify(finalMerged))
+          localStorage.removeItem(GUEST_CART_KEY)
+        } catch {}
+
+        // If we have items (from guest or local) and server was empty, or if guest items were merged: sync to DB
+        if (finalMerged.length > 0 && (guestItems.length > 0 || validServerItems.length === 0)) {
+          syncUserCart(finalMerged).catch(() => {})
         }
       })
       .catch((err) => {
@@ -123,14 +192,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
     setItems(newItems)
 
     if (userId) {
-      const key = `proguide_cart_user_${userId}`
+      const key = getUserCartKey(userId)
       try {
         localStorage.setItem(key, JSON.stringify(newItems))
       } catch {}
       syncUserCart(newItems).catch(() => {})
     } else {
       try {
-        localStorage.setItem('proguide_cart_guest', JSON.stringify(newItems))
+        localStorage.setItem(GUEST_CART_KEY, JSON.stringify(newItems))
       } catch {}
     }
   }
@@ -201,11 +270,13 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
     setItems([])
     if (userId) {
       try {
-        localStorage.removeItem(`proguide_cart_user_${userId}`)
+        localStorage.removeItem(getUserCartKey(userId))
       } catch {}
       clearUserCart().catch(() => {})
     } else {
-      clearAllLocalCartStorage()
+      try {
+        localStorage.removeItem(GUEST_CART_KEY)
+      } catch {}
     }
   }
 

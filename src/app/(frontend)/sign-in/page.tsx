@@ -7,12 +7,12 @@ export const metadata: Metadata = { title: 'Sign In | ProGuide' }
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ verified?: string }>
+  searchParams: Promise<{ verified?: string; redirect?: string }>
 }) {
-  const { verified } = await searchParams
+  const { verified, redirect: redirectTo } = await searchParams
   return (
     <AuthShell title="Sign In" subtitle="Welcome back. Sign in to your ProGuide account.">
-      <SignInForm justVerified={verified === '1'} />
+      <SignInForm justVerified={verified === '1'} redirectTo={redirectTo} />
     </AuthShell>
   )
 }
