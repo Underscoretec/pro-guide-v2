@@ -416,7 +416,17 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 </div>
               </div>
 
-              <div className="mt-8 text-center">
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-center">
+                {confirmedOrderId && (
+                  <Link
+                    href={`/api/orders/${confirmedOrderId}/invoice`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-white hover:bg-[#F9FAFB] text-[#5E007B] border border-[#5E007B] px-6 py-3 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-colors shadow-xs"
+                  >
+                    <span>View / Download Invoice</span>
+                  </Link>
+                )}
                 <Link
                   href="/products"
                   className="inline-block bg-[#5E007B] hover:bg-[#430D60] text-white px-8 py-3 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-colors"
