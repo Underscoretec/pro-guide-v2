@@ -11,33 +11,37 @@ export const defaultProductFamilies: ProductFamily[] = [
     isAlt: true,
     items: [
       {
+        id: 'tb',
         name: 'Basic Model — Mastoid Bone',
         badge: 'Foundation',
         price: 20000,
         imageUrl: '/images/prod1.jpg',
         description:
           'Learn to hold the drill, identify the landmarks and open the mastoid safely — where everyone begins.',
-        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: '/products/tb' },
       },
       {
+        id: 'advance-model-complete-bone',
         name: 'Advance Model — Complete Bone',
         badge: 'Complete',
         price: 20000,
         imageUrl: '/images/detail_sigmoid.jpg',
         description:
           'The complete bone with middle and inner ear in place — for advanced surgeries and every exam that matters.',
-        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: '/products/advance-model-complete-bone' },
       },
       {
+        id: 'cochlear-implant-model',
         name: 'Cochlear Implant Model',
         badge: 'Advanced',
         price: 20000,
         imageUrl: '/images/detail_macro.jpg',
         description:
           'Practise the delicate path to the cochlea and feel what a smooth electrode insertion should feel like — built for CI programmes and device training.',
-        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: '/products/cochlear-implant-model' },
       },
       {
+        id: 'task-based-trainers',
         name: 'Task-Based Trainers',
         badge: 'Task',
         price: 20000,
@@ -50,7 +54,7 @@ export const defaultProductFamilies: ProductFamily[] = [
           { point: 'Stapedectomy Model' },
           { point: 'Ossiculoplasty Model' },
         ],
-        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: '/products/task-based-trainers' },
       },
     ],
   },
@@ -61,22 +65,24 @@ export const defaultProductFamilies: ProductFamily[] = [
     isAlt: false,
     items: [
       {
+        id: 'pnsb',
         name: 'Advance PNS Model',
         badge: 'Advanced',
         price: 25000,
         imageUrl: '/images/prod2.jpg',
         description:
           'Complete sinonasal anatomy for endoscopic sinus surgery training — from uncinectomy through sphenoidotomy, under real instruments.',
-        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: '/products/pnsb' },
       },
       {
+        id: 'pns',
         name: 'Task-Based PNS Model',
         badge: 'Task',
         price: 20000,
         imageUrl: '/images/prod3.jpg',
         description:
           'Focused FESS steps in a repeatable, consumable format for early endoscopic skills and instrument navigation.',
-        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: '/products/pns' },
       },
     ],
   },
@@ -87,31 +93,34 @@ export const defaultProductFamilies: ProductFamily[] = [
     isAlt: true,
     items: [
       {
+        id: 'maxillary-balloon-sinuplasty-trainer',
         name: 'Maxillary Balloon Sinuplasty Trainer',
         badge: 'Only from OSSA+',
         price: 20000,
         imageUrl: '/images/detail_nose.jpg',
         description:
           'Ostium identification, catheter navigation and balloon placement under endoscopic view.',
-        primaryButton: { text: 'Buy', link: '/contact' },
+        primaryButton: { text: 'Buy', link: '/products/maxillary-balloon-sinuplasty-trainer' },
       },
       {
+        id: 'frontal-balloon-sinuplasty-trainer',
         name: 'Frontal Balloon Sinuplasty Trainer',
         badge: 'Only from OSSA+',
         price: 20000,
         imageUrl: '/images/prod3.jpg',
         description:
           'Practise the challenging frontal recess pathway with realistic anatomical curvature.',
-        primaryButton: { text: 'Buy', link: '/contact' },
+        primaryButton: { text: 'Buy', link: '/products/frontal-balloon-sinuplasty-trainer' },
       },
       {
+        id: 'eustachian-tube-dilation-trainer',
         name: 'Eustachian Tube Dilation Trainer',
         badge: 'Only from OSSA+',
         price: 20000,
         imageUrl: '/images/detail_middleear.jpg',
         description:
           "The world's first Eustachian tube balloon dilation trainer for clinic procedure rehearsal.",
-        primaryButton: { text: 'Buy', link: '/contact' },
+        primaryButton: { text: 'Buy', link: '/products/eustachian-tube-dilation-trainer' },
       },
     ],
   },
@@ -123,32 +132,35 @@ export const defaultProductFamilies: ProductFamily[] = [
     isAlt: false,
     items: [
       {
+        id: 'larynx',
         name: 'Artificial Larynx Model',
         badge: 'Family 04 · Laryngology',
         price: 20000,
         imageUrl: '/images/prod4.jpg',
         description:
           'Laryngeal framework and airway anatomy for procedural demonstration, airway teaching and course use — with replaceable glottic cassettes for lesion work.',
-        primaryButton: { text: 'Buy', link: 'https://pro-guide.in/' },
+        primaryButton: { text: 'Buy', link: '/products/larynx' },
       },
       {
+        id: 'labyrinth-model-epley-maneuver',
         name: 'Labyrinth Model for the Epley Maneuver',
         badge: 'Family 05 · Vestibular',
         price: 20000,
         imageUrl: '/images/detail_ear.jpg',
         description:
           'A functional semicircular-canal model demonstrating otoconia movement through each stage of repositioning — for ENT, neurology and physiotherapy teaching.',
-        primaryButton: { text: 'Buy', link: '/contact' },
+        primaryButton: { text: 'Buy', link: '/products/labyrinth-model-epley-maneuver' },
       },
       {
+        id: 'pathology-variants-patient-specific-models',
         name: 'Pathology Variants & Patient-Specific Models',
         badge: 'Family 06 · Pathological & Custom',
         price: 20000,
         imageUrl: '/images/detail_larynxtop.jpg',
         description:
           'Disease-state anatomy (cholesteatoma, sclerotic mastoid and more) at catalogue prices, and CT-to-model builds for rehearsing a specific patient’s surgery before you perform it.',
-        primaryButton: { text: 'Buy', link: '/customized-model' },
-        secondaryButton: { text: 'Enquire', link: '/contact' },
+        primaryButton: { text: 'Buy', link: '/products/pathology-variants-patient-specific-models' },
+        secondaryButton: { text: 'Discuss Variant', link: '/contact' },
       },
     ],
   },

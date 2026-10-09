@@ -215,6 +215,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   })}`
 
   const productSlug =
+    (item.primaryButton?.link && item.primaryButton.link.startsWith('/products/')
+      ? item.primaryButton.link.replace(/^\/products\//, '').trim()
+      : null) ||
     item.id ||
     item.name
       .toLowerCase()
