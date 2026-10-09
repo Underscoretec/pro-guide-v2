@@ -43,6 +43,8 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   if (!values.state) fieldErrors.state = 'State is required'
   if (!values.postalCode) fieldErrors.postalCode = 'Postal code is required'
 
+  const redirectTo = str(formData, 'redirectTo')
+
   if (Object.keys(fieldErrors).length) return { fieldErrors, values }
 
   const payload = await getPayloadClient()
@@ -214,6 +216,7 @@ export async function resendOtp(email: string, step: OtpStep = 'email'): Promise
 export async function signIn(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const email = str(formData, 'email').toLowerCase()
   const password = String(formData.get('password') ?? '')
+  const redirectTo = str(formData, 'redirectTo')
   if (!email || !password) return { error: 'Email and password are required', values: { email } }
 
   const payload = await getPayloadClient()
@@ -251,7 +254,8 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
     })
   }
 
-  redirect('/')
+  const target = redirectTo && redirectTo.startsWith('/') ? redirectTo : '/'
+  redirect(target)
 }
 
 export async function signOut() {
