@@ -13,38 +13,56 @@ interface ProductDetailsViewProps {
 
 export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product }) => {
   const router = useRouter()
-  const { addToCart } = useCart()
+  const { items, addToCart, updateQuantity, isHydrated } = useCart()
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-  const [quantity, setQuantity] = useState(1)
   const [activeTab, setActiveTab] = useState<'description' | 'additional'>('description')
   const [isWishlisted, setIsWishlisted] = useState(false)
 
   const galleryImages =
     product.images && product.images.length > 0
       ? product.images
-      : [product.imageUrl, '/images/prod2.jpg', '/images/detail_nose.jpg', '/images/photo_micro.jpg']
+      : product.imageUrl
+      ? [product.imageUrl]
+      : ['/images/prod1.jpg']
+
+  const productId =
+    product.id ||
+    product.slug ||
+    product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+
+  const cartItem = items.find(
+    (item) =>
+      item.id === productId ||
+      item.id === product.id ||
+      item.id === product.slug ||
+      item.name.toLowerCase() === product.name.toLowerCase()
+  )
+
+  const isInCart = isHydrated && Boolean(cartItem)
+  const currentQuantity = cartItem?.quantity || 1
 
   const handleAddToCart = () => {
     addToCart({
-      id: product.id,
+      id: productId,
       name: product.name,
       price: product.price,
       imageUrl: galleryImages[0] || product.imageUrl,
-      quantity,
+      quantity: 1,
     })
-    toast.success(`Added ${quantity} × ${product.name} to cart!`)
+    toast.success(`Added "${product.name}" to cart!`)
   }
 
-  const handleBuyNow = () => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      imageUrl: galleryImages[0] || product.imageUrl,
-      quantity,
-    })
-    router.push('/cart')
+  const handleIncrement = () => {
+    if (cartItem) {
+      updateQuantity(cartItem.id, 1)
+    }
+  }
+
+  const handleDecrement = () => {
+    if (cartItem && currentQuantity > 1) {
+      updateQuantity(cartItem.id, -1)
+    }
   }
 
   const handleAddToWishlist = () => {
@@ -68,9 +86,6 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
       toast.info('Link ready to share')
     }
   }
-
-  const incrementQty = () => setQuantity((q) => q + 1)
-  const decrementQty = () => setQuantity((q) => (q > 1 ? q - 1 : 1))
 
   return (
     <div className="bg-white text-[#1F2328] py-8 sm:py-12">
@@ -116,13 +131,58 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
             </div>
 
             {/* Main Featured Image Box */}
-            <div className="flex-1 aspect-square bg-[#F3F4F6] rounded-[3px] p-6 sm:p-12 flex items-center justify-center relative overflow-hidden select-none">
+            <div className="flex-1 aspect-square bg-[#F3F4F6] rounded-[3px] p-6 sm:p-12 flex items-center justify-center relative overflow-hidden select-none group/mainimg">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={galleryImages[selectedImageIndex] || galleryImages[0]}
                 alt={product.name}
                 className="w-full h-full object-contain mix-blend-multiply max-h-[460px] transition-all duration-300"
               />
+
+              {/* Prev / Next Slide Arrows (when multiple images exist) */}
+              {galleryImages.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedImageIndex((prev) =>
+                        prev === 0 ? galleryImages.length - 1 : prev - 1
+                      )
+                    }
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-ink shadow-md flex items-center justify-center transition-all opacity-80 hover:opacity-100 cursor-pointer"
+                    aria-label="Previous image"
+                  >
+                    &#10094;
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedImageIndex((prev) =>
+                        prev === galleryImages.length - 1 ? 0 : prev + 1
+                      )
+                    }
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-ink shadow-md flex items-center justify-center transition-all opacity-80 hover:opacity-100 cursor-pointer"
+                    aria-label="Next image"
+                  >
+                    &#10095;
+                  </button>
+
+                  {/* Slide Indicator Dots */}
+                  <div className="absolute bottom-3 left-0 right-0 flex justify-center items-center gap-1.5">
+                    {galleryImages.map((_, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => setSelectedImageIndex(i)}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          i === selectedImageIndex ? 'w-5 bg-orange' : 'w-1.5 bg-[#9CA3AF]/60'
+                        }`}
+                        aria-label={`Go to slide ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -147,44 +207,56 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
               {product.shortDescription}
             </p>
 
-            {/* Quantity Selector + Add to Cart Row */}
+            {/* Quantity Selector or Add to Cart Row */}
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-7">
-              {/* Quantity Selector */}
-              <div className="flex items-center border border-[#E5E7EB] rounded-[3px] h-[44px] bg-white">
-                <button
-                  type="button"
-                  onClick={decrementQty}
-                  disabled={quantity <= 1}
-                  className={`w-9 h-full flex items-center justify-center text-lg font-bold select-none transition-colors ${
-                    quantity <= 1
-                      ? 'text-[#D1D5DB] cursor-not-allowed opacity-40'
-                      : 'text-[#6B7280] hover:text-[#1F2328] cursor-pointer'
-                  }`}
-                  aria-label="Decrease quantity"
-                >
-                  &minus;
-                </button>
-                <span className="w-10 text-center text-[14px] font-semibold text-[#1F2328] select-none">
-                  {quantity}
-                </span>
-                <button
-                  type="button"
-                  onClick={incrementQty}
-                  className="w-9 h-full flex items-center justify-center text-[#6B7280] hover:text-[#1F2328] text-lg font-bold select-none cursor-pointer transition-colors"
-                  aria-label="Increase quantity"
-                >
-                  &#43;
-                </button>
-              </div>
+              {isInCart && cartItem ? (
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                  {/* Quantity Stepper (Increase / Decrease) */}
+                  <div className="flex items-center border border-[#E5E7EB] rounded-[3px] h-[44px] bg-white">
+                    <button
+                      type="button"
+                      onClick={handleDecrement}
+                      disabled={currentQuantity <= 1}
+                      className={`w-9 h-full flex items-center justify-center text-lg font-bold select-none transition-colors ${
+                        currentQuantity <= 1
+                          ? 'text-[#D1D5DB] cursor-not-allowed opacity-40'
+                          : 'text-[#6B7280] hover:text-[#1F2328] cursor-pointer'
+                      }`}
+                      aria-label="Decrease quantity"
+                    >
+                      &minus;
+                    </button>
+                    <span className="w-10 text-center text-[14px] font-semibold text-[#1F2328] select-none">
+                      {currentQuantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleIncrement}
+                      className="w-9 h-full flex items-center justify-center text-[#6B7280] hover:text-[#1F2328] text-lg font-bold select-none cursor-pointer transition-colors"
+                      aria-label="Increase quantity"
+                    >
+                      &#43;
+                    </button>
+                  </div>
 
-              {/* Add to Cart button */}
-              <button
-                type="button"
-                onClick={handleAddToCart}
-                className="bg-[#5B1073] hover:bg-[#480c5c] text-white font-bold text-[12px] uppercase tracking-[1.4px] px-8 h-[44px] rounded-[3px] transition-colors shadow-xs flex items-center justify-center cursor-pointer min-w-[180px] sm:min-w-[200px]"
-              >
-                ADD TO CART
-              </button>
+                  {/* View Cart button */}
+                  <Link
+                    href="/cart"
+                    className="bg-[#5B1073] hover:bg-[#480c5c] text-white font-bold text-[12px] uppercase tracking-[1.4px] px-7 h-[44px] rounded-[3px] transition-colors shadow-xs flex items-center justify-center cursor-pointer min-w-[140px]"
+                  >
+                    VIEW CART
+                  </Link>
+                </div>
+              ) : (
+                /* Add to Cart button when not yet in cart */
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  className="bg-[#5B1073] hover:bg-[#480c5c] text-white font-bold text-[12px] uppercase tracking-[1.4px] px-8 h-[44px] rounded-[3px] transition-colors shadow-xs flex items-center justify-center cursor-pointer min-w-[180px] sm:min-w-[200px]"
+                >
+                  ADD TO CART
+                </button>
+              )}
             </div>
 
             {/* Actions: Add to Wishlist & Share */}
@@ -297,16 +369,18 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
           {activeTab === 'description' ? (
             <div>
               <h2 className="text-[15.5px] font-bold text-[#1F2328] mb-3">
-                {product.detailHeading || 'Sed do eiusmod tempor incididunt ut labore'}
+                {product.detailHeading || product.name}
               </h2>
               <p className="text-[13px] text-[#6B7280] leading-[1.75] mb-4">
                 {product.detailParagraph1 ||
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'}
+                  product.shortDescription ||
+                  'Engineered for comprehensive hands-on surgical simulation workshops with life-like tactile and visual feedback.'}
               </p>
-              <p className="text-[13px] text-[#6B7280] leading-[1.75] mb-8">
-                {product.detailParagraph2 ||
-                  'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.'}
-              </p>
+              {product.detailParagraph2 && (
+                <p className="text-[13px] text-[#6B7280] leading-[1.75] mb-8">
+                  {product.detailParagraph2}
+                </p>
+              )}
 
               {/* Two Column Feature Comparison */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
@@ -317,11 +391,13 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
                   </h3>
                   <ul className="space-y-2 text-[12.5px] text-[#6B7280]">
                     {(
-                      product.whyChoose || [
-                        'Creat by cotton fibric with soft and smooth',
-                        'Simple, Configurable (e.g. size, color, etc.), bundled',
-                        'Downloadable/Digital Products, Virtual Products',
-                      ]
+                      product.whyChoose && product.whyChoose.length > 0
+                        ? product.whyChoose
+                        : [
+                            'Cast in authentic OSSA+ Composite™ replicating human bone tactile feedback',
+                            'Anatomically validated landmarks by senior otolaryngologists',
+                            'Clean, repeatable surgical workstation training eliminating cadaveric hazards',
+                          ]
                     ).map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5">
                         <span className="text-[#9CA3AF] text-[13px] select-none leading-tight font-serif">
@@ -333,18 +409,20 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
                   </ul>
                 </div>
 
-                {/* Right Column: Sample Number List */}
+                {/* Right Column: Key Highlights List */}
                 <div>
                   <h3 className="text-[14px] font-bold text-[#1F2328] mb-3">
-                    Sample Number List
+                    Key Highlights
                   </h3>
                   <ol className="space-y-2 text-[12.5px] text-[#6B7280]">
                     {(
-                      product.sampleList || [
-                        'Create Store-specific attrittbutes on the fly',
-                        'Simple, Configurable (e.g. size, color, etc.), bundled',
-                        'Downloadable/Digital Products, Virtual Products',
-                      ]
+                      product.sampleList && product.sampleList.length > 0
+                        ? product.sampleList
+                        : [
+                            'Standardized anatomical fidelity for surgical training and fellowship exams',
+                            'Compatible with standard surgical instrumentation and drills',
+                            'Modular consumables for cost-effective repeated workshops',
+                          ]
                     ).map((item, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <span className="font-semibold text-[#1F2328] w-3 shrink-0">
@@ -360,10 +438,11 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
               {/* Lining / Material Note */}
               <div className="mt-8 pt-2">
                 <h3 className="text-[14px] font-bold text-[#1F2328] mb-1.5">
-                  Lining
+                  Material & Composition
                 </h3>
                 <p className="text-[12.5px] text-[#6B7280]">
-                  {product.lining || '100% Polyester, Main: 100% Polyester.'}
+                  {product.lining ||
+                    'OSSA+ Composite™ Mineralized Bone Matrix & Surgical Grade Polymers.'}
                 </p>
               </div>
             </div>

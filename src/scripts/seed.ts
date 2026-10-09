@@ -270,8 +270,8 @@ export async function seed() {
             hasDropdown: true,
             dropdownItems: [
               { label: 'About Faculty & Training', url: '/training-courses' },
-              { label: 'Otolaryngology Video Library', url: '/videos' },
-              { label: 'Why 3D Simulation Models', url: '/resources' },
+              { label: 'Learning Bites', url: '/videos' },
+              { label: 'Why 3D Simulation Models', url: '/3d-simulation' },
             ],
           },
           {
@@ -1159,6 +1159,99 @@ export async function seed() {
       data: customizedModelPageData,
     })
     console.log('  = Updated existing CustomizedModelPage document')
+  }
+
+  // 10. Seed LearningBitesPage Collection
+  console.log('📹 Seeding LearningBitesPage Collection...')
+  const existingLearningBitesPage = await payload.find({
+    collection: 'learning-bites-page',
+    limit: 1,
+  })
+
+  const learningBitesPageData = {
+    title: 'Learning Bites',
+    hero: {
+      crumbHomeText: 'Home',
+      crumbCurrentText: 'Learning Bites',
+      title: 'Learning Bites',
+      description:
+        'Watch surgical demonstration videos, 3D model drilling techniques, and expert step-by-step tutorials from master otolaryngology faculty.',
+    },
+    sectionHeader: {
+      heading: 'Surgical Demonstration & Drilling Videos',
+      subheading: 'Practical surgical guidance and simulation model walkthroughs.',
+    },
+    videoList: [
+      {
+        title: 'Cortical Mastoidectomy',
+        description: 'Step-by-step dissection on the 3D temporal bone model',
+        metaText: 'Video library · Skill Lab Demonstration',
+        category: 'Otology',
+        duration: '12 mins',
+        thumbnailUrl: '/images/ws_skilllab.jpg',
+        videoUrl: '/images/Skill Lab.mp4',
+      },
+      {
+        title: 'Posterior Tympanotomy',
+        description: 'Approaching the facial recess safely',
+        metaText: 'Video library · Skill Lab Demonstration',
+        category: 'Otology',
+        duration: '10 mins',
+        thumbnailUrl: '/images/ws_lab.jpg',
+        videoUrl: '/images/Skill Lab.mp4',
+      },
+      {
+        title: 'Cochlear Implant Insertion',
+        description: 'Dummy electrode insertion demonstration',
+        metaText: 'Video library · Skill Lab Demonstration',
+        category: 'Otology',
+        duration: '15 mins',
+        thumbnailUrl: '/images/ws_faculty.jpg',
+        videoUrl: '/images/Skill Lab.mp4',
+      },
+      {
+        title: 'Paranasal Sinus Navigation',
+        description: 'Endoscopic navigation and uncinectomy on PNS model',
+        metaText: 'Video library · Skill Lab Demonstration',
+        category: 'Rhinology',
+        duration: '10 mins',
+        thumbnailUrl: '/images/ws_room2.jpg',
+        videoUrl: '/images/Skill Lab.mp4',
+      },
+      {
+        title: 'Microlaryngoscopy Polyp Excision',
+        description: 'Vocal cord lesion excision simulation on larynx model',
+        metaText: 'Video library · Skill Lab Demonstration',
+        category: 'Laryngology',
+        duration: '8 mins',
+        thumbnailUrl: '/images/ws_lecture.jpg',
+        videoUrl: '/images/Skill Lab.mp4',
+      },
+      {
+        title: 'Eustachian Tube Dilation',
+        description: 'Catheter navigation and balloon placement demonstration',
+        metaText: 'Video library · Skill Lab Demonstration',
+        category: 'Rhinology',
+        duration: '14 mins',
+        thumbnailUrl: '/images/ws_guide2.jpg',
+        videoUrl: '/images/Skill Lab.mp4',
+      },
+    ],
+  }
+
+  if (existingLearningBitesPage.totalDocs === 0) {
+    await payload.create({
+      collection: 'learning-bites-page',
+      data: learningBitesPageData,
+    })
+    console.log('  + Created LearningBitesPage document with 6 video items')
+  } else {
+    await payload.update({
+      collection: 'learning-bites-page',
+      id: existingLearningBitesPage.docs[0].id,
+      data: learningBitesPageData,
+    })
+    console.log('  = Updated existing LearningBitesPage document with 6 video items')
   }
 
   console.log('✅ Full database seed completed successfully!')

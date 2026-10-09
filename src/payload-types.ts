@@ -69,6 +69,8 @@ export interface Config {
   collections: {
     users: User;
     'shipping-addresses': ShippingAddress;
+    orders: Order;
+    products: Product;
     media: Media;
     'home-page': HomePage;
     resources: Resource;
@@ -79,8 +81,9 @@ export interface Config {
     'customized-model-submissions': CustomizedModelSubmission;
     'workshops-page': WorkshopsPage;
     'training-courses-page': TrainingCoursesPage;
-    'checkout-submissions': CheckoutSubmission;
     'lead-submissions': LeadSubmission;
+    'learning-bites-page': LearningBitesPage;
+    carts: Cart;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -90,6 +93,8 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     'shipping-addresses': ShippingAddressesSelect<false> | ShippingAddressesSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
@@ -100,8 +105,9 @@ export interface Config {
     'customized-model-submissions': CustomizedModelSubmissionsSelect<false> | CustomizedModelSubmissionsSelect<true>;
     'workshops-page': WorkshopsPageSelect<false> | WorkshopsPageSelect<true>;
     'training-courses-page': TrainingCoursesPageSelect<false> | TrainingCoursesPageSelect<true>;
-    'checkout-submissions': CheckoutSubmissionsSelect<false> | CheckoutSubmissionsSelect<true>;
     'lead-submissions': LeadSubmissionsSelect<false> | LeadSubmissionsSelect<true>;
+    'learning-bites-page': LearningBitesPageSelect<false> | LearningBitesPageSelect<true>;
+    carts: CartsSelect<false> | CartsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -215,6 +221,129 @@ export interface ShippingAddress {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  orderNumber: string;
+  user: number | User;
+  items: {
+    product?: string | null;
+    productName: string;
+    productImage?: string | null;
+    sku?: string | null;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+    id?: string | null;
+  }[];
+  shippingAddress: {
+    fullName: string;
+    phone?: string | null;
+    addressLine1: string;
+    addressLine2?: string | null;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  billingAddress: {
+    fullName: string;
+    phone?: string | null;
+    addressLine1: string;
+    addressLine2?: string | null;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  pricing: {
+    subtotal: number;
+    discount?: number | null;
+    shippingAmount?: number | null;
+    taxAmount?: number | null;
+    totalAmount: number;
+    currency?: string | null;
+  };
+  paymentStatus?: ('pending' | 'paid' | 'failed') | null;
+  orderStatus?: ('confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled') | null;
+  payment?: string | null;
+  paymentMethod?: ('COD' | 'ONLINE' | 'BANK_TRANSFER') | null;
+  orderNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  name: string;
+  /**
+   * URL identifier used in /products/[slug] and /product?p=[slug]
+   */
+  slug: string;
+  /**
+   * Check this box to display this product in the Product Offerings section on the Home / Landing page.
+   */
+  showOnLandingPage?: boolean | null;
+  badge?: string | null;
+  /**
+   * Lower numbers display first (e.g. 1, 2, 3...)
+   */
+  displayOrder?: number | null;
+  price: number;
+  category?: string | null;
+  sku?: string | null;
+  shortDescription?: string | null;
+  variant?: string | null;
+  imageUrl?: string | null;
+  image?: (number | null) | Media;
+  images?:
+    | {
+        image?: (number | null) | Media;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  detailHeading?: string | null;
+  detailParagraph1?: string | null;
+  detailParagraph2?: string | null;
+  whyChoose?:
+    | {
+        point: string;
+        id?: string | null;
+      }[]
+    | null;
+  sampleList?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
+  lining?: string | null;
+  bulletPoints?:
+    | {
+        point: string;
+        id?: string | null;
+      }[]
+    | null;
+  primaryButtonText?: string | null;
+  secondaryButtonText?: string | null;
+  secondaryButtonLink?: string | null;
+  specifications?: {
+    weight?: string | null;
+    dimensions?: string | null;
+    material?: string | null;
+    variant?: string | null;
+    compatibility?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
@@ -303,6 +432,13 @@ export interface HomePage {
                   gstNote?: string | null;
                   image?: (number | null) | Media;
                   imageUrl?: string | null;
+                  images?:
+                    | {
+                        image?: (number | null) | Media;
+                        imageUrl?: string | null;
+                        id?: string | null;
+                      }[]
+                    | null;
                   alt?: string | null;
                   cartUrl?: string | null;
                   detailsUrl?: string | null;
@@ -323,6 +459,13 @@ export interface HomePage {
                   description: string;
                   image?: (number | null) | Media;
                   imageUrl?: string | null;
+                  images?:
+                    | {
+                        image?: (number | null) | Media;
+                        imageUrl?: string | null;
+                        id?: string | null;
+                      }[]
+                    | null;
                   alt?: string | null;
                   id?: string | null;
                 }[]
@@ -667,6 +810,13 @@ export interface ProductsPage {
               price?: number | null;
               image?: (number | null) | Media;
               imageUrl?: string | null;
+              images?:
+                | {
+                    image?: (number | null) | Media;
+                    imageUrl?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
               description?: string | null;
               bulletPoints?:
                 | {
@@ -876,42 +1026,6 @@ export interface TrainingCoursesPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "checkout-submissions".
- */
-export interface CheckoutSubmission {
-  id: number;
-  fullName?: string | null;
-  firstName: string;
-  lastName: string;
-  companyName?: string | null;
-  phone: string;
-  email: string;
-  country: string;
-  province: string;
-  streetAddress1: string;
-  streetAddress2?: string | null;
-  city: string;
-  postcode: string;
-  orderNotes?: string | null;
-  items?:
-    | {
-        name: string;
-        quantity: number;
-        price: number;
-        subtotal?: number | null;
-        id?: string | null;
-      }[]
-    | null;
-  subtotal?: number | null;
-  shipping?: string | null;
-  gst?: number | null;
-  total?: number | null;
-  status?: ('Pending' | 'Processing' | 'Dispatched' | 'Completed' | 'Cancelled') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "lead-submissions".
  */
 export interface LeadSubmission {
@@ -923,6 +1037,66 @@ export interface LeadSubmission {
   mobile: string;
   source?: string | null;
   status?: ('New' | 'Contacted' | 'In Progress' | 'Enrolled' | 'Closed') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "learning-bites-page".
+ */
+export interface LearningBitesPage {
+  id: number;
+  title: string;
+  hero?: {
+    crumbHomeText?: string | null;
+    crumbCurrentText?: string | null;
+    title?: string | null;
+    description?: string | null;
+  };
+  sectionHeader?: {
+    heading?: string | null;
+    subheading?: string | null;
+  };
+  videoList?:
+    | {
+        title: string;
+        category?: string | null;
+        duration?: string | null;
+        thumbnail?: (number | null) | Media;
+        thumbnailUrl?: string | null;
+        videoUrl?: string | null;
+        description?: string | null;
+        metaText?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts".
+ */
+export interface Cart {
+  id: number;
+  /**
+   * User linked to this shopping cart
+   */
+  user: number | User;
+  items?:
+    | {
+        productId: string;
+        name: string;
+        price: number;
+        quantity: number;
+        imageUrl?: string | null;
+        variant?: string | null;
+        subtotal?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  totalItems?: number | null;
+  subtotal?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -957,6 +1131,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'shipping-addresses';
         value: number | ShippingAddress;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: number | Order;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
       } | null)
     | ({
         relationTo: 'media';
@@ -999,12 +1181,16 @@ export interface PayloadLockedDocument {
         value: number | TrainingCoursesPage;
       } | null)
     | ({
-        relationTo: 'checkout-submissions';
-        value: number | CheckoutSubmission;
-      } | null)
-    | ({
         relationTo: 'lead-submissions';
         value: number | LeadSubmission;
+      } | null)
+    | ({
+        relationTo: 'learning-bites-page';
+        value: number | LearningBitesPage;
+      } | null)
+    | ({
+        relationTo: 'carts';
+        value: number | Cart;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1095,6 +1281,128 @@ export interface ShippingAddressesSelect<T extends boolean = true> {
   country?: T;
   deliveryNotes?: T;
   isDefault?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  orderNumber?: T;
+  user?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        productName?: T;
+        productImage?: T;
+        sku?: T;
+        quantity?: T;
+        unitPrice?: T;
+        totalPrice?: T;
+        id?: T;
+      };
+  shippingAddress?:
+    | T
+    | {
+        fullName?: T;
+        phone?: T;
+        addressLine1?: T;
+        addressLine2?: T;
+        city?: T;
+        state?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  billingAddress?:
+    | T
+    | {
+        fullName?: T;
+        phone?: T;
+        addressLine1?: T;
+        addressLine2?: T;
+        city?: T;
+        state?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  pricing?:
+    | T
+    | {
+        subtotal?: T;
+        discount?: T;
+        shippingAmount?: T;
+        taxAmount?: T;
+        totalAmount?: T;
+        currency?: T;
+      };
+  paymentStatus?: T;
+  orderStatus?: T;
+  payment?: T;
+  paymentMethod?: T;
+  orderNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  showOnLandingPage?: T;
+  badge?: T;
+  displayOrder?: T;
+  price?: T;
+  category?: T;
+  sku?: T;
+  shortDescription?: T;
+  variant?: T;
+  imageUrl?: T;
+  image?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        url?: T;
+        id?: T;
+      };
+  detailHeading?: T;
+  detailParagraph1?: T;
+  detailParagraph2?: T;
+  whyChoose?:
+    | T
+    | {
+        point?: T;
+        id?: T;
+      };
+  sampleList?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
+  lining?: T;
+  bulletPoints?:
+    | T
+    | {
+        point?: T;
+        id?: T;
+      };
+  primaryButtonText?: T;
+  secondaryButtonText?: T;
+  secondaryButtonLink?: T;
+  specifications?:
+    | T
+    | {
+        weight?: T;
+        dimensions?: T;
+        material?: T;
+        variant?: T;
+        compatibility?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1196,6 +1504,13 @@ export interface HomePageSelect<T extends boolean = true> {
                     gstNote?: T;
                     image?: T;
                     imageUrl?: T;
+                    images?:
+                      | T
+                      | {
+                          image?: T;
+                          imageUrl?: T;
+                          id?: T;
+                        };
                     alt?: T;
                     cartUrl?: T;
                     detailsUrl?: T;
@@ -1217,6 +1532,13 @@ export interface HomePageSelect<T extends boolean = true> {
                     description?: T;
                     image?: T;
                     imageUrl?: T;
+                    images?:
+                      | T
+                      | {
+                          image?: T;
+                          imageUrl?: T;
+                          id?: T;
+                        };
                     alt?: T;
                     id?: T;
                   };
@@ -1584,6 +1906,13 @@ export interface ProductsPageSelect<T extends boolean = true> {
               price?: T;
               image?: T;
               imageUrl?: T;
+              images?:
+                | T
+                | {
+                    image?: T;
+                    imageUrl?: T;
+                    id?: T;
+                  };
               description?: T;
               bulletPoints?:
                 | T
@@ -1797,41 +2126,6 @@ export interface TrainingCoursesPageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "checkout-submissions_select".
- */
-export interface CheckoutSubmissionsSelect<T extends boolean = true> {
-  fullName?: T;
-  firstName?: T;
-  lastName?: T;
-  companyName?: T;
-  phone?: T;
-  email?: T;
-  country?: T;
-  province?: T;
-  streetAddress1?: T;
-  streetAddress2?: T;
-  city?: T;
-  postcode?: T;
-  orderNotes?: T;
-  items?:
-    | T
-    | {
-        name?: T;
-        quantity?: T;
-        price?: T;
-        subtotal?: T;
-        id?: T;
-      };
-  subtotal?: T;
-  shipping?: T;
-  gst?: T;
-  total?: T;
-  status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "lead-submissions_select".
  */
 export interface LeadSubmissionsSelect<T extends boolean = true> {
@@ -1842,6 +2136,65 @@ export interface LeadSubmissionsSelect<T extends boolean = true> {
   mobile?: T;
   source?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "learning-bites-page_select".
+ */
+export interface LearningBitesPageSelect<T extends boolean = true> {
+  title?: T;
+  hero?:
+    | T
+    | {
+        crumbHomeText?: T;
+        crumbCurrentText?: T;
+        title?: T;
+        description?: T;
+      };
+  sectionHeader?:
+    | T
+    | {
+        heading?: T;
+        subheading?: T;
+      };
+  videoList?:
+    | T
+    | {
+        title?: T;
+        category?: T;
+        duration?: T;
+        thumbnail?: T;
+        thumbnailUrl?: T;
+        videoUrl?: T;
+        description?: T;
+        metaText?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts_select".
+ */
+export interface CartsSelect<T extends boolean = true> {
+  user?: T;
+  items?:
+    | T
+    | {
+        productId?: T;
+        name?: T;
+        price?: T;
+        quantity?: T;
+        imageUrl?: T;
+        variant?: T;
+        subtotal?: T;
+        id?: T;
+      };
+  totalItems?: T;
+  subtotal?: T;
   updatedAt?: T;
   createdAt?: T;
 }

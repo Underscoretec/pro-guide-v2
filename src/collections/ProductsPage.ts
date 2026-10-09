@@ -55,8 +55,21 @@ export const ProductsPage: CollectionConfig = {
             { name: 'name', type: 'text', required: true },
             { name: 'badge', type: 'text' },
             { name: 'price', type: 'number', label: 'Price (in INR)' },
-            { name: 'image', type: 'upload', relationTo: 'media' },
-            { name: 'imageUrl', type: 'text' },
+            { name: 'image', type: 'upload', relationTo: 'media', label: 'Main / Thumbnail Image' },
+            { name: 'imageUrl', type: 'text', label: 'Main Image URL (optional if uploaded)' },
+            {
+              name: 'images',
+              type: 'array',
+              label: 'Multiple Product Images (for hover auto-slider & gallery)',
+              labels: {
+                singular: 'Image',
+                plural: 'Images',
+              },
+              fields: [
+                { name: 'image', type: 'upload', relationTo: 'media', label: 'Upload Image' },
+                { name: 'imageUrl', type: 'text', label: 'Image URL (optional if uploaded above)' },
+              ],
+            },
             { name: 'description', type: 'textarea' },
             {
               name: 'bulletPoints',

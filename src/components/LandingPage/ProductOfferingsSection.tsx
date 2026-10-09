@@ -153,18 +153,26 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
   const { addToCart } = useCart()
 
   const title = data?.title || 'Product Offerings'
-  const rawList = data?.productsList || products || []
+  const rawList =
+    Array.isArray(products) && products.length > 0
+      ? products
+      : Array.isArray(data?.productsList) && data.productsList.length > 0
+      ? data.productsList
+      : []
   const productList = rawList.length > 0 ? rawList : defaultProducts
 
   const handleAddToCart = (e: React.MouseEvent, prod: any, imageSrc: string) => {
     e.preventDefault()
-    const priceNum = typeof prod.price === 'string'
-      ? parseInt(prod.price.replace(/[^0-9]/g, ''), 10) || 20000
-      : 20000
+    const priceNum =
+      typeof prod.price === 'string'
+        ? parseInt(prod.price.replace(/[^0-9]/g, ''), 10) || 20000
+        : typeof prod.price === 'number'
+        ? prod.price
+        : 20000
 
     addToCart({
-      id: prod.slug || prod.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      name: prod.title,
+      id: prod.slug || (prod.title || prod.name || 'product').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      name: prod.title || prod.name,
       price: priceNum,
       imageUrl: imageSrc,
       quantity: 1,
@@ -191,20 +199,47 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
             const key = prod.id || prod.slug || idx
 
             // Resolve multiple images for slider
-            const slugKey = (prod.slug || '').toLowerCase()
-            const galleryFromSlug = productGalleries[slugKey] || []
+            const primaryImg =
+              (typeof prod.image === 'object' && prod.image?.url ? prod.image.url : null) ||
+              (typeof prod.imageUrl === 'string' && prod.imageUrl.trim() ? prod.imageUrl : null)
+
             const customImages = Array.isArray(prod.images)
-              ? prod.images.map((img: any) =>
-                  typeof img === 'string' ? img : img?.url || img?.imageUrl
-                )
+              ? prod.images
+                  .map((img: any) =>
+                    typeof img === 'string'
+                      ? img
+                      : img?.image?.url || img?.imageUrl || img?.url || ''
+                  )
+                  .filter(Boolean)
               : []
-            const candidateImages = customImages.length > 0 ? customImages : galleryFromSlug
-            const images =
-              candidateImages.length > 0
-                ? candidateImages.includes(imageSrc)
-                  ? candidateImages
-                  : [imageSrc, ...candidateImages]
-                : [imageSrc]
+
+            const combinedCustom: string[] = []
+            if (primaryImg) {
+              combinedCustom.push(primaryImg)
+            }
+            for (const img of customImages) {
+              if (!combinedCustom.includes(img)) {
+                combinedCustom.push(img)
+              }
+            }
+
+            const hasCustomUpload =
+              (prod.image && typeof prod.image === 'object' && Boolean(prod.image.url)) ||
+              (typeof prod.imageUrl === 'string' &&
+                prod.imageUrl.trim() !== '' &&
+                !prod.imageUrl.startsWith('/images/prod') &&
+                !prod.imageUrl.startsWith('/images/detail_')) ||
+              customImages.length > 0
+
+            let images: string[] = []
+            if (hasCustomUpload) {
+              images = combinedCustom.length > 0 ? combinedCustom : [imageSrc]
+            } else {
+              // Default demo fallback for unmodified static catalog cards
+              const slugKey = (prod.slug || '').toLowerCase()
+              const galleryFromSlug = productGalleries[slugKey] || []
+              images = galleryFromSlug.length > 0 ? galleryFromSlug : [imageSrc]
+            }
 
             return (
               <div
@@ -214,7 +249,7 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                 {/* Product Image Hover Slider */}
                 <ProductImageSlider
                   images={images}
-                  alt={prod.alt || prod.title}
+                  alt={prod.alt || prod.title || prod.name || 'ProGuide Model'}
                   detailsHref={detailsHref}
                 />
 
@@ -222,7 +257,7 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                 <div className="p-[14px_16px_16px] flex flex-col gap-1 flex-1">
                   <h3 className="text-[16.5px] font-bold text-ink leading-snug">
                     <Link href={detailsHref} className="text-inherit hover:text-purple">
-                      {prod.title}
+                      {prod.title || prod.name}
                     </Link>
                   </h3>
                   <div className="text-[12.5px] text-muted">{prod.variant}</div>
@@ -236,17 +271,17 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                   {/* Actions */}
                   <div className="flex gap-2 mt-3 pt-1">
                     <Link
-                      href={detailsHref}
+                      href={prod.secondaryButtonLink || detailsHref}
                       className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-white text-ink rounded-[5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
                     >
-                      View Details
+                      {prod.secondaryButtonText || 'View Details'}
                     </Link>
                     <button
                       type="button"
                       onClick={(e) => handleAddToCart(e, prod, imageSrc)}
                       className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-purple text-white rounded-[5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all cursor-pointer"
                     >
-                      Add to Cart
+                      {prod.primaryButtonText === 'Buy' ? 'Add to Cart' : prod.primaryButtonText || 'Add to Cart'}
                     </button>
                   </div>
                 </div>

@@ -26,13 +26,16 @@ export async function saveAddress(id: number | string | null, _prev: AuthState, 
   const user = await getCurrentUser()
   if (!user) return { error: 'Please sign in again.' }
 
-  const data = {
+  const data: Record<string, any> = {
     addressLine: str(formData, 'addressLine'),
     city: str(formData, 'city'),
     state: str(formData, 'state'),
     postalCode: str(formData, 'postalCode'),
     country: str(formData, 'country') || 'India',
   }
+  const notes = str(formData, 'deliveryNotes')
+  if (notes) data.deliveryNotes = notes
+
   const fieldErrors: Record<string, string> = {}
   if (!data.addressLine) fieldErrors.addressLine = 'Street address is required'
   if (!data.city) fieldErrors.city = 'City is required'
@@ -41,6 +44,7 @@ export async function saveAddress(id: number | string | null, _prev: AuthState, 
   if (Object.keys(fieldErrors).length) return { fieldErrors, values: data }
 
   const payload = await getPayloadClient()
+  let savedId: number | string | null = id
   try {
     if (id) {
       // access rules restrict this to the owner's own addresses
@@ -52,19 +56,21 @@ export async function saveAddress(id: number | string | null, _prev: AuthState, 
         user,
         overrideAccess: false,
       })
-      await payload.create({
+      const created = await payload.create({
         collection: 'shipping-addresses',
         data: { ...data, user: user.id, isDefault: totalDocs === 0 },
         user,
         overrideAccess: false,
       })
+      savedId = created.id
     }
   } catch (err) {
     console.error('Save address failed', err)
     return { error: 'Could not save the address.', values: data }
   }
   revalidatePath('/profile/addresses')
-  return { values: { saved: '1' } }
+  revalidatePath('/checkout')
+  return { values: { saved: '1', newId: String(savedId ?? '') } }
 }
 
 export async function setDefaultAddress(id: number | string) {
@@ -74,6 +80,7 @@ export async function setDefaultAddress(id: number | string) {
   await payload.update({ collection: 'shipping-addresses', id, data: { isDefault: true }, user, overrideAccess: false })
   await unsetOtherDefaults(payload, user, id)
   revalidatePath('/profile/addresses')
+  revalidatePath('/checkout')
 }
 
 export async function removeAddress(id: number | string) {
@@ -82,4 +89,5 @@ export async function removeAddress(id: number | string) {
   const payload = await getPayloadClient()
   await payload.delete({ collection: 'shipping-addresses', id, user, overrideAccess: false })
   revalidatePath('/profile/addresses')
+  revalidatePath('/checkout')
 }

@@ -4,6 +4,7 @@ import React, { useActionState, useState, useTransition } from 'react'
 import { verifyOtp, resendOtp, type AuthState } from '@/lib/auth/actions'
 import type { OtpStep } from '@/lib/authOtp'
 import { Field, FormError, primaryButtonClass } from './AuthShell'
+import { FiCheckCircle, FiRefreshCw } from 'react-icons/fi'
 
 interface VerifyOtpFormProps {
   email: string

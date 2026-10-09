@@ -12,8 +12,8 @@ export const Users: CollectionConfig = {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Lax',
     },
-    maxLoginAttempts: 5,
-    lockTime: 600 * 1000, // 10 minutes
+    maxLoginAttempts: 50,
+    lockTime: 60, 
   },
   access: {
     admin: ({ req: { user } }) => Boolean(user && ['admin', 'kb_admin'].includes((user as User).role)),

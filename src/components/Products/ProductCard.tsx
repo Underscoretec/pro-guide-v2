@@ -11,7 +11,7 @@ export interface ProductItem {
   badge?: string
   image?: any
   imageUrl?: string
-  images?: (string | { image?: any; imageUrl?: string })[]
+  images?: (string | { image?: any; imageUrl?: string; url?: string })[]
   description?: string
   price?: number
   bulletPoints?: (string | { point: string })[]
@@ -89,18 +89,65 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const router = useRouter()
   const { addToCart } = useCart()
 
+  const firstGalleryImage =
+    Array.isArray(item.images) && item.images.length > 0
+      ? (typeof item.images[0] === 'string'
+          ? item.images[0]
+          : item.images[0]?.image?.url || item.images[0]?.imageUrl || item.images[0]?.url)
+      : null
+
   const imgSrc =
-    item.image?.url || item.imageUrl || (typeof item.image === 'string' ? item.image : '/images/prod1.jpg')
+    item.image?.url ||
+    item.imageUrl ||
+    firstGalleryImage ||
+    (typeof item.image === 'string' ? item.image : '/images/prod1.jpg')
   const altText = item.name || 'ProGuide 3D Simulation Model'
 
   // Resolve multiple images for hover slider
   const resolveImages = (): string[] => {
-    if (Array.isArray(item.images) && item.images.length > 0) {
-      return item.images.map((img) =>
-        typeof img === 'string' ? img : img?.image?.url || img?.imageUrl || imgSrc
-      )
+    // 1. Get primary uploaded image
+    const primaryImg =
+      (typeof item.image === 'object' && item.image?.url ? item.image.url : null) ||
+      (typeof item.imageUrl === 'string' && item.imageUrl.trim() ? item.imageUrl : null)
+
+    // 2. Get additional gallery images
+    const galleryImgs: string[] = Array.isArray(item.images)
+      ? item.images
+          .map((img: any) =>
+            typeof img === 'string'
+              ? img
+              : img?.image?.url || img?.imageUrl || img?.url || ''
+          )
+          .filter(Boolean)
+      : []
+
+    // 3. Combine primary and gallery images without duplicates
+    const combinedCustom: string[] = []
+    if (primaryImg) {
+      combinedCustom.push(primaryImg)
+    }
+    for (const g of galleryImgs) {
+      if (!combinedCustom.includes(g)) {
+        combinedCustom.push(g)
+      }
     }
 
+    // 4. If user provided custom uploads:
+    // - Multiple images (e.g. primary + gallery): return all -> AUTO-SLIDE WILL RUN!
+    // - Exactly 1 image: return that 1 image -> NO AUTO-SLIDE
+    const hasCustomUpload =
+      (item.image && typeof item.image === 'object' && Boolean(item.image.url)) ||
+      (typeof item.imageUrl === 'string' &&
+        item.imageUrl.trim() !== '' &&
+        !item.imageUrl.startsWith('/images/prod') &&
+        !item.imageUrl.startsWith('/images/detail_')) ||
+      galleryImgs.length > 0
+
+    if (hasCustomUpload) {
+      return combinedCustom.length > 0 ? combinedCustom : [imgSrc]
+    }
+
+    // 5. Fallback for static default catalog demo items (only when no custom image was uploaded)
     if (nameOrUrlGalleries[imgSrc]) {
       return nameOrUrlGalleries[imgSrc]
     }
@@ -168,6 +215,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   })}`
 
   const productSlug =
+    (item.primaryButton?.link && item.primaryButton.link.startsWith('/products/')
+      ? item.primaryButton.link.replace(/^\/products\//, '').trim()
+      : null) ||
     item.id ||
     item.name
       .toLowerCase()
@@ -267,14 +317,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
             onClick={handleBuy}
             className="flex-1 text-center bg-purple text-white px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer"
           >
-            Buy
+            {item.primaryButton?.text || 'Buy'}
           </button>
 
           <Link
             href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
             className="flex-1 text-center bg-white text-ink px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
           >
-            Enquire
+            {item.secondaryButton?.text || 'Enquire'}
           </Link>
         </div>
       </div>

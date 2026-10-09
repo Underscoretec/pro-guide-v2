@@ -1,5 +1,5 @@
 import React from 'react'
-import { getHomePage } from '@/lib/payload/homePage'
+import { getHomePage, getLandingProducts } from '@/lib/payload/homePage'
 import {
   HeroSection,
   PartnerLogosSection,
@@ -18,7 +18,10 @@ import {
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
-  const page = await getHomePage()
+  const [page, landingProducts] = await Promise.all([
+    getHomePage(),
+    getLandingProducts(),
+  ])
 
   const heroBlock = page?.sections?.find((b: any) => b.blockType === 'hero')
   const partnersBlock = page?.sections?.find((b: any) => b.blockType === 'partners')
@@ -37,7 +40,7 @@ export default async function HomePage() {
     <main className="flex-1">
       <HeroSection data={heroBlock} />
       <PartnerLogosSection data={partnersBlock} />
-      <ProductOfferingsSection data={productsBlock} />
+      <ProductOfferingsSection data={productsBlock} products={landingProducts} />
       <TrueToLifeDetailsSection data={detailsBlock} />
       <ExploreWorkshopsSection data={workshopsBlock} />
       <WorkshopGlimpsesSection data={glimpsesBlock} />
