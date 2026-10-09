@@ -199,6 +199,10 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
             const key = prod.id || prod.slug || idx
 
             // Resolve multiple images for slider
+            const primaryImg =
+              (typeof prod.image === 'object' && prod.image?.url ? prod.image.url : null) ||
+              (typeof prod.imageUrl === 'string' && prod.imageUrl.trim() ? prod.imageUrl : null)
+
             const customImages = Array.isArray(prod.images)
               ? prod.images
                   .map((img: any) =>
@@ -209,23 +213,27 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                   .filter(Boolean)
               : []
 
-            const isCustomUpload =
+            const combinedCustom: string[] = []
+            if (primaryImg) {
+              combinedCustom.push(primaryImg)
+            }
+            for (const img of customImages) {
+              if (!combinedCustom.includes(img)) {
+                combinedCustom.push(img)
+              }
+            }
+
+            const hasCustomUpload =
               (prod.image && typeof prod.image === 'object' && Boolean(prod.image.url)) ||
               (typeof prod.imageUrl === 'string' &&
                 prod.imageUrl.trim() !== '' &&
                 !prod.imageUrl.startsWith('/images/prod') &&
-                !prod.imageUrl.startsWith('/images/detail_'))
+                !prod.imageUrl.startsWith('/images/detail_')) ||
+              customImages.length > 0
 
             let images: string[] = []
-            if (customImages.length === 1) {
-              // Exactly 1 image uploaded in gallery: DO NOT auto-slide
-              images = customImages
-            } else if (customImages.length > 1) {
-              // Multiple images uploaded in gallery: auto-slide
-              images = customImages
-            } else if (isCustomUpload || prod.image) {
-              // Single main image uploaded: DO NOT auto-slide
-              images = [imageSrc]
+            if (hasCustomUpload) {
+              images = combinedCustom.length > 0 ? combinedCustom : [imageSrc]
             } else {
               // Default demo fallback for unmodified static catalog cards
               const slugKey = (prod.slug || '').toLowerCase()
