@@ -31,9 +31,9 @@ export const PRODUCTS_CATALOG: Record<string, ProductDetailData> = {
     slug: 'pns',
     name: 'Paranasal Model without base',
     price: 20000,
-    category: 'Paranasal Model without base',
-    sku: 'N/A',
-    tags: ['biker', 'black', 'bomber', 'leather'],
+    category: 'Rhinology — Paranasal Sinus Series',
+    sku: 'PG-PNS-001',
+    tags: ['rhinology', 'paranasal', 'sinus', 'fess', 'simulation', 'surgical-training'],
     imageUrl: '/images/prod3.jpg',
     images: [
       '/images/prod3.jpg',
@@ -42,24 +42,24 @@ export const PRODUCTS_CATALOG: Record<string, ProductDetailData> = {
       '/images/photo_micro.jpg',
     ],
     shortDescription:
-      'Phasellus sed volutpat orci. Fusce eget lore mauris vehicula elementum gravida nec dui. Aenean aliquam varius ipsum, non ultricies tellus sodales eu. Donec dignissim viverra nunc, ut aliquet magna posuere eget.',
+      'Focused endoscopic sinonasal anatomy model for repeatable surgical training, instrument navigation, and resident dissection workshops.',
     variant: 'Available in Left and Right variant',
-    detailHeading: 'Sed do eiusmod tempor incididunt ut labore',
+    detailHeading: 'Targeted Sinonasal Surgical Training',
     detailParagraph1:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      'Engineered for comprehensive endoscopic sinus surgical workshops. Trainees navigate endoscopic visualization, identify critical sinonasal landmarks, and practice instrument coordination under realistic haptic conditions.',
     detailParagraph2:
-      'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+      'Cast in authentic OSSA+ Composite™ replicating human bone and soft tissue resistance, providing authentic tactile feedback during uncinectomy and antrostomy.',
     whyChoose: [
-      'Creat by cotton fibric with soft and smooth',
-      'Simple, Configurable (e.g. size, color, etc.), bundled',
-      'Downloadable/Digital Products, Virtual Products',
+      'Cast in authentic OSSA+ Composite™ replicating human bone tactile feedback',
+      'Anatomically validated landmarks by senior otolaryngologists',
+      'Clean, repeatable surgical workstation training eliminating cadaveric hazards',
     ],
     sampleList: [
-      'Create Store-specific attrittbutes on the fly',
-      'Simple, Configurable (e.g. size, color, etc.), bundled',
-      'Downloadable/Digital Products, Virtual Products',
+      'Uncinectomy, maxillary antrostomy and ethmoid dissection capabilities',
+      'Compatible with standard rigid endoscopes and sinus instruments',
+      'Standardized anatomical baseline across all course delegates',
     ],
-    lining: '100% Polyester, Main: 100% Polyester.',
+    lining: 'OSSA+ Composite™ Mineralized Bone Matrix & Soft Surgical Grade Silicone.',
     specifications: {
       weight: '350 g',
       dimensions: '14 × 12 × 10 cm',
@@ -197,6 +197,7 @@ export const PRODUCTS_CATALOG: Record<string, ProductDetailData> = {
 }
 
 import { getPayloadClient } from '@/lib/payload/client'
+import { getProductsPage } from '@/lib/payload/productsPage'
 
 // Slugs mapping aliases
 const SLUG_ALIASES: Record<string, string> = {
@@ -246,12 +247,15 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
 
   try {
     const payload = await getPayloadClient()
+
+    // 1. Search in Products collection first
     const { docs } = await payload.find({
       collection: 'products',
       where: {
         or: [
           { slug: { equals: cleanSlug } },
           { slug: { equals: resolvedKey } },
+          { name: { equals: cleanSlug } },
         ],
       },
       depth: 1,
@@ -272,13 +276,15 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
           )
           .filter(Boolean)
       }
+      const mediaUrl =
+        typeof doc.image === 'object' && doc.image?.url ? doc.image.url : null
       const primaryImage =
-        doc.imageUrl || doc.image?.url || galleryImages[0] || defaultProduct.imageUrl
+        doc.imageUrl || mediaUrl || galleryImages[0] || defaultProduct.imageUrl
       if (primaryImage && !galleryImages.includes(primaryImage)) {
         galleryImages = [primaryImage, ...galleryImages]
       }
       if (galleryImages.length === 0) {
-        galleryImages = defaultProduct.images
+        galleryImages = [primaryImage]
       }
 
       // Process whyChoose array
@@ -299,7 +305,7 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
 
       return {
         id: String(doc.id || defaultProduct.id),
-        slug: doc.slug || resolvedKey,
+        slug: doc.slug || cleanSlug,
         name: doc.name || defaultProduct.name,
         price: typeof doc.price === 'number' ? doc.price : defaultProduct.price,
         category: doc.category || defaultProduct.category,
@@ -309,8 +315,9 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
         images: galleryImages,
         shortDescription: doc.shortDescription || defaultProduct.shortDescription,
         variant: doc.variant || defaultProduct.variant,
-        detailHeading: doc.detailHeading || defaultProduct.detailHeading,
-        detailParagraph1: doc.detailParagraph1 || defaultProduct.detailParagraph1,
+        detailHeading: doc.detailHeading || doc.name || defaultProduct.detailHeading,
+        detailParagraph1:
+          doc.detailParagraph1 || doc.shortDescription || defaultProduct.detailParagraph1,
         detailParagraph2: doc.detailParagraph2 || defaultProduct.detailParagraph2,
         whyChoose,
         sampleList,
@@ -320,8 +327,83 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
           dimensions: doc.specifications?.dimensions || defaultProduct.specifications?.dimensions,
           material: doc.specifications?.material || defaultProduct.specifications?.material,
           variant: doc.specifications?.variant || defaultProduct.specifications?.variant,
-          compatibility: doc.specifications?.compatibility || defaultProduct.specifications?.compatibility,
+          compatibility:
+            doc.specifications?.compatibility || defaultProduct.specifications?.compatibility,
         },
+      }
+    }
+
+    // 2. If not found in Products collection, search in Products Page collection
+    const pageDoc = await getProductsPage()
+    if (pageDoc?.families && Array.isArray(pageDoc.families)) {
+      for (const family of pageDoc.families) {
+        if (!Array.isArray(family.items)) continue
+        for (const item of family.items) {
+          const itemNameSlug = String(item.name || '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '')
+          const itemId = String(item.id || '').toLowerCase()
+
+          const isMatch =
+            itemId === cleanSlug ||
+            itemId === resolvedKey ||
+            itemNameSlug === cleanSlug ||
+            itemNameSlug === resolvedKey ||
+            (cleanSlug === 'tb' && (itemNameSlug.includes('mastoid') || itemNameSlug.includes('temporal'))) ||
+            (cleanSlug === 'pns' && itemNameSlug.includes('without-base')) ||
+            (cleanSlug === 'pnsb' && (itemNameSlug.includes('bassette') || itemNameSlug.includes('cassette'))) ||
+            (cleanSlug === 'larynx' && itemNameSlug.includes('larynx'))
+
+          if (isMatch) {
+            const mediaUrl =
+              typeof item.image === 'object' && item.image?.url ? item.image.url : null
+            const primaryImage = mediaUrl || item.imageUrl || defaultProduct.imageUrl
+
+            let galleryImages: string[] = []
+            if (Array.isArray(item.images) && item.images.length > 0) {
+              galleryImages = item.images
+                .map((img: any) =>
+                  typeof img === 'string'
+                    ? img
+                    : img?.url || img?.imageUrl || img?.image?.url || ''
+                )
+                .filter(Boolean)
+            }
+            if (primaryImage && !galleryImages.includes(primaryImage)) {
+              galleryImages = [primaryImage, ...galleryImages]
+            }
+            if (galleryImages.length === 0) {
+              galleryImages = [primaryImage]
+            }
+
+            return {
+              id: item.id || defaultProduct.id,
+              slug: cleanSlug,
+              name: item.name || defaultProduct.name,
+              price: typeof item.price === 'number' ? item.price : defaultProduct.price,
+              category: family.title || defaultProduct.category,
+              sku: defaultProduct.sku,
+              tags: defaultProduct.tags,
+              imageUrl: primaryImage,
+              images: galleryImages,
+              shortDescription: item.description || defaultProduct.shortDescription,
+              variant: defaultProduct.variant,
+              detailHeading: item.name || defaultProduct.detailHeading,
+              detailParagraph1: item.description || defaultProduct.detailParagraph1,
+              detailParagraph2: defaultProduct.detailParagraph2,
+              whyChoose: defaultProduct.whyChoose,
+              sampleList:
+                Array.isArray(item.bulletPoints) && item.bulletPoints.length > 0
+                  ? item.bulletPoints
+                      .map((b: any) => (typeof b === 'string' ? b : b.point || ''))
+                      .filter(Boolean)
+                  : defaultProduct.sampleList,
+              lining: defaultProduct.lining,
+              specifications: defaultProduct.specifications,
+            }
+          }
+        }
       }
     }
   } catch (err) {

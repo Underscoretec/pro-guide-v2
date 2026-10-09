@@ -185,6 +185,41 @@ export const getCatalogProducts = cache(async () => {
   }
 })
 
+export function mapPageFamilyItemToProductItem(item: any): ProductItem {
+  const mediaUrl = typeof item.image === 'object' && item.image?.url ? item.image.url : null
+  const imageUrl = mediaUrl || item.imageUrl || '/images/prod1.jpg'
+  const slug =
+    item.slug ||
+    item.id ||
+    (item.name ? item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : '')
+
+  return {
+    id: slug,
+    name: item.name,
+    badge: item.badge || undefined,
+    price: typeof item.price === 'number' ? item.price : 20000,
+    imageUrl,
+    image: item.image,
+    images: item.images,
+    description: item.description || undefined,
+    bulletPoints: item.bulletPoints || undefined,
+    primaryButton: {
+      text: item.primaryButton?.text || 'Buy',
+      link:
+        item.primaryButton?.link && item.primaryButton.link !== '/'
+          ? item.primaryButton.link
+          : `/products/${slug}`,
+    },
+    secondaryButton: {
+      text: item.secondaryButton?.text || 'Enquire',
+      link:
+        item.secondaryButton?.link && item.secondaryButton.link !== '/'
+          ? item.secondaryButton.link
+          : `/contact?product=${encodeURIComponent(item.name || '')}`,
+    },
+  }
+}
+
 export function mapProductDocToItem(doc: any): ProductItem {
   const mediaUrl = typeof doc.image === 'object' && doc.image?.url ? doc.image.url : null
   const imageUrl = mediaUrl || doc.imageUrl || '/images/prod1.jpg'
@@ -210,45 +245,159 @@ export function mapProductDocToItem(doc: any): ProductItem {
   }
 }
 
-export async function getUnifiedProductFamilies(): Promise<ProductFamily[]> {
-  const catalogProducts = await getCatalogProducts()
+export async function getUnifiedProductFamilies(pageData?: any): Promise<ProductFamily[]> {
+  const [catalogProducts, pageDoc] = await Promise.all([
+    getCatalogProducts(),
+    pageData ? Promise.resolve(pageData) : getProductsPage(),
+  ])
 
-  if (catalogProducts.length === 0) {
-    return defaultProductFamilies
+  // 1. Check if user configured families directly in Products Page
+  const pageFamilies: any[] = Array.isArray(pageDoc?.families) ? pageDoc.families : []
+  const hasPageFamilies =
+    pageFamilies.length > 0 &&
+    pageFamilies.some((f) => Array.isArray(f.items) && f.items.length > 0)
+
+  // Format page families
+  const formattedPageFamilies: ProductFamily[] = pageFamilies.map((f: any, idx: number) => ({
+    familyId: f.familyId || `family-${idx + 1}`,
+    title: f.title || `Family 0${idx + 1}`,
+    subtitle: f.subtitle || undefined,
+    isAlt: f.isAlt ?? idx % 2 === 1,
+    items: Array.isArray(f.items) ? f.items.map(mapPageFamilyItemToProductItem) : [],
+  }))
+
+  const getFamilyCategoryKey = (f: { familyId?: string; title?: string }) => {
+    const t = (f.title || '').toLowerCase()
+    const fid = (f.familyId || '').toLowerCase()
+    if (
+      fid.includes('otology') ||
+      t.includes('otology') ||
+      t.includes('temporal bone') ||
+      t.includes('family 01')
+    )
+      return 'otology'
+    if (
+      fid.includes('rhinology') ||
+      (t.includes('rhinology') && !t.includes('interventional')) ||
+      t.includes('pns') ||
+      t.includes('sinus') ||
+      t.includes('family 02')
+    )
+      return 'rhinology'
+    if (
+      fid.includes('balloon') ||
+      t.includes('balloon') ||
+      t.includes('interventional') ||
+      t.includes('family 03')
+    )
+      return 'balloon'
+    if (
+      fid.includes('laryngology') ||
+      t.includes('laryngology') ||
+      t.includes('vestibular') ||
+      t.includes('custom') ||
+      t.includes('family 04')
+    )
+      return 'laryngology-custom'
+    return null
   }
 
-  // Check if products have categories defined
-  const rawCategories = catalogProducts
-    .map((p: any) => (typeof p.category === 'string' ? p.category.trim() : ''))
-    .filter((cat: string): cat is string => Boolean(cat))
-
-  const categories: string[] = Array.from(new Set(rawCategories))
-
-  if (categories.length > 1) {
-    // If multiple categories exist, group products by category
-    return categories.map((cat: string, idx: number) => {
-      const items = catalogProducts
-        .filter((p: any) => typeof p.category === 'string' && p.category.trim() === cat)
-        .map(mapProductDocToItem)
-
-      return {
-        familyId: cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        title: cat,
-        subtitle: `Explore our ${cat} simulation models.`,
-        isAlt: idx % 2 === 1,
-        items,
+  // If user configured families in Products Page:
+  if (hasPageFamilies) {
+    const mergedFamilies = defaultProductFamilies.map((defFamily) => {
+      const match = formattedPageFamilies.find((pf) => {
+        const pfKey = getFamilyCategoryKey(pf)
+        return pfKey && pfKey === defFamily.familyId
+      })
+      if (match && match.items.length > 0) {
+        return {
+          ...defFamily,
+          title: match.title || defFamily.title,
+          subtitle: match.subtitle || defFamily.subtitle,
+          isAlt: match.isAlt ?? defFamily.isAlt,
+          items: match.items,
+        }
       }
+      return defFamily
     })
+
+    // Add any custom page families that didn't match the 4 standard ones
+    for (const pf of formattedPageFamilies) {
+      if (!getFamilyCategoryKey(pf) && pf.items.length > 0) {
+        mergedFamilies.push(pf)
+      }
+    }
+
+    // Integrate any catalogProducts if present
+    if (catalogProducts.length > 0) {
+      for (const prod of catalogProducts) {
+        const item = mapProductDocToItem(prod)
+        const cat = (prod.category || '').toLowerCase()
+        const targetFamily = mergedFamilies.find((f) => {
+          const k = getFamilyCategoryKey(f)
+          return (
+            (k && cat.includes(k)) ||
+            (f.title && f.title.toLowerCase().includes(cat)) ||
+            (f.familyId && cat.includes(f.familyId))
+          )
+        })
+        if (targetFamily) {
+          const existingIdx = targetFamily.items.findIndex(
+            (i) =>
+              i.name.toLowerCase() === item.name.toLowerCase() ||
+              (item.id && i.id === item.id)
+          )
+          if (existingIdx > -1) {
+            targetFamily.items[existingIdx] = item
+          } else {
+            targetFamily.items.push(item)
+          }
+        }
+      }
+    }
+
+    return mergedFamilies
   }
 
-  // Single category or no category: show all products cleanly
-  return [
-    {
-      familyId: 'all-products',
-      title: (categories[0] as string | undefined) || 'Product Offerings',
-      subtitle: 'The complete surgical simulation models catalogue cast in OSSA+ Composite™.',
-      isAlt: false,
-      items: catalogProducts.map(mapProductDocToItem),
-    },
-  ]
+  // If no page families, but catalogProducts are present:
+  if (catalogProducts.length > 0) {
+    const rawCategories = catalogProducts
+      .map((p: any) => (typeof p.category === 'string' ? p.category.trim() : ''))
+      .filter((cat: string): cat is string => Boolean(cat))
+
+    const categories: string[] = Array.from(new Set(rawCategories))
+
+    if (categories.length > 1) {
+      return categories.map((cat: string, idx: number) => {
+        const items = catalogProducts
+          .filter(
+            (p: any) =>
+              typeof p.category === 'string' && p.category.trim() === cat
+          )
+          .map(mapProductDocToItem)
+
+        return {
+          familyId: cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          title: cat,
+          subtitle: `Explore our ${cat} simulation models.`,
+          isAlt: idx % 2 === 1,
+          items,
+        }
+      })
+    }
+
+    return [
+      {
+        familyId: 'all-products',
+        title: (categories[0] as string | undefined) || 'Product Offerings',
+        subtitle:
+          'The complete surgical simulation models catalogue cast in OSSA+ Composite™.',
+        isAlt: false,
+        items: catalogProducts.map(mapProductDocToItem),
+      },
+    ]
+  }
+
+  // Fallback to default product families
+  return defaultProductFamilies
 }

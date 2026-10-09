@@ -105,40 +105,49 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
 
   // Resolve multiple images for hover slider
   const resolveImages = (): string[] => {
-    // 1. If images array is provided in Payload
-    if (Array.isArray(item.images)) {
-      const customImages = item.images
-        .map((img: any) =>
-          typeof img === 'string'
-            ? img
-            : img?.image?.url || img?.imageUrl || img?.url || ''
-        )
-        .filter(Boolean)
+    // 1. Get primary uploaded image
+    const primaryImg =
+      (typeof item.image === 'object' && item.image?.url ? item.image.url : null) ||
+      (typeof item.imageUrl === 'string' && item.imageUrl.trim() ? item.imageUrl : null)
 
-      // If user uploaded exactly 1 image: DO NOT auto-slide, show only that 1 image
-      if (customImages.length === 1) {
-        return customImages
-      }
-      // If user uploaded multiple images: auto-slide between them
-      if (customImages.length > 1) {
-        return customImages
+    // 2. Get additional gallery images
+    const galleryImgs: string[] = Array.isArray(item.images)
+      ? item.images
+          .map((img: any) =>
+            typeof img === 'string'
+              ? img
+              : img?.image?.url || img?.imageUrl || img?.url || ''
+          )
+          .filter(Boolean)
+      : []
+
+    // 3. Combine primary and gallery images without duplicates
+    const combinedCustom: string[] = []
+    if (primaryImg) {
+      combinedCustom.push(primaryImg)
+    }
+    for (const g of galleryImgs) {
+      if (!combinedCustom.includes(g)) {
+        combinedCustom.push(g)
       }
     }
 
-    // 2. If user uploaded a single image via media upload or custom URL (and no multiple images):
-    // DO NOT auto-slide, show only that single image
+    // 4. If user provided custom uploads:
+    // - Multiple images (e.g. primary + gallery): return all -> AUTO-SLIDE WILL RUN!
+    // - Exactly 1 image: return that 1 image -> NO AUTO-SLIDE
     const hasCustomUpload =
       (item.image && typeof item.image === 'object' && Boolean(item.image.url)) ||
       (typeof item.imageUrl === 'string' &&
         item.imageUrl.trim() !== '' &&
         !item.imageUrl.startsWith('/images/prod') &&
-        !item.imageUrl.startsWith('/images/detail_'))
+        !item.imageUrl.startsWith('/images/detail_')) ||
+      galleryImgs.length > 0
 
-    if (hasCustomUpload || (item.image && typeof item.image === 'object')) {
-      return [imgSrc]
+    if (hasCustomUpload) {
+      return combinedCustom.length > 0 ? combinedCustom : [imgSrc]
     }
 
-    // 3. Fallback for static default catalog demo items (only when no custom image was uploaded)
+    // 5. Fallback for static default catalog demo items (only when no custom image was uploaded)
     if (nameOrUrlGalleries[imgSrc]) {
       return nameOrUrlGalleries[imgSrc]
     }
