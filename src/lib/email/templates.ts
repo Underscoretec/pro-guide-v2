@@ -7,7 +7,7 @@ import type {
   WelcomeTemplateData,
 } from './types'
 
-const BRAND_NAME = 'CIDS India'
+const BRAND_NAME = 'ProGuide'
 const BRAND_COLOR = '#7c6a46'
 
 function layout(content: string): string {
