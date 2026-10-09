@@ -383,113 +383,96 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
               )}
 
               {/* Two Column Feature Comparison */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
-                {/* Left Column: Why choose product */}
-                <div>
-                  <h3 className="text-[14px] font-bold text-[#1F2328] mb-3">
-                    Why choose product?
-                  </h3>
-                  <ul className="space-y-2 text-[12.5px] text-[#6B7280]">
-                    {(
-                      product.whyChoose && product.whyChoose.length > 0
-                        ? product.whyChoose
-                        : [
-                            'Cast in authentic OSSA+ Composite™ replicating human bone tactile feedback',
-                            'Anatomically validated landmarks by senior otolaryngologists',
-                            'Clean, repeatable surgical workstation training eliminating cadaveric hazards',
-                          ]
-                    ).map((item, i) => (
-                      <li key={i} className="flex items-start gap-2.5">
-                        <span className="text-[#9CA3AF] text-[13px] select-none leading-tight font-serif">
-                          &#9675;
-                        </span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              {((product.whyChoose && product.whyChoose.length > 0) ||
+                (product.sampleList && product.sampleList.length > 0)) && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
+                  {/* Left Column: Why choose product */}
+                  {product.whyChoose && product.whyChoose.length > 0 && (
+                    <div>
+                      <h3 className="text-[14px] font-bold text-[#1F2328] mb-3">
+                        Why choose product?
+                      </h3>
+                      <ul className="space-y-2 text-[12.5px] text-[#6B7280]">
+                        {product.whyChoose.map((item, i) => (
+                          <li key={i} className="flex items-start gap-2.5">
+                            <span className="text-[#9CA3AF] text-[13px] select-none leading-tight font-serif">
+                              &#9675;
+                            </span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
-                {/* Right Column: Key Highlights List */}
-                <div>
-                  <h3 className="text-[14px] font-bold text-[#1F2328] mb-3">
-                    Key Highlights
-                  </h3>
-                  <ol className="space-y-2 text-[12.5px] text-[#6B7280]">
-                    {(
-                      product.sampleList && product.sampleList.length > 0
-                        ? product.sampleList
-                        : [
-                            'Standardized anatomical fidelity for surgical training and fellowship exams',
-                            'Compatible with standard surgical instrumentation and drills',
-                            'Modular consumables for cost-effective repeated workshops',
-                          ]
-                    ).map((item, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <span className="font-semibold text-[#1F2328] w-3 shrink-0">
-                          {i + 1}
-                        </span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ol>
+                  {/* Right Column: Key Highlights List */}
+                  {product.sampleList && product.sampleList.length > 0 && (
+                    <div>
+                      <h3 className="text-[14px] font-bold text-[#1F2328] mb-3">
+                        Key Highlights
+                      </h3>
+                      <ol className="space-y-2 text-[12.5px] text-[#6B7280]">
+                        {product.sampleList.map((item, i) => (
+                          <li key={i} className="flex items-start gap-3">
+                            <span className="font-semibold text-[#1F2328] w-3 shrink-0">
+                              {i + 1}
+                            </span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
 
               {/* Lining / Material Note */}
-              <div className="mt-8 pt-2">
-                <h3 className="text-[14px] font-bold text-[#1F2328] mb-1.5">
-                  Material & Composition
-                </h3>
-                <p className="text-[12.5px] text-[#6B7280]">
-                  {product.lining ||
-                    'OSSA+ Composite™ Mineralized Bone Matrix & Surgical Grade Polymers.'}
-                </p>
-              </div>
+              {product.lining && (
+                <div className="mt-8 pt-2">
+                  <h3 className="text-[14px] font-bold text-[#1F2328] mb-1.5">
+                    Material & Composition
+                  </h3>
+                  <p className="text-[12.5px] text-[#6B7280]">{product.lining}</p>
+                </div>
+              )}
             </div>
           ) : (
             <div className="max-w-xl mx-auto">
               <table className="w-full text-[13px] border border-[#E5E7EB] rounded-[4px] overflow-hidden">
                 <tbody>
-                  <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
-                    <td className="px-4 py-3 font-semibold text-[#1F2328] w-1/3">
-                      Weight
-                    </td>
-                    <td className="px-4 py-3 text-[#6B7280]">
-                      {product.specifications?.weight || '350 g'}
-                    </td>
-                  </tr>
-                  <tr className="border-b border-[#E5E7EB]">
-                    <td className="px-4 py-3 font-semibold text-[#1F2328]">
-                      Dimensions
-                    </td>
-                    <td className="px-4 py-3 text-[#6B7280]">
-                      {product.specifications?.dimensions || '14 × 12 × 10 cm'}
-                    </td>
-                  </tr>
-                  <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
-                    <td className="px-4 py-3 font-semibold text-[#1F2328]">
-                      Material
-                    </td>
-                    <td className="px-4 py-3 text-[#6B7280]">
-                      {product.specifications?.material ||
-                        'OSSA+ Composite™ bone matrix & soft silicone'}
-                    </td>
-                  </tr>
-                  <tr className="border-b border-[#E5E7EB]">
-                    <td className="px-4 py-3 font-semibold text-[#1F2328]">
-                      Variant
-                    </td>
-                    <td className="px-4 py-3 text-[#6B7280]">
-                      {product.variant || 'Available in Left and Right variant'}
-                    </td>
-                  </tr>
+                  {product.specifications?.weight && (
+                    <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
+                      <td className="px-4 py-3 font-semibold text-[#1F2328] w-1/3">Weight</td>
+                      <td className="px-4 py-3 text-[#6B7280]">{product.specifications.weight}</td>
+                    </tr>
+                  )}
+                  {product.specifications?.dimensions && (
+                    <tr className="border-b border-[#E5E7EB]">
+                      <td className="px-4 py-3 font-semibold text-[#1F2328]">Dimensions</td>
+                      <td className="px-4 py-3 text-[#6B7280]">{product.specifications.dimensions}</td>
+                    </tr>
+                  )}
+                  {product.specifications?.material && (
+                    <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
+                      <td className="px-4 py-3 font-semibold text-[#1F2328]">Material</td>
+                      <td className="px-4 py-3 text-[#6B7280]">{product.specifications.material}</td>
+                    </tr>
+                  )}
+                  {product.variant && (
+                    <tr className="border-b border-[#E5E7EB]">
+                      <td className="px-4 py-3 font-semibold text-[#1F2328]">Variant</td>
+                      <td className="px-4 py-3 text-[#6B7280]">{product.variant}</td>
+                    </tr>
+                  )}
+                  {product.specifications?.compatibility && (
+                    <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
+                      <td className="px-4 py-3 font-semibold text-[#1F2328]">Compatibility</td>
+                      <td className="px-4 py-3 text-[#6B7280]">{product.specifications.compatibility}</td>
+                    </tr>
+                  )}
                   <tr className="bg-[#F9FAFB]">
-                    <td className="px-4 py-3 font-semibold text-[#1F2328]">
-                      Origin
-                    </td>
-                    <td className="px-4 py-3 text-[#6B7280]">
-                      OSSA PLUS SIMULATION LLP (India)
-                    </td>
+                    <td className="px-4 py-3 font-semibold text-[#1F2328]">Origin</td>
+                    <td className="px-4 py-3 text-[#6B7280]">OSSA PLUS SIMULATION LLP (India)</td>
                   </tr>
                 </tbody>
               </table>

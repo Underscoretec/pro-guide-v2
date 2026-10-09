@@ -71,6 +71,20 @@ export const Products: CollectionConfig = {
       label: 'Category',
     },
     {
+      name: 'familyId',
+      type: 'select',
+      label: 'Product Family',
+      options: [
+        { label: 'Family 01 · Otology — Artificial Temporal Bone Series', value: 'otology' },
+        { label: 'Family 02 · Rhinology — Paranasal Sinus (PNS) Series', value: 'rhinology' },
+        { label: 'Family 03 · Interventional Rhinology — Balloon Sinuplasty Series', value: 'balloon' },
+        { label: 'Family 04 · Laryngology, Vestibular & Custom Series', value: 'laryngology-custom' },
+      ],
+      admin: {
+        description: 'Select which Product Family header this product belongs to on the /products page.',
+      },
+    },
+    {
       name: 'sku',
       type: 'text',
       label: 'SKU / Product Code',

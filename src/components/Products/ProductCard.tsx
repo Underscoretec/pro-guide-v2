@@ -8,6 +8,7 @@ import { useCart } from '@/context/CartContext'
 export interface ProductItem {
   id?: string
   name: string
+  familyId?: string
   badge?: string
   image?: any
   imageUrl?: string

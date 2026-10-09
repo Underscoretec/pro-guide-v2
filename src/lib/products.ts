@@ -2,6 +2,7 @@ export interface ProductDetailData {
   id: string
   slug: string
   name: string
+  familyId?: string
   price: number
   category: string
   sku: string
@@ -636,7 +637,7 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
       }
 
       // Process whyChoose array
-      let whyChoose = defaultProduct.whyChoose
+      let whyChoose: string[] | undefined = undefined
       if (Array.isArray(doc.whyChoose) && doc.whyChoose.length > 0) {
         whyChoose = doc.whyChoose
           .map((w: any) => (typeof w === 'string' ? w : w.point || ''))
@@ -644,7 +645,7 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
       }
 
       // Process sampleList array
-      let sampleList = defaultProduct.sampleList
+      let sampleList: string[] | undefined = undefined
       if (Array.isArray(doc.sampleList) && doc.sampleList.length > 0) {
         sampleList = doc.sampleList
           .map((s: any) => (typeof s === 'string' ? s : s.item || ''))
@@ -652,32 +653,33 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
       }
 
       return {
-        id: String(doc.id || defaultProduct.id),
+        id: String(doc.id),
         slug: doc.slug || cleanSlug,
-        name: doc.name || defaultProduct.name,
-        price: typeof doc.price === 'number' ? doc.price : defaultProduct.price,
-        category: doc.category || defaultProduct.category,
-        sku: doc.sku || defaultProduct.sku,
-        tags: Array.isArray(doc.tags) && doc.tags.length > 0 ? doc.tags : defaultProduct.tags,
+        name: doc.name,
+        familyId: doc.familyId || undefined,
+        price: typeof doc.price === 'number' ? doc.price : 0,
+        category: doc.category || '',
+        sku: doc.sku || '',
+        tags: Array.isArray(doc.tags) ? doc.tags : [],
         imageUrl: primaryImage,
         images: galleryImages,
-        shortDescription: doc.shortDescription || defaultProduct.shortDescription,
-        variant: doc.variant || defaultProduct.variant,
-        detailHeading: doc.detailHeading || doc.name || defaultProduct.detailHeading,
-        detailParagraph1:
-          doc.detailParagraph1 || doc.shortDescription || defaultProduct.detailParagraph1,
-        detailParagraph2: doc.detailParagraph2 || defaultProduct.detailParagraph2,
+        shortDescription: doc.shortDescription || '',
+        variant: doc.variant || undefined,
+        detailHeading: doc.detailHeading || doc.name,
+        detailParagraph1: doc.detailParagraph1 || doc.shortDescription || undefined,
+        detailParagraph2: doc.detailParagraph2 || undefined,
         whyChoose,
         sampleList,
-        lining: doc.lining || defaultProduct.lining,
-        specifications: {
-          weight: doc.specifications?.weight || defaultProduct.specifications?.weight,
-          dimensions: doc.specifications?.dimensions || defaultProduct.specifications?.dimensions,
-          material: doc.specifications?.material || defaultProduct.specifications?.material,
-          variant: doc.specifications?.variant || defaultProduct.specifications?.variant,
-          compatibility:
-            doc.specifications?.compatibility || defaultProduct.specifications?.compatibility,
-        },
+        lining: doc.lining || undefined,
+        specifications: doc.specifications
+          ? {
+              weight: doc.specifications.weight || undefined,
+              dimensions: doc.specifications.dimensions || undefined,
+              material: doc.specifications.material || undefined,
+              variant: doc.specifications.variant || doc.variant || undefined,
+              compatibility: doc.specifications.compatibility || undefined,
+            }
+          : undefined,
       }
     }
 

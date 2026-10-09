@@ -2,6 +2,7 @@ import * as migration_20261008_123915 from './20261008_123915';
 import * as migration_20261009_055554_add_razorpay_fields from './20261009_055554_add_razorpay_fields';
 import * as migration_20261009_062113 from './20261009_062113';
 import * as migration_20261009_100949_add_resources_and_3d_simulation from './20261009_100949_add_resources_and_3d_simulation';
+import * as migration_20261009_110900_add_family_id_to_products from './20261009_110900_add_family_id_to_products';
 
 export const migrations = [
   {
@@ -23,5 +24,10 @@ export const migrations = [
     up: migration_20261009_100949_add_resources_and_3d_simulation.up,
     down: migration_20261009_100949_add_resources_and_3d_simulation.down,
     name: '20261009_100949_add_resources_and_3d_simulation'
+  },
+  {
+    up: migration_20261009_110900_add_family_id_to_products.up,
+    down: migration_20261009_110900_add_family_id_to_products.down,
+    name: '20261009_110900_add_family_id_to_products'
   },
 ];

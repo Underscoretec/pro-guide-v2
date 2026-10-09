@@ -300,6 +300,10 @@ export interface Product {
   displayOrder?: number | null;
   price: number;
   category?: string | null;
+  /**
+   * Select which Product Family header this product belongs to on the /products page.
+   */
+  familyId?: ('otology' | 'rhinology' | 'balloon' | 'laryngology-custom') | null;
   sku?: string | null;
   shortDescription?: string | null;
   variant?: string | null;
@@ -1430,6 +1434,7 @@ export interface ProductsSelect<T extends boolean = true> {
   displayOrder?: T;
   price?: T;
   category?: T;
+  familyId?: T;
   sku?: T;
   shortDescription?: T;
   variant?: T;
