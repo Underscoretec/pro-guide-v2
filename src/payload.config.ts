@@ -65,6 +65,6 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URI || 'file:./payload.db',
     },
-    push: process.env.NODE_ENV !== 'production',
+    push: false,
   }),
 })
