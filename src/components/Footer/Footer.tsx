@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { roboto } from '@/font'
 
 interface FooterProps {
   footer?: any
@@ -59,7 +60,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
   const socialLinks = footer?.socialLinks && footer.socialLinks.length > 0 ? footer.socialLinks : defaultSocialLinks
 
   return (
-    <footer className="bg-[#4A148C] text-[#E3D7F2] text-[13.5px] mt-10">
+    <footer className={`${roboto.className} bg-[#4A148C] text-[#E3D7F2] text-[13.5px] mt-10`}>
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Top Columns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1.2fr_1.2fr_1.2fr] gap-[34px] py-[44px] pb-[26px]">

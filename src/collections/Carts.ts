@@ -101,6 +101,11 @@ export const Carts: CollectionConfig = {
           label: 'Unit Price (INR)',
         },
         {
+          name: 'priceUSD',
+          type: 'number',
+          label: 'Unit Price (USD)',
+        },
+        {
           name: 'quantity',
           type: 'number',
           required: true,

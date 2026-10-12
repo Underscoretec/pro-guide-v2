@@ -1,4 +1,5 @@
 import React from 'react'
+import { roboto } from '@/font'
 
 interface WhyArtificialBoneProps {
   data?: any
@@ -43,7 +44,7 @@ export const WhyArtificialBoneSection: React.FC<WhyArtificialBoneProps> = ({ dat
   const stats = data?.stats && data.stats.length > 0 ? data.stats : defaultStats
 
   return (
-    <section className="py-[52px] bg-[#F8F8FA] border-t border-b border-line">
+    <section className={`${roboto.className} py-[52px] bg-[#F8F8FA] border-t border-b border-line`}>
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="sechead">
           <h2 className="font-bold text-ink">{title}</h2>

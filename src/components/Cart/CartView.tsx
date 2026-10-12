@@ -3,9 +3,10 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useCart } from '@/context/CartContext'
+import { useCart, getCartItemPrice, type CartItem } from '@/context/CartContext'
 
 export const CartView: React.FC = () => {
+  const cart = useCart()
   const {
     items,
     removeFromCart,
@@ -16,7 +17,32 @@ export const CartView: React.FC = () => {
     total,
     clearCart,
     isHydrated,
-  } = useCart()
+  } = cart
+
+  const isIndia = cart?.isIndia !== false
+
+  const formatPrice = (amount: number) => {
+    if (typeof cart?.formatPrice === 'function') {
+      return cart.formatPrice(amount)
+    }
+    if (!isIndia) {
+      return `$${Number(amount || 0).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+    }
+    return `Rs ${Number(amount || 0).toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`
+  }
+
+  const getItemPrice = (item: CartItem): number => {
+    if (typeof cart?.getItemPrice === 'function') {
+      return cart.getItemPrice(item)
+    }
+    return getCartItemPrice(item, isIndia)
+  }
 
   const [checkoutModalOpen, setCheckoutModalOpen] = useState(false)
   const [orderSubmitted, setOrderSubmitted] = useState(false)
@@ -28,13 +54,6 @@ export const CartView: React.FC = () => {
     address: '',
     notes: '',
   })
-
-  const formatPrice = (amount: number) => {
-    return `Rs ${amount.toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`
-  }
 
   const handleCheckoutSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -123,7 +142,8 @@ export const CartView: React.FC = () => {
               {/* Items List */}
               <div className="divide-y divide-[#E5E7EB]">
                 {items.map((item) => {
-                  const lineTotal = (item.price || 0) * (item.quantity || 1)
+                  const unitPrice = getItemPrice(item)
+                  const lineTotal = unitPrice * (item.quantity || 1)
                   return (
                     <div
                       key={item.id}
@@ -145,14 +165,14 @@ export const CartView: React.FC = () => {
                             {item.name}
                           </h3>
                           <div className="md:hidden text-[13px] text-muted mt-1">
-                            {formatPrice(item.price)}
+                            {formatPrice(unitPrice)}
                           </div>
                         </div>
                       </div>
 
                       {/* Price Column */}
                       <div className="hidden md:block md:col-span-2 text-center text-[13.5px] text-[#6B7280]">
-                        {formatPrice(item.price)}
+                        {formatPrice(unitPrice)}
                       </div>
 
                       {/* Quantity Column */}
@@ -270,10 +290,10 @@ export const CartView: React.FC = () => {
                     </span>
                   </div>
 
-                  {/* GST (18%) */}
+                  {/* GST */}
                   <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB]">
                     <span className="font-semibold text-[#4B5563] uppercase tracking-wide text-[12px]">
-                      GST (18%)
+                      {isIndia ? 'GST (18%)' : 'GST (Export 0%)'}
                     </span>
                     <span className="font-medium text-ink">
                       {formatPrice(gst)}
