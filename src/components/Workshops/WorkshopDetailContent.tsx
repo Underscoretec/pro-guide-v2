@@ -282,7 +282,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
             </div>
 
             {/* Tabs Header */}
-            <div className="bg-white border border-gray-200 rounded-t-xl overflow-hidden flex divide-x divide-gray-200 shadow-sm">
+            <div className="bg-white border border-gray-200 rounded-t-sm overflow-hidden flex divide-x divide-gray-200 shadow-sm">
               <button
                 type="button"
                 onClick={() => setActiveTab('details')}
@@ -319,7 +319,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
             </div>
 
             {/* Tab Content Box (matching the soft purple tint background) */}
-            <div className="bg-[#FAF7FC] border border-t-0 border-gray-200 rounded-b-xl p-6 md:p-8 space-y-7 shadow-sm">
+            <div className="bg-[#FAF7FC] border border-t-0 border-gray-200 rounded-b-sm p-6 md:p-8 space-y-7 shadow-sm">
               {activeTab === 'details' && (
                 <>
                   {/* Designation / Target Audience */}
@@ -397,7 +397,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
 
           {/* Right Column: Floating Sidebar Card overlapping top banner */}
           <div className="lg:-mt-28 xl:-mt-32 z-20 sticky top-6">
-            <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xl overflow-hidden transition-all">
+            <div className="bg-white rounded-sm border border-gray-200/90 shadow-2xl overflow-hidden transition-all">
               {/* Card Image Banner */}
               <div className="relative h-56 w-full overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -424,7 +424,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                   </span>
                   <span className="inline-flex items-center" title="India">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="https://flagcdn.com/w40/in.png" alt="India Flag" className="w-5 h-3.5 rounded-[2px] shadow-sm object-cover" />
+                    <img src="https://flagcdn.com/w40/in.png" alt="India Flag" className="w-5 h-3.5 rounded-sm shadow-sm object-cover" />
                   </span>
                 </div>
 
@@ -432,7 +432,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                   <button
                     type="button"
                     onClick={handleAddToCart}
-                    className="w-full text-center bg-[#4A148C] hover:bg-[#380e6b] text-white font-bold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg text-sm cursor-pointer active:scale-[0.99]"
+                    className="w-full text-center bg-[#4A148C] hover:bg-[#380e6b] text-white font-bold py-3.5 rounded-sm transition-all shadow-md hover:shadow-lg text-sm cursor-pointer active:scale-[0.99]"
                   >
                     Add to Cart
                   </button>

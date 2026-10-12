@@ -26,7 +26,7 @@ export const AddressList: React.FC<{ addresses: Address[]; fullName: string; pho
   const close = React.useCallback(() => setEditing(null), [])
 
   return (
-    <div className={`${roboto.className} bg-white rounded-[8px] shadow-sm border border-line overflow-hidden`}>
+    <div className={`${roboto.className} bg-white rounded-sm shadow-sm border border-line overflow-hidden`}>
       <div className="flex flex-wrap items-center justify-between gap-3 px-6 sm:px-8 py-5 border-b border-line bg-white">
         <div className="flex items-center gap-2.5">
           <FiMapPin className="text-purple w-5 h-5" />
@@ -35,7 +35,7 @@ export const AddressList: React.FC<{ addresses: Address[]; fullName: string; pho
         <button
           type="button"
           onClick={() => setEditing('new')}
-          className="inline-flex items-center gap-1.5 text-purple hover:text-purple-d font-bold text-[13px] sm:text-[13.5px] bg-tint px-3.5 py-1.5 rounded-[6px] hover:bg-purple/15 transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 text-purple hover:text-purple-d font-bold text-[13px] sm:text-[13.5px] bg-tint px-3.5 py-1.5 rounded-sm hover:bg-purple/15 transition-all cursor-pointer"
         >
           <FiPlus className="w-4 h-4" />
           <span>Add New Address</span>
@@ -51,7 +51,7 @@ export const AddressList: React.FC<{ addresses: Address[]; fullName: string; pho
           <button
             type="button"
             onClick={() => setEditing('new')}
-            className="inline-flex items-center gap-1.5 bg-purple hover:bg-purple-d text-white font-bold text-[13px] px-5 py-2.5 rounded-[6px] transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 bg-purple hover:bg-purple-d text-white font-bold text-[13px] px-5 py-2.5 rounded-sm transition-colors cursor-pointer"
           >
             <FiPlus className="w-4 h-4" />
             <span>Add Your First Address</span>

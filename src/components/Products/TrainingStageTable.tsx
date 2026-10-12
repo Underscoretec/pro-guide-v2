@@ -62,7 +62,7 @@ export const TrainingStageTable: React.FC<TrainingStageTableProps> = ({
         </div>
 
         {/* Comparison Table */}
-        <div className="overflow-x-auto rounded-[8px] border border-line shadow-sm bg-white">
+        <div className="overflow-x-auto rounded-sm border border-line shadow-sm bg-white">
           <table className="w-full border-collapse text-[14px]">
             <thead>
               <tr className="bg-gradient-to-r from-[#4A148C] to-[#673AB7] text-white text-left font-bold">

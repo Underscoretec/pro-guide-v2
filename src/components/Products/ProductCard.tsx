@@ -246,7 +246,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
       .replace(/(^-|-$)/g, '')
 
   return (
-    <div className="bg-white border border-line rounded-[8px] overflow-hidden flex flex-col h-full transition-all duration-[180ms] hover:shadow-[0_14px_30px_rgba(31,35,40,0.12)] hover:-translate-y-[3px] group">
+    <div className="bg-white border border-line rounded-sm overflow-hidden flex flex-col h-full transition-all duration-[180ms] hover:shadow-[0_14px_30px_rgba(31,35,40,0.12)] hover:-translate-y-[3px] group">
       {/* Uniform card image container with hover auto-slide */}
       <Link
         href={`/products/${productSlug}`}
@@ -336,14 +336,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
           <button
             type="button"
             onClick={handleBuy}
-            className="flex-1 text-center bg-purple text-white px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer"
+            className="flex-1 text-center bg-purple text-white px-2.5 sm:px-3.5 py-[9px] rounded-sm font-bold text-[12.5px] sm:text-[13px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer"
           >
             {item.primaryButton?.text || 'Buy'}
           </button>
 
           <Link
             href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
-            className="flex-1 text-center bg-white text-ink px-2.5 sm:px-3.5 py-[9px] rounded-[5px] font-bold text-[12.5px] sm:text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
+            className="flex-1 text-center bg-white text-ink px-2.5 sm:px-3.5 py-[9px] rounded-sm font-bold text-[12.5px] sm:text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
           >
             {item.secondaryButton?.text || 'Enquire'}
           </Link>

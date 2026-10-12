@@ -137,7 +137,7 @@ export function LearningBitesContent({ data }: LearningBitesContentProps) {
             {videoList.map((video) => (
               <div
                 key={video.id}
-                className="bg-white border border-[#E5E7EB] rounded-[12px] overflow-hidden flex flex-col h-full shadow-xs hover:shadow-lg transition-all duration-300 group"
+                className="bg-white border border-[#E5E7EB] rounded-sm overflow-hidden flex flex-col h-full shadow-xs hover:shadow-lg transition-all duration-300 group"
               >
                 {/* Top Video Header / Thumbnail */}
                 <div className="relative aspect-[16/10] bg-slate-900 overflow-hidden flex items-center justify-center">
@@ -202,7 +202,7 @@ export function LearningBitesContent({ data }: LearningBitesContentProps) {
               onClick={() => setActiveVideo(null)}
             >
               <div
-                className="bg-white rounded-2xl max-w-5xl w-full p-5 sm:p-7 relative shadow-2xl transition-all"
+                className="bg-white rounded-sm max-w-5xl w-full p-5 sm:p-7 relative shadow-2xl transition-all"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
@@ -214,20 +214,20 @@ export function LearningBitesContent({ data }: LearningBitesContentProps) {
                   &times;
                 </button>
                 <h3 className="text-xl sm:text-2xl font-bold text-[#1F2328] pr-10">{activeVideo.title}</h3>
-                <div className="aspect-[16/9] bg-black rounded-xl mt-4 flex items-center justify-center text-white text-sm relative overflow-hidden shadow-inner">
+                <div className="aspect-[16/9] bg-black rounded-sm mt-4 flex items-center justify-center text-white text-sm relative overflow-hidden shadow-inner">
                   {activeVideo.videoUrl ? (
                     activeVideo.videoUrl.endsWith('.mp4') || activeVideo.videoUrl.includes('.mp4') ? (
                       <video
                         src={activeVideo.videoUrl}
                         controls
                         autoPlay
-                        className="w-full h-full rounded-lg object-contain bg-black"
+                        className="w-full h-full rounded-sm object-contain bg-black"
                       />
                     ) : (
                       <iframe
                         src={activeVideo.videoUrl}
                         title={activeVideo.title}
-                        className="w-full h-full rounded-lg"
+                        className="w-full h-full rounded-sm"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                       />
@@ -253,7 +253,7 @@ export function LearningBitesContent({ data }: LearningBitesContentProps) {
                   <button
                     type="button"
                     onClick={() => setActiveVideo(null)}
-                    className="bg-[#5E007B] text-white text-xs font-bold px-4 py-2 rounded-md hover:bg-[#4a0061] transition-colors"
+                    className="bg-[#5E007B] text-white text-xs font-bold px-4 py-2 rounded-sm hover:bg-[#4a0061] transition-colors"
                   >
                     Close
                   </button>

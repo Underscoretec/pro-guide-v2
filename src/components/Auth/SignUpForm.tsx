@@ -15,7 +15,7 @@ export const SignUpForm: React.FC<{ redirectTo?: string }> = ({ redirectTo }) =>
     <form action={action} className="space-y-6">
       <input type="hidden" name="redirectTo" value={redirectTo || ''} />
       {redirectTo === '/checkout' && (
-        <div className="bg-[#4A148C]/10 border border-[#4A148C]/25 text-[#4A148C] text-[13px] rounded-[6px] px-3.5 py-2.5 font-medium flex items-center gap-2">
+        <div className="bg-[#4A148C]/10 border border-[#4A148C]/25 text-[#4A148C] text-[13px] rounded-sm px-3.5 py-2.5 font-medium flex items-center gap-2">
           <span>Create an account to complete your order. Your cart items are saved.</span>
         </div>
       )}

@@ -133,7 +133,7 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
                   type="button"
                   onClick={() => setSelectedImageIndex(idx)}
                   onMouseEnter={() => setSelectedImageIndex(idx)}
-                  className={`aspect-square w-full rounded-[3px] border overflow-hidden p-1 transition-all bg-[#F8F9FA] flex items-center justify-center cursor-pointer ${
+                  className={`aspect-square w-full rounded-sm border overflow-hidden p-1 transition-all bg-[#F8F9FA] flex items-center justify-center cursor-pointer ${
                     idx === selectedImageIndex
                       ? 'border-[#1F2328] ring-1 ring-[#1F2328]'
                       : 'border-[#E5E7EB] hover:border-[#9CA3AF]'
@@ -151,7 +151,7 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
             </div>
 
             {/* Main Featured Image Box */}
-            <div className="flex-1 aspect-square bg-[#F3F4F6] rounded-[3px] p-6 sm:p-12 flex items-center justify-center relative overflow-hidden select-none group/mainimg">
+            <div className="flex-1 aspect-square bg-[#F3F4F6] rounded-sm p-6 sm:p-12 flex items-center justify-center relative overflow-hidden select-none group/mainimg">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={galleryImages[selectedImageIndex] || galleryImages[0]}
@@ -242,7 +242,7 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
               {isInCart && cartItem ? (
                 <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                   {/* Quantity Stepper (Increase / Decrease) */}
-                  <div className="flex items-center border border-[#E5E7EB] rounded-[3px] h-[44px] bg-white">
+                  <div className="flex items-center border border-[#E5E7EB] rounded-sm h-[44px] bg-white">
                     <button
                       type="button"
                       onClick={handleDecrement}
@@ -272,7 +272,7 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
                   {/* View Cart button */}
                   <Link
                     href="/cart"
-                    className="bg-[#5B1073] hover:bg-[#480c5c] text-white font-bold text-[12px] uppercase tracking-[1.4px] px-7 h-[44px] rounded-[3px] transition-colors shadow-xs flex items-center justify-center cursor-pointer min-w-[140px]"
+                    className="bg-[#5B1073] hover:bg-[#480c5c] text-white font-bold text-[12px] uppercase tracking-[1.4px] px-7 h-[44px] rounded-sm transition-colors shadow-xs flex items-center justify-center cursor-pointer min-w-[140px]"
                   >
                     VIEW CART
                   </Link>
@@ -282,7 +282,7 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
                 <button
                   type="button"
                   onClick={handleAddToCart}
-                  className="bg-[#5B1073] hover:bg-[#480c5c] text-white font-bold text-[12px] uppercase tracking-[1.4px] px-8 h-[44px] rounded-[3px] transition-colors shadow-xs flex items-center justify-center cursor-pointer min-w-[180px] sm:min-w-[200px]"
+                  className="bg-[#5B1073] hover:bg-[#480c5c] text-white font-bold text-[12px] uppercase tracking-[1.4px] px-8 h-[44px] rounded-sm transition-colors shadow-xs flex items-center justify-center cursor-pointer min-w-[180px] sm:min-w-[200px]"
                 >
                   ADD TO CART
                 </button>
@@ -472,7 +472,7 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
             </div>
           ) : (
             <div className="max-w-xl mx-auto">
-              <table className="w-full text-[13px] border border-[#E5E7EB] rounded-[4px] overflow-hidden">
+              <table className="w-full text-[13px] border border-[#E5E7EB] rounded-sm overflow-hidden">
                 <tbody>
                   {product.specifications?.weight && (
                     <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">

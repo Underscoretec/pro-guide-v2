@@ -249,7 +249,7 @@ export const TrueToLifeDetailsSection: React.FC<TrueToLifeDetailsProps> = ({ dat
             return (
               <div
                 key={idx}
-                className="bg-white border border-line rounded-[8px] overflow-hidden flex flex-col hover:shadow-md transition-shadow group"
+                className="bg-white border border-line rounded-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow group"
               >
                 <DetailImageSlider
                   images={images}

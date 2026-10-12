@@ -39,7 +39,7 @@ export default async function OrdersPage() {
   const orders = await getUserOrders()
 
   return (
-    <div className={`${roboto.className} bg-white rounded-[8px] shadow-sm border border-line min-h-[400px] overflow-hidden`}>
+    <div className={`${roboto.className} bg-white rounded-sm shadow-sm border border-line min-h-[400px] overflow-hidden`}>
       <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-line bg-white">
         <div className="flex items-center gap-2.5">
           <FiPackage className="text-purple w-5 h-5" />
@@ -56,7 +56,7 @@ export default async function OrdersPage() {
           <p className="text-[14px] text-muted mb-5">You haven’t placed any orders yet.</p>
           <Link
             href="/products"
-            className="inline-flex items-center gap-2 bg-purple hover:bg-purple-d text-white text-[13px] font-bold px-6 py-2.5 rounded-[6px] shadow-sm hover:shadow transition-all"
+            className="inline-flex items-center gap-2 bg-purple hover:bg-purple-d text-white text-[13px] font-bold px-6 py-2.5 rounded-sm shadow-sm hover:shadow transition-all"
           >
             <span>Start Shopping</span>
             <FiArrowRight className="w-4 h-4" />
@@ -98,7 +98,7 @@ export default async function OrdersPage() {
                   </div>
                 </div>
 
-                <div className="space-y-3 mb-4 bg-card/40 rounded-[6px] p-3.5 border border-line/50">
+                <div className="space-y-3 mb-4 bg-card/40 rounded-sm p-3.5 border border-line/50">
                   {(order.items || []).map((item: any, idx: number) => (
                     <div key={idx} className="flex justify-between items-center text-[13.5px]">
                       <span className="text-ink font-medium flex items-center gap-2">
@@ -136,7 +136,7 @@ export default async function OrdersPage() {
                       href={`/api/orders/${order.id || order.orderNumber}/invoice`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-purple hover:text-purple-d hover:bg-tint px-3 py-1.5 rounded-[5px] border border-purple/20 transition-all"
+                      className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-purple hover:text-purple-d hover:bg-tint px-3 py-1.5 rounded-sm border border-purple/20 transition-all"
                     >
                       <FiFileText className="w-3.5 h-3.5" />
                       <span>View Invoice</span>
