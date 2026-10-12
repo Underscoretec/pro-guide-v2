@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { useCart } from '@/context/CartContext'
 import type { ProductDetailData } from '@/lib/products'
+import { roboto } from '@/font'
 
 interface ProductDetailsViewProps {
   product: ProductDetailData
@@ -107,7 +108,7 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
   }
 
   return (
-    <div className="bg-white text-[#1F2328] py-8 sm:py-12">
+    <div className={`${roboto.className} bg-white text-[#1F2328] py-8 sm:py-12`}>
       <div className="max-w-[1140px] mx-auto px-4 sm:px-6">
         {/* Breadcrumbs */}
         <nav className="text-[11px] uppercase tracking-[1.4px] font-semibold text-[#8C929C] mb-8 select-none">

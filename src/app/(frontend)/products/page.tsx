@@ -9,6 +9,7 @@ import {
   getProductsPage,
   getUnifiedProductFamilies,
 } from '@/lib/payload/productsPage'
+import { roboto } from '@/font'
 
 export const metadata: Metadata = {
   title: 'Product Offerings — 3D Simulation Models | ProGuide',
@@ -33,7 +34,7 @@ export default async function ProductsPage() {
   const stageComparison = pageData?.stageComparison
 
   return (
-    <main className="flex-1">
+    <main className={`${roboto.className} flex-1`}>
       {/* Hero Banner */}
       <ProductsHero data={heroData} />
 

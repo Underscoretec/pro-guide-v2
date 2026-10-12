@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
+import { roboto } from '@/font'
 
 interface ProductOfferingsProps {
   data?: any
@@ -202,7 +203,7 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
   }
 
   return (
-    <section id="products" className="py-[52px] bg-[#F8F8FA] border-t border-b border-line">
+    <section id="products" className={`${roboto.className} py-[52px] bg-[#F8F8FA] border-t border-b border-line`}>
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Section Heading */}
         <div className="sechead">
