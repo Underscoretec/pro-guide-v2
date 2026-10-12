@@ -5,6 +5,7 @@ import * as migration_20261009_100949_add_resources_and_3d_simulation from './20
 import * as migration_20261009_110900_add_family_id_to_products from './20261009_110900_add_family_id_to_products';
 import * as migration_20261012_053228 from './20261012_053228';
 import * as migration_20261012_055128_add_family_title_and_subtitle from './20261012_055128_add_family_title_and_subtitle';
+import * as migration_20261012_073305 from './20261012_073305';
 
 export const migrations = [
   {
@@ -40,6 +41,11 @@ export const migrations = [
   {
     up: migration_20261012_055128_add_family_title_and_subtitle.up,
     down: migration_20261012_055128_add_family_title_and_subtitle.down,
-    name: '20261012_055128_add_family_title_and_subtitle'
+    name: '20261012_055128_add_family_title_and_subtitle',
+  },
+  {
+    up: migration_20261012_073305.up,
+    down: migration_20261012_073305.down,
+    name: '20261012_073305'
   },
 ];
