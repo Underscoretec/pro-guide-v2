@@ -1,4 +1,5 @@
 import React from 'react'
+import { roboto } from '@/font'
 
 interface BlogSectionProps {
   data?: any
@@ -40,7 +41,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ data, posts }) => {
   const list = rawList.length > 0 ? rawList : defaultPosts
 
   return (
-    <section className="py-[52px] bg-[#F8F8FA] border-t border-b border-line">
+    <section className={`${roboto.className} py-[52px] bg-[#F8F8FA] border-t border-b border-line`}>
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="sechead">
           <p className="!text-purple font-extrabold tracking-[1px] uppercase text-[12px]">

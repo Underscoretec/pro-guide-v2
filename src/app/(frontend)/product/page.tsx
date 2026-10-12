@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import { ProductDetailsView } from '@/components/Products'
 import { getProductData } from '@/lib/products'
 
+export const dynamic = 'force-dynamic'
+
 interface ProductQueryPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }

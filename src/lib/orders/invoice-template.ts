@@ -79,14 +79,99 @@ export function numberToWordsINR(amount: number): string {
   return result + ' Only'
 }
 
+export function numberToWordsUSD(amount: number): string {
+  const units = [
+    '',
+    'One',
+    'Two',
+    'Three',
+    'Four',
+    'Five',
+    'Six',
+    'Seven',
+    'Eight',
+    'Nine',
+    'Ten',
+    'Eleven',
+    'Twelve',
+    'Thirteen',
+    'Fourteen',
+    'Fifteen',
+    'Sixteen',
+    'Seventeen',
+    'Eighteen',
+    'Nineteen',
+  ]
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety']
+
+  function convertLessThanOneThousand(n: number): string {
+    if (n === 0) return ''
+    let str = ''
+    if (n >= 100) {
+      str += units[Math.floor(n / 100)] + ' Hundred '
+      n %= 100
+    }
+    if (n >= 20) {
+      str += tens[Math.floor(n / 10)] + ' '
+      n %= 10
+    }
+    if (n > 0) {
+      str += units[n] + ' '
+    }
+    return str.trim()
+  }
+
+  function convertNumber(num: number): string {
+    if (num === 0) return 'Zero'
+    let words = ''
+    const billion = Math.floor(num / 1000000000)
+    num %= 1000000000
+    const million = Math.floor(num / 1000000)
+    num %= 1000000
+    const thousand = Math.floor(num / 1000)
+    num %= 1000
+    const remainder = num
+
+    if (billion > 0) words += convertLessThanOneThousand(billion) + ' Billion '
+    if (million > 0) words += convertLessThanOneThousand(million) + ' Million '
+    if (thousand > 0) words += convertLessThanOneThousand(thousand) + ' Thousand '
+    if (remainder > 0) words += convertLessThanOneThousand(remainder) + ' '
+    return words.trim()
+  }
+
+  const rounded = Number(amount || 0).toFixed(2)
+  const [dollarPart, centPart] = rounded.split('.')
+  const dollarVal = parseInt(dollarPart, 10)
+  const centVal = parseInt(centPart, 10)
+
+  let result = convertNumber(dollarVal) + (dollarVal === 1 ? ' US Dollar' : ' US Dollars')
+  if (centVal > 0) {
+    result += ' and ' + convertLessThanOneThousand(centVal) + (centVal === 1 ? ' Cent' : ' Cents')
+  }
+  return result + ' Only'
+}
+
 /**
- * Format Indian Rupee currency (e.g. ₹5,985.00)
+ * Format currency (supports INR and USD)
  */
-export function formatINR(amount: number): string {
+export function formatCurrency(amount: number, currency: string = 'INR'): string {
+  if (currency === 'USD') {
+    return `$${Number(amount || 0).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`
+  }
   return `₹${Number(amount || 0).toLocaleString('en-IN', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`
+}
+
+/**
+ * Format Indian Rupee currency (e.g. ₹5,985.00)
+ */
+export function formatINR(amount: number): string {
+  return formatCurrency(amount, 'INR')
 }
 
 /**
@@ -201,7 +286,9 @@ export function normalizeInvoiceData(order: any) {
     order.payment ||
     (order.paymentMethod === 'COD' ? `COD-${invoiceNo}` : `REF-${invoiceNo}`)
 
-  const amountInWords = numberToWordsINR(totalAmount)
+  const currency = order.pricing?.currency || order.currency || 'INR'
+  const isUSD = currency === 'USD'
+  const amountInWords = isUSD ? numberToWordsUSD(totalAmount) : numberToWordsINR(totalAmount)
 
   return {
     invoiceNo,
@@ -220,6 +307,7 @@ export function normalizeInvoiceData(order: any) {
     totalAmount,
     transactionRef,
     amountInWords,
+    currency,
   }
 }
 
@@ -235,7 +323,7 @@ export function generateInvoiceCardHtml(order: any): string {
         <tr>
           <td>${escapeHtml(item.name)}</td>
           <td class="center">${escapeHtml(item.quantity)}</td>
-          <td class="right">${formatINR(item.totalPrice)}</td>
+          <td class="right">${formatCurrency(item.totalPrice, data.currency)}</td>
         </tr>`
     )
     .join('')
@@ -245,14 +333,14 @@ export function generateInvoiceCardHtml(order: any): string {
       ? `
         <tr>
           <td colspan="2">${escapeHtml(data.discountLabel)}</td>
-          <td class="right">${formatINR(data.discount)}</td>
+          <td class="right">${formatCurrency(data.discount, data.currency)}</td>
         </tr>`
       : ''
 
   const subtotalRowHtml = `
         <tr>
           <td colspan="2"><strong>Subtotal</strong></td>
-          <td class="right"><strong>${formatINR(data.taxableSubtotal)}</strong></td>
+          <td class="right"><strong>${formatCurrency(data.taxableSubtotal, data.currency)}</strong></td>
         </tr>`
 
   const taxRowHtml =
@@ -260,7 +348,13 @@ export function generateInvoiceCardHtml(order: any): string {
       ? `
         <tr>
           <td colspan="2">IGST @ 18%</td>
-          <td class="right">${formatINR(data.taxAmount)}</td>
+          <td class="right">${formatCurrency(data.taxAmount, data.currency)}</td>
+        </tr>`
+      : data.currency === 'USD'
+      ? `
+        <tr>
+          <td colspan="2">Export Sales (0% Tax)</td>
+          <td class="right">${formatCurrency(0, data.currency)}</td>
         </tr>`
       : ''
 
@@ -339,7 +433,7 @@ export function generateInvoiceCardHtml(order: any): string {
         ${taxRowHtml}
         <tr class="total-row">
           <td colspan="2">TOTAL PAID</td>
-          <td class="right">${formatINR(data.totalAmount)}</td>
+          <td class="right">${formatCurrency(data.totalAmount, data.currency)}</td>
         </tr>
       </tbody>
     </table>
@@ -347,7 +441,7 @@ export function generateInvoiceCardHtml(order: any): string {
     <!-- Reference ID -->
     <div class="ref-info">
       <div><strong>Transaction Reference ID:</strong> ${escapeHtml(data.transactionRef)}</div>
-      <div><strong>Amount Paid:</strong> ${formatINR(data.totalAmount)}</div>
+      <div><strong>Amount Paid:</strong> ${formatCurrency(data.totalAmount, data.currency)}</div>
     </div>
 
     <hr class="divider" />

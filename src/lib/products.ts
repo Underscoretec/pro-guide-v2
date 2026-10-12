@@ -2,7 +2,11 @@ export interface ProductDetailData {
   id: string
   slug: string
   name: string
+  familyId?: string
+  familyTitle?: string
+  familySubtitle?: string
   price: number
+  priceUSD?: number
   category: string
   sku: string
   tags: string[]
@@ -553,7 +557,7 @@ export function getProductBySlug(slug?: string | null): ProductDetailData {
     return PRODUCTS_CATALOG['pns']
   }
 
-  const cleanSlug = slug.toLowerCase().trim()
+  const cleanSlug = slug.toLowerCase().trim().replace(/^\/+|\/+$/g, '')
   const resolvedKey = SLUG_ALIASES[cleanSlug] || cleanSlug
 
   if (PRODUCTS_CATALOG[cleanSlug]) {
@@ -569,65 +573,70 @@ export function getProductBySlug(slug?: string | null): ProductDetailData {
 }
 
 export async function getProductData(slug?: string | null): Promise<ProductDetailData> {
-  const defaultProduct = getProductBySlug(slug)
-
-  if (!slug) {
-    return defaultProduct
-  }
-
-  const cleanSlug = slug.toLowerCase().trim()
-  const resolvedKey = SLUG_ALIASES[cleanSlug] || cleanSlug
+  const rawSlug = String(slug || '').trim()
+  const cleanSlug = rawSlug.toLowerCase().replace(/^\/+|\/+$/g, '').trim()
+  const decodedSlug = decodeURIComponent(cleanSlug).trim()
+  const resolvedKey = SLUG_ALIASES[cleanSlug] || SLUG_ALIASES[decodedSlug] || cleanSlug
 
   try {
     const payload = await getPayloadClient()
 
-    // 1. Search in Products collection for EXACT slug match first
-    let { docs } = await payload.find({
+    // 1. Fetch all products from collection with depth 2 for fully populated media
+    const allProductsRes = await payload.find({
       collection: 'products',
-      where: {
-        or: [
-          { slug: { equals: cleanSlug } },
-          { name: { equals: cleanSlug } },
-        ],
-      },
-      depth: 1,
-      limit: 1,
+      depth: 2,
+      limit: 100,
     })
 
-    // If no exact match and slug has an alias, search by alias
-    if (docs.length === 0 && resolvedKey !== cleanSlug) {
-      const aliasResult = await payload.find({
-        collection: 'products',
-        where: {
-          or: [
-            { slug: { equals: resolvedKey } },
-            { name: { equals: resolvedKey } },
-          ],
-        },
-        depth: 1,
-        limit: 1,
+    const allProducts = allProductsRes.docs || []
+    let doc: any = null
+
+    // Exact or flexible match among dynamic products
+    if (allProducts.length > 0) {
+      doc = allProducts.find((p: any) => {
+        const pSlug = String(p.slug || '').toLowerCase().trim().replace(/^\/+|\/+$/g, '').trim()
+        const pName = String(p.name || '').toLowerCase().trim()
+        const pNameSlug = pName.replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+        const pId = String(p.id)
+
+        return (
+          pSlug === cleanSlug ||
+          pSlug === decodedSlug ||
+          pSlug.replace(/\s+/g, '') === cleanSlug.replace(/\s+/g, '') ||
+          pNameSlug === cleanSlug ||
+          pNameSlug === decodedSlug ||
+          pName === cleanSlug ||
+          pName === decodedSlug ||
+          pId === cleanSlug ||
+          (resolvedKey !== cleanSlug && (pSlug === resolvedKey || pNameSlug === resolvedKey))
+        )
       })
-      docs = aliasResult.docs
+
+      // If no slug was provided at all and dynamic products exist, default to the first dynamic product
+      if (!doc && !cleanSlug) {
+        doc = allProducts[0]
+      }
     }
 
-    if (docs.length > 0) {
-      const doc = docs[0] as any
-
-      // Process gallery images
+    if (doc) {
+      // Process gallery images with full media relation support
       let galleryImages: string[] = []
       if (Array.isArray(doc.images) && doc.images.length > 0) {
         galleryImages = doc.images
-          .map((img: any) =>
-            typeof img === 'string'
-              ? img
-              : img.url || img.imageUrl || img.image?.url || ''
-          )
+          .map((img: any) => {
+            if (typeof img === 'string') return img
+            if (typeof img?.image === 'object' && img?.image?.url) return img.image.url
+            if (typeof img?.image === 'string') return img.image
+            if (typeof img?.url === 'string' && img.url) return img.url
+            if (typeof img?.imageUrl === 'string' && img.imageUrl) return img.imageUrl
+            return ''
+          })
           .filter(Boolean)
       }
       const mediaUrl =
         typeof doc.image === 'object' && doc.image?.url ? doc.image.url : null
       const primaryImage =
-        doc.imageUrl || mediaUrl || galleryImages[0] || defaultProduct.imageUrl
+        doc.imageUrl || mediaUrl || galleryImages[0] || '/images/prod1.jpg'
       if (primaryImage && !galleryImages.includes(primaryImage)) {
         galleryImages = [primaryImage, ...galleryImages]
       }
@@ -635,49 +644,55 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
         galleryImages = [primaryImage]
       }
 
-      // Process whyChoose array
-      let whyChoose = defaultProduct.whyChoose
+      // Process whyChoose array (only dynamic points)
+      let whyChoose: string[] | undefined = undefined
       if (Array.isArray(doc.whyChoose) && doc.whyChoose.length > 0) {
         whyChoose = doc.whyChoose
           .map((w: any) => (typeof w === 'string' ? w : w.point || ''))
           .filter(Boolean)
       }
 
-      // Process sampleList array
-      let sampleList = defaultProduct.sampleList
+      // Process sampleList array (only dynamic points)
+      let sampleList: string[] | undefined = undefined
       if (Array.isArray(doc.sampleList) && doc.sampleList.length > 0) {
         sampleList = doc.sampleList
           .map((s: any) => (typeof s === 'string' ? s : s.item || ''))
           .filter(Boolean)
       }
 
+      const displaySlug = String(doc.slug || cleanSlug).trim().replace(/^\/+|\/+$/g, '')
+
       return {
-        id: String(doc.id || defaultProduct.id),
-        slug: doc.slug || cleanSlug,
-        name: doc.name || defaultProduct.name,
-        price: typeof doc.price === 'number' ? doc.price : defaultProduct.price,
-        category: doc.category || defaultProduct.category,
-        sku: doc.sku || defaultProduct.sku,
-        tags: Array.isArray(doc.tags) && doc.tags.length > 0 ? doc.tags : defaultProduct.tags,
+        id: String(doc.id),
+        slug: displaySlug || cleanSlug,
+        name: doc.name || 'Product',
+        familyId: doc.familyId || undefined,
+        familyTitle: doc.familyTitle || undefined,
+        familySubtitle: doc.familySubtitle || undefined,
+        price: typeof doc.price === 'number' ? doc.price : 0,
+        priceUSD: typeof doc.priceUSD === 'number' ? doc.priceUSD : undefined,
+        category: doc.category || '',
+        sku: doc.sku || '',
+        tags: Array.isArray(doc.tags) && doc.tags.length > 0 ? doc.tags : [],
         imageUrl: primaryImage,
         images: galleryImages,
-        shortDescription: doc.shortDescription || defaultProduct.shortDescription,
-        variant: doc.variant || defaultProduct.variant,
-        detailHeading: doc.detailHeading || doc.name || defaultProduct.detailHeading,
-        detailParagraph1:
-          doc.detailParagraph1 || doc.shortDescription || defaultProduct.detailParagraph1,
-        detailParagraph2: doc.detailParagraph2 || defaultProduct.detailParagraph2,
+        shortDescription: doc.shortDescription || '',
+        variant: doc.variant || undefined,
+        detailHeading: doc.detailHeading || doc.name,
+        detailParagraph1: doc.detailParagraph1 || doc.shortDescription || undefined,
+        detailParagraph2: doc.detailParagraph2 || undefined,
         whyChoose,
         sampleList,
-        lining: doc.lining || defaultProduct.lining,
-        specifications: {
-          weight: doc.specifications?.weight || defaultProduct.specifications?.weight,
-          dimensions: doc.specifications?.dimensions || defaultProduct.specifications?.dimensions,
-          material: doc.specifications?.material || defaultProduct.specifications?.material,
-          variant: doc.specifications?.variant || defaultProduct.specifications?.variant,
-          compatibility:
-            doc.specifications?.compatibility || defaultProduct.specifications?.compatibility,
-        },
+        lining: doc.lining || undefined,
+        specifications: doc.specifications
+          ? {
+              weight: doc.specifications.weight || undefined,
+              dimensions: doc.specifications.dimensions || undefined,
+              material: doc.specifications.material || undefined,
+              variant: doc.specifications.variant || doc.variant || undefined,
+              compatibility: doc.specifications.compatibility || undefined,
+            }
+          : undefined,
       }
     }
 
@@ -691,21 +706,19 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/(^-|-$)/g, '')
-          const itemId = String(item.id || '').toLowerCase()
+          const itemId = String(item.id || '').toLowerCase().replace(/^\/+|\/+$/g, '')
 
           const isMatch =
             itemId === cleanSlug ||
+            itemId === decodedSlug ||
             itemNameSlug === cleanSlug ||
-            (resolvedKey !== cleanSlug && (itemId === resolvedKey || itemNameSlug === resolvedKey)) ||
-            (cleanSlug === 'tb' && (itemNameSlug.includes('mastoid') || itemNameSlug.includes('temporal'))) ||
-            (cleanSlug === 'pns' && itemNameSlug.includes('without-base')) ||
-            (cleanSlug === 'pnsb' && (itemNameSlug.includes('bassette') || itemNameSlug.includes('cassette'))) ||
-            (cleanSlug === 'larynx' && itemNameSlug.includes('larynx'))
+            itemNameSlug === decodedSlug ||
+            (resolvedKey !== cleanSlug && (itemId === resolvedKey || itemNameSlug === resolvedKey))
 
           if (isMatch) {
             const mediaUrl =
               typeof item.image === 'object' && item.image?.url ? item.image.url : null
-            const primaryImage = mediaUrl || item.imageUrl || defaultProduct.imageUrl
+            const primaryImage = mediaUrl || item.imageUrl || '/images/prod1.jpg'
 
             let galleryImages: string[] = []
             if (Array.isArray(item.images) && item.images.length > 0) {
@@ -725,37 +738,50 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
             }
 
             return {
-              id: item.id || defaultProduct.id,
+              id: item.id || cleanSlug,
               slug: cleanSlug,
-              name: item.name || defaultProduct.name,
-              price: typeof item.price === 'number' ? item.price : defaultProduct.price,
-              category: family.title || defaultProduct.category,
-              sku: defaultProduct.sku,
-              tags: defaultProduct.tags,
+              name: item.name || 'Product',
+              price: typeof item.price === 'number' ? item.price : 0,
+              priceUSD: typeof item.priceUSD === 'number' ? item.priceUSD : undefined,
+              category: family.title || '',
+              sku: '',
+              tags: [],
               imageUrl: primaryImage,
               images: galleryImages,
-              shortDescription: item.description || defaultProduct.shortDescription,
-              variant: defaultProduct.variant,
-              detailHeading: item.name || defaultProduct.detailHeading,
-              detailParagraph1: item.description || defaultProduct.detailParagraph1,
-              detailParagraph2: defaultProduct.detailParagraph2,
-              whyChoose: defaultProduct.whyChoose,
+              shortDescription: item.description || '',
+              variant: undefined,
+              detailHeading: item.name || 'Product',
+              detailParagraph1: item.description || undefined,
+              detailParagraph2: undefined,
+              whyChoose: undefined,
               sampleList:
                 Array.isArray(item.bulletPoints) && item.bulletPoints.length > 0
                   ? item.bulletPoints
                       .map((b: any) => (typeof b === 'string' ? b : b.point || ''))
                       .filter(Boolean)
-                  : defaultProduct.sampleList,
-              lining: defaultProduct.lining,
-              specifications: defaultProduct.specifications,
+                  : undefined,
+              lining: undefined,
+              specifications: undefined,
             }
           }
         }
       }
     }
   } catch (err) {
-    console.warn('Could not load product from Payload, using default catalog:', err)
+    console.warn('Could not load product from Payload:', err)
   }
 
-  return defaultProduct
+  // 3. Fallback to hardcoded dummy catalog ONLY if requesting known dummy slug
+  if (PRODUCTS_CATALOG[cleanSlug]) {
+    return PRODUCTS_CATALOG[cleanSlug]
+  }
+  if (PRODUCTS_CATALOG[decodedSlug]) {
+    return PRODUCTS_CATALOG[decodedSlug]
+  }
+  if (PRODUCTS_CATALOG[resolvedKey]) {
+    return PRODUCTS_CATALOG[resolvedKey]
+  }
+
+  // Fallback to pns default
+  return PRODUCTS_CATALOG['pns']
 }

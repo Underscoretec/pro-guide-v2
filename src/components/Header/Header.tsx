@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
 import { FiShoppingCart } from 'react-icons/fi'
+import { roboto } from '@/font'
 
 interface HeaderProps {
   data?: any
@@ -241,7 +242,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
   return (
     <>
       {/* Top Announcement Bar */}
-      <div className="bg-purple-bar text-white text-center text-[13.5px] py-2 px-4 font-semibold">
+      <div className={`${roboto.className} bg-purple-bar text-white text-center text-[13.5px] py-2 px-4 font-semibold`}>
         {announcementText}&nbsp;
         <Link href={sanitizeUrl(announcementLinkUrl, 'Announcement')} className="!text-[#FFD9A8] underline hover:text-white transition-colors">
           {announcementLinkText}
@@ -249,7 +250,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
       </div>
 
       {/* Main Sticky Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-line shadow-sm">
+      <header className={`${roboto.className} sticky top-0 z-50 bg-white border-b border-line shadow-sm`}>
         {/* Top Header Row */}
         <div className="max-w-full mx-auto px-4 sm:px-6 min-h-[60px] md:min-h-[64px] py-2 flex items-center justify-between gap-3">
           {/* Logo */}

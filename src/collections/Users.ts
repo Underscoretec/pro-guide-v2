@@ -5,7 +5,7 @@ export const Users: CollectionConfig = {
   slug: 'users',
   admin: {
     useAsTitle: 'email',
-    defaultColumns: ['email', 'role', 'fullName', 'isEmailVerified', 'isPhoneVerified'],
+    defaultColumns: ['email', 'role', 'fullName', 'country', 'isIndia', 'isEmailVerified', 'isPhoneVerified'],
   },
   auth: {
     cookies: {
@@ -89,6 +89,25 @@ export const Users: CollectionConfig = {
       required: false,
       admin: {
         placeholder: 'Institution / School / College',
+      },
+    },
+    {
+      name: 'country',
+      type: 'text',
+      label: 'Country',
+      admin: {
+        placeholder: 'Country name (e.g. India, United States)',
+        description: 'Country provided by user during registration',
+      },
+    },
+    {
+      name: 'isIndia',
+      type: 'checkbox',
+      defaultValue: true,
+      label: 'Is India (Domestic Pricing)',
+      admin: {
+        position: 'sidebar',
+        description: 'Automatically marked based on country. True = India (INR pricing), False = Outside India (USD pricing).',
       },
     },
     {

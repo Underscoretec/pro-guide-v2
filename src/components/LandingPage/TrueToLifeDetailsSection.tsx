@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { roboto } from '@/font'
 
 interface TrueToLifeDetailsProps {
   data?: any
@@ -229,7 +230,7 @@ export const TrueToLifeDetailsSection: React.FC<TrueToLifeDetailsProps> = ({ dat
   }
 
   return (
-    <section className="py-[52px]">
+    <section className={`${roboto.className} py-[52px]`}>
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="sechead">
           <h2 className="font-bold text-ink">{title}</h2>

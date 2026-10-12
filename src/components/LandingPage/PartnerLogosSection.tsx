@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { roboto } from '@/font'
 
 interface PartnerLogosProps {
   data?: any
@@ -28,7 +29,7 @@ export const PartnerLogosSection: React.FC<PartnerLogosProps> = ({ data }) => {
       : defaultPartners
 
   return (
-    <section className="py-9 border-b border-line bg-white">
+    <section className={`${roboto.className} py-9 border-b border-line bg-white`}>
       <div className="max-w-[1200px] mx-auto px-6">
         <p className="text-center font-bold mb-6 text-[15px] sm:text-[16px] text-ink max-w-[800px] mx-auto">
           {title}
