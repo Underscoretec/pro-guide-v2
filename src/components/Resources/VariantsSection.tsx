@@ -48,7 +48,7 @@ export function VariantsSection({ data }: VariantsSectionProps) {
           <h2 className="font-bold">{title}</h2>
           <div className="rule"></div>
         </div>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-[2px] bg-line border border-line rounded-lg overflow-hidden">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-[2px] bg-line border border-line rounded-sm overflow-hidden">
           {variants.map((item, idx) => (
             <div key={idx} className="bg-white p-[26px_20px] text-center">
               <div className="w-[52px] h-[52px] mx-auto mb-2.5 rounded-full bg-tint text-purple flex items-center justify-center text-[22px] font-extrabold">

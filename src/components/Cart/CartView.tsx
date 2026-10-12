@@ -111,7 +111,7 @@ export const CartView: React.FC = () => {
 
         {/* Empty State */}
         {isHydrated && items.length === 0 ? (
-          <div className="text-center py-20 border border-dashed border-[#D1D5DB] rounded-[8px] my-6">
+          <div className="text-center py-20 border border-dashed border-[#D1D5DB] rounded-sm my-6">
             <div className="text-[48px] mb-3 text-muted">&#128722;</div>
             <h2 className="text-[20px] font-bold text-ink mb-2">
               Your shopping bag is empty
@@ -121,7 +121,7 @@ export const CartView: React.FC = () => {
             </p>
             <Link
               href="/products"
-              className="inline-block bg-[#4A148C] hover:bg-[#3B0D70] text-white px-6 py-3 rounded-[4px] font-bold text-[13px] uppercase tracking-wider transition-all"
+              className="inline-block bg-[#4A148C] hover:bg-[#3B0D70] text-white px-6 py-3 rounded-sm font-bold text-[13px] uppercase tracking-wider transition-all"
             >
               Browse Products
             </Link>
@@ -151,7 +151,7 @@ export const CartView: React.FC = () => {
                     >
                       {/* Product Column */}
                       <div className="md:col-span-5 flex items-center gap-4">
-                        <div className="relative w-[84px] h-[84px] md:w-[92px] md:h-[92px] bg-[#F4F4F6] shrink-0 rounded-[2px] overflow-hidden border border-[#EBEBEF]">
+                        <div className="relative w-[84px] h-[84px] md:w-[92px] md:h-[92px] bg-[#F4F4F6] shrink-0 rounded-sm overflow-hidden border border-[#EBEBEF]">
                           <Image
                             src={item.imageUrl || '/images/prod1.jpg'}
                             alt={item.name}
@@ -180,7 +180,7 @@ export const CartView: React.FC = () => {
                         <span className="md:hidden text-[12px] font-bold text-muted uppercase">
                           Qty:
                         </span>
-                        <div className="flex items-center border border-[#D1D5DB] rounded-[3px] bg-white h-[36px] w-[96px] justify-between px-2.5">
+                        <div className="flex items-center border border-[#D1D5DB] rounded-sm bg-white h-[36px] w-[96px] justify-between px-2.5">
                           <button
                             type="button"
                             onClick={() => updateQuantity(item.id, -1)}
@@ -264,7 +264,7 @@ export const CartView: React.FC = () => {
 
             {/* Right Section: Cart Totals Box (lg:col-span-4) */}
             <div className="lg:col-span-4 lg:sticky lg:top-24">
-              <div className="border border-[#E5E7EB] rounded-[4px] p-6 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+              <div className="border border-[#E5E7EB] rounded-sm p-6 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
                 <h2 className="text-[13.5px] font-bold text-ink uppercase tracking-wider mb-5 pb-3 border-b border-[#E5E7EB]">
                   CART TOTALS
                 </h2>
@@ -315,7 +315,7 @@ export const CartView: React.FC = () => {
               {/* Proceed to Checkout Button */}
               <Link
                 href="/checkout"
-                className="mt-4 w-full bg-[#4A148C] hover:bg-[#3B0D70] active:scale-[0.99] text-white py-3.5 px-6 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-all shadow-sm cursor-pointer text-center block"
+                className="mt-4 w-full bg-[#4A148C] hover:bg-[#3B0D70] active:scale-[0.99] text-white py-3.5 px-6 rounded-sm font-bold text-[13px] uppercase tracking-wider transition-all shadow-sm cursor-pointer text-center block"
               >
                 PROCEED TO CHECKOUT
               </Link>
@@ -331,7 +331,7 @@ export const CartView: React.FC = () => {
       {/* Checkout Modal / Drawer */}
       {checkoutModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className="bg-white rounded-[8px] max-w-[540px] w-full p-6 md:p-8 relative shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-sm max-w-[540px] w-full p-6 md:p-8 relative shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <button
               type="button"
               onClick={() => {
@@ -356,7 +356,7 @@ export const CartView: React.FC = () => {
                   specialist will reach out with the formal institutional quotation and
                   dispatch details within 2 hours.
                 </p>
-                <div className="bg-[#F8F9FA] border border-line rounded-[6px] p-4 text-left text-[12.5px] space-y-1 mb-6">
+                <div className="bg-[#F8F9FA] border border-line rounded-sm p-4 text-left text-[12.5px] space-y-1 mb-6">
                   <div><strong>Total Amount:</strong> {formatPrice(total)}</div>
                   <div><strong>Items:</strong> {items.map((i) => `${i.name} (×${i.quantity})`).join(', ')}</div>
                 </div>
@@ -366,7 +366,7 @@ export const CartView: React.FC = () => {
                     setCheckoutModalOpen(false)
                     setOrderSubmitted(false)
                   }}
-                  className="bg-[#4A148C] hover:bg-[#3B0D70] text-white px-6 py-2.5 rounded-[4px] font-bold text-[13px] uppercase tracking-wider"
+                  className="bg-[#4A148C] hover:bg-[#3B0D70] text-white px-6 py-2.5 rounded-sm font-bold text-[13px] uppercase tracking-wider"
                 >
                   Close
                 </button>
@@ -391,7 +391,7 @@ export const CartView: React.FC = () => {
                       placeholder="e.g. Dr. Rajesh Sharma"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full border border-line rounded-[4px] px-3 py-2 text-[13.5px] focus:outline-none focus:border-purple"
+                      className="w-full border border-line rounded-sm px-3 py-2 text-[13.5px] focus:outline-none focus:border-purple"
                     />
                   </div>
 
@@ -406,7 +406,7 @@ export const CartView: React.FC = () => {
                         placeholder="doctor@hospital.org"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full border border-line rounded-[4px] px-3 py-2 text-[13.5px] focus:outline-none focus:border-purple"
+                        className="w-full border border-line rounded-sm px-3 py-2 text-[13.5px] focus:outline-none focus:border-purple"
                       />
                     </div>
                     <div>
@@ -419,7 +419,7 @@ export const CartView: React.FC = () => {
                         placeholder="+91 98765 43210"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full border border-line rounded-[4px] px-3 py-2 text-[13.5px] focus:outline-none focus:border-purple"
+                        className="w-full border border-line rounded-sm px-3 py-2 text-[13.5px] focus:outline-none focus:border-purple"
                       />
                     </div>
                   </div>
@@ -433,7 +433,7 @@ export const CartView: React.FC = () => {
                       placeholder="e.g. Dept of ENT, AIIMS / Medical College"
                       value={formData.institution}
                       onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
-                      className="w-full border border-line rounded-[4px] px-3 py-2 text-[13.5px] focus:outline-none focus:border-purple"
+                      className="w-full border border-line rounded-sm px-3 py-2 text-[13.5px] focus:outline-none focus:border-purple"
                     />
                   </div>
 
@@ -447,7 +447,7 @@ export const CartView: React.FC = () => {
                       placeholder="Complete hospital or clinic shipping address with PIN code"
                       value={formData.address}
                       onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                      className="w-full border border-line rounded-[4px] px-3 py-2 text-[13.5px] focus:outline-none focus:border-purple"
+                      className="w-full border border-line rounded-sm px-3 py-2 text-[13.5px] focus:outline-none focus:border-purple"
                     />
                   </div>
 
@@ -459,7 +459,7 @@ export const CartView: React.FC = () => {
 
                     <button
                       type="submit"
-                      className="bg-[#4A148C] hover:bg-[#3B0D70] text-white px-6 py-2.5 rounded-[4px] font-bold text-[13px] uppercase tracking-wider cursor-pointer transition-colors"
+                      className="bg-[#4A148C] hover:bg-[#3B0D70] text-white px-6 py-2.5 rounded-sm font-bold text-[13px] uppercase tracking-wider cursor-pointer transition-colors"
                     >
                       Submit Order
                     </button>

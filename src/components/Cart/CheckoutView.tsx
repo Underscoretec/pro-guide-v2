@@ -376,7 +376,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             </p>
 
             {/* Dashed Order Metadata Card */}
-            <div className="max-w-[760px] mx-auto rounded-[4px] border border-dashed border-[#D1D5DB] py-5 px-6 sm:px-8 mb-8 bg-white">
+            <div className="max-w-[760px] mx-auto rounded-sm border border-dashed border-[#D1D5DB] py-5 px-6 sm:px-8 mb-8 bg-white">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-4 text-left">
                 <div>
                   <div className="text-[11.5px] text-[#6B7280] mb-1">Order Number</div>
@@ -403,7 +403,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
             {/* Delivery Address Details */}
             {confirmedOrderSummary.deliveryAddress && (
-              <div className="max-w-[760px] mx-auto rounded-[4px] border border-[#E5E7EB] p-5 sm:p-6 mb-8 bg-[#F9FAFB]/60 text-left">
+              <div className="max-w-[760px] mx-auto rounded-sm border border-[#E5E7EB] p-5 sm:p-6 mb-8 bg-[#F9FAFB]/60 text-left">
                 <h3 className="text-[12px] font-bold text-[#4B5563] uppercase tracking-wider mb-2">
                   Delivering To:
                 </h3>
@@ -431,7 +431,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             )}
 
             {/* Order Details Card */}
-            <div className="max-w-[760px] mx-auto rounded-[4px] border border-[#E5E7EB] p-6 sm:p-8 bg-white">
+            <div className="max-w-[760px] mx-auto rounded-sm border border-[#E5E7EB] p-6 sm:p-8 bg-white">
               <h3 className="text-[13px] font-bold text-ink uppercase tracking-wider mb-6 text-left">
                 ORDER DETAILS
               </h3>
@@ -509,14 +509,14 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     href={`/api/orders/${confirmedOrderId}/invoice`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-white hover:bg-[#F9FAFB] text-[#5E007B] border border-[#5E007B] px-6 py-3 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-colors shadow-xs"
+                    className="inline-flex items-center gap-2 bg-white hover:bg-[#F9FAFB] text-[#5E007B] border border-[#5E007B] px-6 py-3 rounded-sm font-bold text-[13px] uppercase tracking-wider transition-colors shadow-xs"
                   >
                     <span>View / Download Invoice</span>
                   </Link>
                 )}
                 <Link
                   href="/products"
-                  className="inline-block bg-[#5E007B] hover:bg-[#430D60] text-white px-8 py-3 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-colors"
+                  className="inline-block bg-[#5E007B] hover:bg-[#430D60] text-white px-8 py-3 rounded-sm font-bold text-[13px] uppercase tracking-wider transition-colors"
                 >
                   Continue Shopping
                 </Link>
@@ -527,7 +527,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
           /* Step 2: Main Shipping & Checkout View */
           <div>
             {submitError && (
-              <div className="mb-6 p-4 bg-[#FEF2F2] border border-[#FCA5A5] rounded-[4px] text-[#991B1B] text-[13px] flex items-center justify-between">
+              <div className="mb-6 p-4 bg-[#FEF2F2] border border-[#FCA5A5] rounded-sm text-[#991B1B] text-[13px] flex items-center justify-between">
                 <span>{submitError}</span>
                 <button
                   type="button"
@@ -540,13 +540,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             )}
 
             {isHydrated && items.length === 0 ? (
-              <div className="p-12 text-center border border-[#E5E7EB] rounded-[4px] bg-[#F9FAFB]">
+              <div className="p-12 text-center border border-[#E5E7EB] rounded-sm bg-[#F9FAFB]">
                 <p className="text-[15px] text-[#4B5563] mb-4">
                   Your cart is currently empty.
                 </p>
                 <Link
                   href="/products"
-                  className="inline-block bg-[#5E007B] hover:bg-[#430D60] text-white px-6 py-2.5 rounded-[3px] font-semibold text-[13px] uppercase tracking-wider transition-colors"
+                  className="inline-block bg-[#5E007B] hover:bg-[#430D60] text-white px-6 py-2.5 rounded-sm font-semibold text-[13px] uppercase tracking-wider transition-colors"
                 >
                   View Products
                 </Link>
@@ -555,7 +555,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
                 {/* Left Section: Saved Addresses & Add Address Form */}
                 <div className="lg:col-span-8">
-                  <div className="bg-white border border-[#E5E7EB] rounded-[4px] p-6 shadow-xs">
+                  <div className="bg-white border border-[#E5E7EB] rounded-sm p-6 shadow-xs">
                     <div className="flex items-center justify-between pb-4 border-b border-[#E5E7EB] mb-5">
                       <div>
                         <h2 className="text-[14px] md:text-[15px] font-bold text-ink uppercase tracking-wider">
@@ -585,7 +585,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                         <button
                           type="button"
                           onClick={() => setIsAddingNew(true)}
-                          className="bg-[#5E007B] hover:bg-[#430D60] text-white px-5 py-2 rounded-[3px] text-[13px] font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                          className="bg-[#5E007B] hover:bg-[#430D60] text-white px-5 py-2 rounded-sm text-[13px] font-semibold uppercase tracking-wider transition-colors cursor-pointer"
                         >
                           Add Shipping Address
                         </button>
@@ -600,7 +600,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                             return (
                               <div
                                 key={addr.id}
-                                className="border border-[#5E007B] rounded-[4px] overflow-hidden"
+                                className="border border-[#5E007B] rounded-sm overflow-hidden"
                               >
                                 <div className="px-5 py-3 bg-[#F9FAFB] border-b border-[#E5E7EB] flex items-center justify-between">
                                   <span className="text-[12px] font-bold text-ink uppercase tracking-wider">
@@ -627,7 +627,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                             <div
                               key={addr.id}
                               onClick={() => setSelectedAddressId(addr.id)}
-                              className={`p-4 sm:p-5 rounded-[4px] border transition-all cursor-pointer flex items-start gap-4 ${
+                              className={`p-4 sm:p-5 rounded-sm border transition-all cursor-pointer flex items-start gap-4 ${
                                 isSelected
                                   ? 'border-[#5E007B] bg-[#FAF5FF]/40 shadow-xs'
                                   : 'border-[#E5E7EB] hover:border-[#D1D5DB] bg-white'
@@ -677,7 +677,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                                 )}
 
                                 {addr.deliveryNotes && (
-                                  <p className="text-[12px] text-muted italic mt-1.5 bg-[#F9FAFB] p-2 rounded-[2px] border border-[#E5E7EB]/50">
+                                  <p className="text-[12px] text-muted italic mt-1.5 bg-[#F9FAFB] p-2 rounded-sm border border-[#E5E7EB]/50">
                                     Notes: {addr.deliveryNotes}
                                   </p>
                                 )}
@@ -728,7 +728,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     {/* Add New Address Form Section Directly Under List */}
                     {isAddingNew && (
                       <div className="mt-6 pt-5 border-t border-[#E5E7EB]">
-                        <div className="border border-[#E5E7EB] rounded-[4px] overflow-hidden bg-white shadow-xs">
+                        <div className="border border-[#E5E7EB] rounded-sm overflow-hidden bg-white shadow-xs">
                           <div className="px-6 py-3.5 bg-[#F9FAFB] border-b border-[#E5E7EB] flex items-center justify-between">
                             <h3 className="text-[13px] font-bold text-ink uppercase tracking-wider">
                               Add New Shipping Address
@@ -764,7 +764,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                         value={orderNotes}
                         onChange={(e) => setOrderNotes(e.target.value)}
                         placeholder="Notes about your order, e.g. special instructions for delivery."
-                        className="w-full border border-[#E5E7EB] rounded-[3px] p-3 text-[13px] text-ink placeholder-[#9CA3AF] focus:outline-none focus:border-[#5E007B] focus:ring-1 focus:ring-[#5E007B]"
+                        className="w-full border border-[#E5E7EB] rounded-sm p-3 text-[13px] text-ink placeholder-[#9CA3AF] focus:outline-none focus:border-[#5E007B] focus:ring-1 focus:ring-[#5E007B]"
                       />
                     </div>
                   </div>
@@ -772,7 +772,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
                 {/* Right Section: YOUR ORDER Summary */}
                 <div className="lg:col-span-4 lg:sticky lg:top-24">
-                  <div className="border border-[#E5E7EB] rounded-[2px] p-6 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+                  <div className="border border-[#E5E7EB] rounded-sm p-6 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
                     <h2 className="text-[13px] font-bold text-ink uppercase tracking-wider mb-6">
                       YOUR ORDER
                     </h2>
@@ -848,7 +848,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   </div>
 
                   {/* Payment Method */}
-                  <div className="mt-4 p-4 bg-[#FAF5FF] border border-[#E9D5FF] rounded-[3px]">
+                  <div className="mt-4 p-4 bg-[#FAF5FF] border border-[#E9D5FF] rounded-sm">
                     <div className="text-[13px] font-bold text-ink">Online Payment (Razorpay)</div>
                     <p className="text-[11.5px] text-[#6B7280] mt-1.5 leading-relaxed">
                       Pay securely using UPI, cards, net banking or wallets.
@@ -873,7 +873,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     type="button"
                     onClick={handlePlaceOrder}
                     disabled={isSubmitting || items.length === 0}
-                    className="w-full bg-[#5E007B] hover:bg-[#430D60] active:scale-[0.99] text-white py-3.5 px-6 rounded-[3px] font-bold text-[13px] uppercase tracking-wider transition-all shadow-sm cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full bg-[#5E007B] hover:bg-[#430D60] active:scale-[0.99] text-white py-3.5 px-6 rounded-sm font-bold text-[13px] uppercase tracking-wider transition-all shadow-sm cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isSubmitting ? (
                       <>

@@ -185,12 +185,12 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
   const getInputClass = (fieldName: string) =>
     `w-full border ${
       fieldErrors[fieldName] ? 'border-[#DC2626]' : 'border-[#E5E7EB] hover:border-[#D1D5DB]'
-    } bg-white rounded-[4px] px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#5E007B] focus:ring-1 focus:ring-[#5E007B] transition-all`
+    } bg-white rounded-sm px-3.5 py-2.5 text-[14px] text-[#1F2328] placeholder-[#9CA3AF] focus:outline-none focus:border-[#5E007B] focus:ring-1 focus:ring-[#5E007B] transition-all`
 
   const getSelectClass = (fieldName: string) =>
     `w-full border ${
       fieldErrors[fieldName] ? 'border-[#DC2626]' : 'border-[#E5E7EB] hover:border-[#D1D5DB]'
-    } bg-white rounded-[4px] px-3.5 py-2.5 text-[14px] text-[#1F2328] appearance-none focus:outline-none focus:border-[#5E007B] focus:ring-1 focus:ring-[#5E007B] transition-all cursor-pointer`
+    } bg-white rounded-sm px-3.5 py-2.5 text-[14px] text-[#1F2328] appearance-none focus:outline-none focus:border-[#5E007B] focus:ring-1 focus:ring-[#5E007B] transition-all cursor-pointer`
 
   return (
     <>
@@ -368,13 +368,13 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
                 <h2 className="text-[20px] font-semibold text-[#1F2328] mb-4">Personal Details</h2>
 
                 {/* DICOM File Upload Card */}
-                <div className="border border-[#E5E7EB] rounded-xl p-5 bg-white shadow-sm">
+                <div className="border border-[#E5E7EB] rounded-sm p-5 bg-white shadow-sm">
                   <div
                     onDragEnter={handleDrag}
                     onDragLeave={handleDrag}
                     onDragOver={handleDrag}
                     onDrop={handleDrop}
-                    className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors flex flex-col items-center justify-center cursor-pointer relative ${
+                    className={`border-2 border-dashed rounded-sm p-8 text-center transition-colors flex flex-col items-center justify-center cursor-pointer relative ${
                       fieldErrors.file
                         ? 'border-[#612178]'
                         : dragActive
@@ -412,7 +412,7 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
                     <p className="text-[13px] text-[#6B7280] mt-1">{dicomHelpText}</p>
 
                     {selectedFile && (
-                      <div className="mt-3 px-3 py-1.5 bg-blue-100 text-blue-800 rounded-md text-xs font-semibold">
+                      <div className="mt-3 px-3 py-1.5 bg-blue-100 text-blue-800 rounded-sm text-xs font-semibold">
                         Selected: {selectedFile.name} ({(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)
                       </div>
                     )}
@@ -427,13 +427,13 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
                 </div>
 
                 {/* Cloudflare Captcha Box */}
-                <div className="mt-4 border border-[#E5E7EB] rounded-lg p-3.5 bg-[#F9FAFB] flex items-center justify-between">
+                <div className="mt-4 border border-[#E5E7EB] rounded-sm p-3.5 bg-[#F9FAFB] flex items-center justify-between">
                   <label className="flex items-center cursor-pointer select-none">
                     <input
                       type="checkbox"
                       checked={verifiedHuman}
                       onChange={(e) => setVerifiedHuman(e.target.checked)}
-                      className="w-5 h-5 rounded border-gray-300 text-[#673AB7] focus:ring-[#673AB7] cursor-pointer"
+                      className="w-5 h-5 rounded-sm border-gray-300 text-[#673AB7] focus:ring-[#673AB7] cursor-pointer"
                     />
                     <span className="ml-3 text-[14px] text-[#374151] font-medium">Verify you are human</span>
                   </label>
@@ -454,7 +454,7 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="mt-4 w-full py-3 bg-[#673AB7] hover:bg-[#5B21B6] text-white font-semibold rounded-lg text-[15px] transition shadow-sm"
+                  className="mt-4 w-full py-3 bg-[#673AB7] hover:bg-[#5B21B6] text-white font-semibold rounded-sm text-[15px] transition shadow-sm"
                   style={{ opacity: isSubmitting ? 0.7 : 1 }}
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit'}

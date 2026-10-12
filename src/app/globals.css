@@ -91,7 +91,7 @@ img {
 .crumb a:hover { text-decoration: underline; }
 
 /* Buttons */
-.btn { display: inline-block; background: var(--purple); color: #fff !important; padding: 10px 20px; border-radius: 5px; font-weight: 700; font-size: 13.5px; border: 1px solid var(--purple); cursor: pointer; transition: .15s; text-align: center; text-decoration: none; }
+.btn { display: inline-block; background: var(--purple); color: #fff !important; padding: 10px 20px; border-radius: 2px; font-weight: 700; font-size: 13.5px; border: 1px solid var(--purple); cursor: pointer; transition: .15s; text-align: center; text-decoration: none; }
 .btn:hover { background: var(--purple-d); border-color: var(--purple-d); }
 .btn.ghost { background: #fff; color: var(--ink) !important; border: 1px solid #C9CDD3; }
 .btn.ghost:hover { border-color: var(--purple); color: var(--purple) !important; background: var(--tint); }
@@ -106,7 +106,7 @@ section.purple h2 { color: #fff; }
 /* Split & Photo Layout */
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
 @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
-.split .photo { border-radius: 10px; overflow: hidden; box-shadow: 0 16px 36px rgba(31, 35, 40, .16); border-top: 6px solid var(--purple); }
+.split .photo { border-radius: 2px; overflow: hidden; box-shadow: 0 16px 36px rgba(31, 35, 40, .16); border-top: 6px solid var(--purple); }
 
 /* Checklists */
 .checks { list-style: none; padding: 0; margin: 0; }
@@ -116,13 +116,13 @@ section.purple h2 { color: #fff; }
 .checks span { font-size: 14px; color: var(--muted); display: block; }
 
 /* Forms */
-.form { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 28px; box-shadow: 0 14px 34px rgba(31, 35, 40, .08); }
+.form { background: #fff; border: 1px solid var(--line); border-radius: 2px; padding: 28px; box-shadow: 0 14px 34px rgba(31, 35, 40, .08); }
 .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 @media (max-width: 700px) { .frow { grid-template-columns: 1fr; } }
 .form input, .form select, .form textarea {
   width: 100%;
   border: 1px solid #E5E7EB;
-  border-radius: 4px;
+  border-radius: 2px;
   padding: 11px 14px;
   font-size: 14px;
   font-family: inherit;
@@ -235,14 +235,14 @@ section.purple h2 { color: #fff; }
 .g2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
 
 /* Faculty / Management Team Cards from HTML */
-.fcard { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 22px; text-align: left; }
+.fcard { background: #fff; border: 1px solid var(--line); border-radius: 2px; padding: 22px; text-align: left; }
 .avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px; margin-bottom: 12px; }
 .fcard h3 { font-size: 17px; font-weight: 700; color: var(--ink); }
 .fcard .role { font-size: 12.5px; color: var(--purple); font-weight: 700; margin-bottom: 8px; }
 .fcard p { font-size: 13.5px; color: var(--muted); }
 
 /* Workshops Cards from HTML */
-.wcard { background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+.wcard { background: #fff; border: 1px solid var(--line); border-radius: 2px; overflow: hidden; display: flex; flex-direction: column; }
 .wcard .wimg { aspect-ratio: 16/9; overflow: hidden; }
 .wcard .wimg img { width: 100%; height: 100%; object-fit: cover; }
 .wcard .wbody { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
@@ -254,13 +254,13 @@ section.purple h2 { color: #fff; }
 .wcard .actions .btn { flex: 1; padding: 9px 8px; font-size: 12px; }
 
 /* Statband from HTML */
-.statband { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 34px; }
+.statband { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2px; background: var(--line); border: 1px solid var(--line); border-radius: 2px; overflow: hidden; margin-top: 34px; }
 .stat { background: #F8F8FA; text-align: center; padding: 22px 14px; }
 .stat .n { font-size: 30px; font-weight: 800; color: var(--purple); }
 .stat .l { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
 
 /* 2026 Course Catalogue from HTML */
-.course { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+.course { background: #fff; border: 1px solid var(--line); border-radius: 2px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
 .course .cimg { margin: -20px -22px 14px; aspect-ratio: 16/8.5; overflow: hidden; background: var(--card); }
 .course .cimg img { width: 100%; height: 100%; object-fit: cover; }
 .course .cat { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--orange); }
