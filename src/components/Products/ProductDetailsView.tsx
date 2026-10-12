@@ -13,7 +13,25 @@ interface ProductDetailsViewProps {
 
 export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product }) => {
   const router = useRouter()
-  const { items, addToCart, updateQuantity, isHydrated } = useCart()
+  const cart = useCart()
+  const { items, addToCart, updateQuantity, isHydrated } = cart
+  const isIndia = cart?.isIndia !== false
+
+  const formatPrice = (amount: number) => {
+    if (typeof cart?.formatPrice === 'function') {
+      return cart.formatPrice(amount)
+    }
+    if (!isIndia) {
+      return `$${Number(amount || 0).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+    }
+    return `Rs ${Number(amount || 0).toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`
+  }
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [activeTab, setActiveTab] = useState<'description' | 'additional'>('description')
@@ -47,6 +65,7 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
       id: productId,
       name: product.name,
       price: product.price,
+      priceUSD: product.priceUSD,
       imageUrl: galleryImages[0] || product.imageUrl,
       quantity: 1,
     })
@@ -195,11 +214,21 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
             {/* Price Row */}
             <div className="flex items-center gap-2.5 mt-3 mb-4">
               <span className="text-[20px] sm:text-[22px] font-bold text-[#1F2328]">
-                Rs {product.price.toLocaleString('en-IN')}
+                {formatPrice(
+                  !isIndia && typeof product.priceUSD === 'number' && product.priceUSD > 0
+                    ? product.priceUSD
+                    : product.price
+                )}
               </span>
-              <span className="text-[#7B1FA2] text-[12.5px] font-semibold">
-                + 18% GST
-              </span>
+              {isIndia ? (
+                <span className="text-[#7B1FA2] text-[12.5px] font-semibold">
+                  + 18% GST
+                </span>
+              ) : (
+                <span className="text-[#10B981] text-[12.5px] font-semibold">
+                  (Export / 0% GST)
+                </span>
+              )}
             </div>
 
             {/* Short Description */}

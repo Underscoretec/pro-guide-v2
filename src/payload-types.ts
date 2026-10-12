@@ -164,6 +164,14 @@ export interface User {
   phoneNumber?: string | null;
   institution?: string | null;
   /**
+   * Country provided by user during registration
+   */
+  country?: string | null;
+  /**
+   * Automatically marked based on country. True = India (INR pricing), False = Outside India (USD pricing).
+   */
+  isIndia?: boolean | null;
+  /**
    * Redeem code used to activate membership
    */
   redeemCode?: string | null;
@@ -297,6 +305,10 @@ export interface Product {
    */
   displayOrder?: number | null;
   price: number;
+  /**
+   * International price in USD for customers outside India. If empty, falls back to INR price.
+   */
+  priceUSD?: number | null;
   category?: string | null;
   sku?: string | null;
   shortDescription?: string | null;
@@ -1091,6 +1103,7 @@ export interface Cart {
         productId: string;
         name: string;
         price: number;
+        priceUSD?: number | null;
         quantity: number;
         imageUrl?: string | null;
         variant?: string | null;
@@ -1246,6 +1259,8 @@ export interface UsersSelect<T extends boolean = true> {
   fullName?: T;
   phoneNumber?: T;
   institution?: T;
+  country?: T;
+  isIndia?: T;
   redeemCode?: T;
   isEmailVerified?: T;
   isPhoneVerified?: T;
@@ -1362,6 +1377,7 @@ export interface ProductsSelect<T extends boolean = true> {
   badge?: T;
   displayOrder?: T;
   price?: T;
+  priceUSD?: T;
   category?: T;
   sku?: T;
   shortDescription?: T;
@@ -2193,6 +2209,7 @@ export interface CartsSelect<T extends boolean = true> {
         productId?: T;
         name?: T;
         price?: T;
+        priceUSD?: T;
         quantity?: T;
         imageUrl?: T;
         variant?: T;

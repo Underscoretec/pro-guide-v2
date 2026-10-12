@@ -150,7 +150,25 @@ const defaultProducts = [
 
 export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data, products }) => {
   const router = useRouter()
-  const { addToCart } = useCart()
+  const cart = useCart()
+  const { addToCart } = cart
+  const isIndia = cart?.isIndia !== false
+
+  const formatPrice = (amount: number) => {
+    if (typeof cart?.formatPrice === 'function') {
+      return cart.formatPrice(amount)
+    }
+    if (!isIndia) {
+      return `$${Number(amount || 0).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+    }
+    return `Rs ${Number(amount || 0).toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`
+  }
 
   const title = data?.title || 'Product Offerings'
   const rawList =
@@ -164,7 +182,9 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
   const handleAddToCart = (e: React.MouseEvent, prod: any, imageSrc: string) => {
     e.preventDefault()
     const priceNum =
-      typeof prod.price === 'string'
+      typeof prod.rawPrice === 'number'
+        ? prod.rawPrice
+        : typeof prod.price === 'string'
         ? parseInt(prod.price.replace(/[^0-9]/g, ''), 10) || 20000
         : typeof prod.price === 'number'
         ? prod.price
@@ -174,6 +194,7 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
       id: prod.slug || (prod.title || prod.name || 'product').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       name: prod.title || prod.name,
       price: priceNum,
+      priceUSD: typeof prod.priceUSD === 'number' ? prod.priceUSD : undefined,
       imageUrl: imageSrc,
       quantity: 1,
     })
@@ -262,9 +283,15 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                   </h3>
                   <div className="text-[12.5px] text-muted">{prod.variant}</div>
                   <div className="font-extrabold text-[16px] text-ink mt-1">
-                    {prod.price}{' '}
-                    {prod.gstNote && (
-                      <small className="font-semibold text-muted text-[11.5px]">{prod.gstNote}</small>
+                    {!isIndia && typeof prod.priceUSD === 'number' && prod.priceUSD > 0
+                      ? formatPrice(prod.priceUSD)
+                      : (typeof prod.rawPrice === 'number' ? formatPrice(prod.rawPrice) : prod.price)}{' '}
+                    {isIndia ? (
+                      prod.gstNote && (
+                        <small className="font-semibold text-muted text-[11.5px]">{prod.gstNote}</small>
+                      )
+                    ) : (
+                      <small className="font-semibold text-emerald-600 text-[11.5px]">(0% GST)</small>
                     )}
                   </div>
 

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useTransition } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { useCart } from '@/context/CartContext'
+import { useCart, getCartItemPrice, type CartItem } from '@/context/CartContext'
 import { AddressForm, type Address } from '@/components/Profile/AddressForm'
 import { setDefaultAddress, removeAddress } from '@/lib/profile/actions'
 import { createOnlineOrder } from '@/lib/orders/actions'
@@ -47,7 +47,32 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   initialAddresses = [],
 }) => {
   const router = useRouter()
-  const { items, subtotal, clearCart, isHydrated } = useCart()
+  const cart = useCart()
+  const { items, subtotal, clearCart, isHydrated } = cart
+  const isIndia = cart?.isIndia !== false
+
+  const formatPrice = (amount: number) => {
+    if (typeof cart?.formatPrice === 'function') {
+      return cart.formatPrice(amount)
+    }
+    if (!isIndia) {
+      return `$${Number(amount || 0).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+    }
+    return `Rs ${Number(amount || 0).toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`
+  }
+
+  const getItemPrice = (item: CartItem | any): number => {
+    if (typeof cart?.getItemPrice === 'function') {
+      return cart.getItemPrice(item)
+    }
+    return getCartItemPrice(item, isIndia)
+  }
 
   const [addresses, setAddresses] = useState<ShippingAddress[]>(initialAddresses)
   const [selectedAddressId, setSelectedAddressId] = useState<number | string | null>(() => {
@@ -101,15 +126,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   }, [addresses, selectedAddressId])
 
   const gstRate = 0.18
-  const computedGst = Math.round(subtotal * gstRate)
+  const computedGst = isIndia ? Math.round(subtotal * gstRate) : 0
   const computedTotal = subtotal + computedGst
-
-  const formatPrice = (amount: number) => {
-    return `Rs ${amount.toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`
-  }
 
   const handleSetDefault = (id: number | string) => {
     startTransition(async () => {
@@ -177,7 +195,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       const yyyy = now.getFullYear()
 
       setConfirmedOrderSummary({
-        items: [...items],
+        items: items.map((i) => ({
+          ...i,
+          price: getItemPrice(i),
+        })),
         subtotal: summary?.subtotal ?? subtotal,
         gst: summary?.gst ?? computedGst,
         total: summary?.total ?? computedTotal,
@@ -460,7 +481,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
                 <div className="py-3.5 flex justify-between items-center border-b border-[#E5E7EB]/60">
                   <span className="font-bold text-ink uppercase text-[12px] tracking-wider">
-                    GST (18%)
+                    {isIndia ? 'GST (18%)' : 'GST (Export 0%)'}
                   </span>
                   <span className="text-[#4B5563]">{formatPrice(confirmedOrderSummary.gst)}</span>
                 </div>
@@ -765,7 +786,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     {/* Products list */}
                     <div className="divide-y divide-[#E5E7EB]/60">
                       {items.map((item, idx) => {
-                        const itemSubtotal = item.price * (item.quantity || 1)
+                        const unitPrice = getItemPrice(item)
+                        const itemSubtotal = unitPrice * (item.quantity || 1)
                         return (
                           <div
                             key={item.id || idx}
@@ -803,10 +825,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                         <span className="text-[#1F2328] font-normal">Free shipping</span>
                       </div>
 
-                      {/* GST - 18% */}
+                      {/* GST */}
                       <div className="flex items-center justify-between py-2 border-b border-[#E5E7EB]">
                         <span className="font-bold text-[#1F2328] uppercase tracking-wide">
-                          GST - 18%
+                          {isIndia ? 'GST - 18%' : 'GST (Export 0%)'}
                         </span>
                         <span className="text-[#1F2328] font-medium">
                           {formatPrice(computedGst)}
