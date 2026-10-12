@@ -50,7 +50,6 @@ export async function issueOtp(
     logger.auth.info('Issuing email verification OTP', {
       userId,
       to: user.email,
-      otp: otp,
       expiresAt,
     })
 
@@ -80,7 +79,6 @@ export async function issueOtp(
     userId,
     to: user.email,
     phoneNumber: user.phoneNumber || null,
-    otp: otp,
     expiresAt,
   })
 
