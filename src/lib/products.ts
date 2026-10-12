@@ -3,6 +3,8 @@ export interface ProductDetailData {
   slug: string
   name: string
   familyId?: string
+  familyTitle?: string
+  familySubtitle?: string
   price: number
   priceUSD?: number
   category: string
@@ -657,6 +659,9 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
         id: String(doc.id),
         slug: doc.slug || cleanSlug,
         name: doc.name || defaultProduct.name,
+        familyId: doc.familyId || defaultProduct.familyId,
+        familyTitle: doc.familyTitle || undefined,
+        familySubtitle: doc.familySubtitle || undefined,
         price: typeof doc.price === 'number' ? doc.price : defaultProduct.price,
         priceUSD: typeof doc.priceUSD === 'number' ? doc.priceUSD : (defaultProduct.priceUSD || undefined),
         category: doc.category || defaultProduct.category,

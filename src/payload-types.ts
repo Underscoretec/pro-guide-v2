@@ -313,9 +313,18 @@ export interface Product {
   priceUSD?: number | null;
   category?: string | null;
   /**
-   * Select which Product Family header this product belongs to on the /products page.
+   * Select which Product Family this product belongs to (e.g. Family 1, Family 2...).
    */
-  familyId?: ('otology' | 'rhinology' | 'balloon' | 'laryngology-custom') | null;
+  familyId?:
+    ('family1' | 'family2' | 'family3' | 'family4' | 'otology' | 'rhinology' | 'balloon' | 'laryngology-custom') | null;
+  /**
+   * Name / Title of this Product Family (e.g. "Family 01 · Otology — Artificial Temporal Bone Series"). If edited here, it dynamically updates the family title on the /products page without requiring an extra collection.
+   */
+  familyTitle?: string | null;
+  /**
+   * Subtitle of this Product Family shown below the title on /products page. (Optional)
+   */
+  familySubtitle?: string | null;
   sku?: string | null;
   shortDescription?: string | null;
   variant?: string | null;
@@ -1451,6 +1460,8 @@ export interface ProductsSelect<T extends boolean = true> {
   priceUSD?: T;
   category?: T;
   familyId?: T;
+  familyTitle?: T;
+  familySubtitle?: T;
   sku?: T;
   shortDescription?: T;
   variant?: T;

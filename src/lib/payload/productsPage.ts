@@ -260,6 +260,8 @@ export function mapProductDocToItem(doc: any): ProductItem {
     id: slug,
     name: doc.name,
     familyId: doc.familyId || undefined,
+    familyTitle: doc.familyTitle || undefined,
+    familySubtitle: doc.familySubtitle || undefined,
     badge: doc.badge || undefined,
     price: typeof doc.price === 'number' ? doc.price : 20000,
     priceUSD: typeof doc.priceUSD === 'number' ? doc.priceUSD : undefined,
@@ -313,9 +315,13 @@ export async function getUnifiedProductFamilies(pageData?: any): Promise<Product
       const slug = (prodDoc.slug || '').toLowerCase()
       const cat = (prodDoc.category || '').toLowerCase()
 
-      // 1. Find target family by explicit familyId property
-      let targetFamily = dynamicFamilies.find((f) => {
+      // 1. Find target family by explicit familyId property (supporting family1..family4 & legacy names)
+      let targetFamily = dynamicFamilies.find((f, idx) => {
         const fid = (f.familyId || '').toLowerCase()
+        if (familyIdDoc === 'family1' && (idx === 0 || fid === 'otology')) return true
+        if (familyIdDoc === 'family2' && (idx === 1 || fid === 'rhinology')) return true
+        if (familyIdDoc === 'family3' && (idx === 2 || fid === 'balloon')) return true
+        if (familyIdDoc === 'family4' && (idx === 3 || fid.includes('laryngology'))) return true
         return familyIdDoc && (fid === familyIdDoc || fid.includes(familyIdDoc) || familyIdDoc.includes(fid))
       })
 
@@ -341,17 +347,33 @@ export async function getUnifiedProductFamilies(pageData?: any): Promise<Product
           targetFamily = dynamicFamilies[2]
         } else if (slug.includes('larynx') || cat.includes('laryngology') || cat.includes('vestibular') || familyIdDoc.includes('laryngology')) {
           targetFamily = dynamicFamilies[3]
+        } else if (familyIdDoc) {
+          // Dynamic new family group
+          targetFamily = {
+            familyId: familyIdDoc,
+            title: prodDoc.familyTitle || `Family ${prodDoc.familyId}`,
+            subtitle: prodDoc.familySubtitle || '',
+            isAlt: dynamicFamilies.length % 2 === 0,
+            items: [],
+          }
+          dynamicFamilies.push(targetFamily)
         } else {
           targetFamily = dynamicFamilies[0]
         }
       }
 
       if (targetFamily) {
+        // Dynamically override family title and subtitle if set on product
+        if (prodDoc.familyTitle && typeof prodDoc.familyTitle === 'string' && prodDoc.familyTitle.trim()) {
+          targetFamily.title = prodDoc.familyTitle.trim()
+        }
+        if (prodDoc.familySubtitle && typeof prodDoc.familySubtitle === 'string' && prodDoc.familySubtitle.trim()) {
+          targetFamily.subtitle = prodDoc.familySubtitle.trim()
+        }
         targetFamily.items.push(item)
       }
     }
 
-    // Always return all family sections so Family 01, Family 02, Family 03 headers remain reflected dynamically!
     return dynamicFamilies
   }
 

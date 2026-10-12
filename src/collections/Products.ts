@@ -83,14 +83,38 @@ export const Products: CollectionConfig = {
       name: 'familyId',
       type: 'select',
       label: 'Product Family',
+      defaultValue: 'family1',
       options: [
-        { label: 'Family 01 · Otology — Artificial Temporal Bone Series', value: 'otology' },
-        { label: 'Family 02 · Rhinology — Paranasal Sinus (PNS) Series', value: 'rhinology' },
-        { label: 'Family 03 · Interventional Rhinology — Balloon Sinuplasty Series', value: 'balloon' },
-        { label: 'Family 04 · Laryngology, Vestibular & Custom Series', value: 'laryngology-custom' },
+        { label: 'Family 1', value: 'family1' },
+        { label: 'Family 2', value: 'family2' },
+        { label: 'Family 3', value: 'family3' },
+        { label: 'Family 4', value: 'family4' },
+        // Legacy options to keep existing data compatible:
+        { label: 'Family 1 (Otology)', value: 'otology' },
+        { label: 'Family 2 (Rhinology)', value: 'rhinology' },
+        { label: 'Family 3 (Balloon Sinuplasty)', value: 'balloon' },
+        { label: 'Family 4 (Laryngology & Custom)', value: 'laryngology-custom' },
       ],
       admin: {
-        description: 'Select which Product Family header this product belongs to on the /products page.',
+        description: 'Select which Product Family this product belongs to (e.g. Family 1, Family 2...).',
+      },
+    },
+    {
+      name: 'familyTitle',
+      type: 'text',
+      label: 'Product Family Title',
+      admin: {
+        description:
+          'Name / Title of this Product Family (e.g. "Family 01 · Otology — Artificial Temporal Bone Series"). If edited here, it dynamically updates the family title on the /products page without requiring an extra collection.',
+      },
+    },
+    {
+      name: 'familySubtitle',
+      type: 'text',
+      label: 'Product Family Subtitle',
+      admin: {
+        description:
+          'Subtitle of this Product Family shown below the title on /products page. (Optional)',
       },
     },
     {
