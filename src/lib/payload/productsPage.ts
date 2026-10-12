@@ -241,7 +241,8 @@ export function mapProductDocToItem(doc: any): ProductItem {
     mediaUrl = doc.image
   }
   const imageUrl = mediaUrl || doc.imageUrl || '/images/prod1.jpg'
-  const slug = doc.slug || String(doc.id)
+  const rawSlug = doc.slug || String(doc.id)
+  const cleanSlug = String(rawSlug).trim().replace(/^\/+|\/+$/g, '')
 
   const galleryImages: string[] = []
   if (imageUrl) {
@@ -257,7 +258,7 @@ export function mapProductDocToItem(doc: any): ProductItem {
   }
 
   return {
-    id: slug,
+    id: cleanSlug,
     name: doc.name,
     familyId: doc.familyId || undefined,
     familyTitle: doc.familyTitle || undefined,
@@ -272,7 +273,7 @@ export function mapProductDocToItem(doc: any): ProductItem {
     bulletPoints: Array.isArray(doc.bulletPoints) ? doc.bulletPoints : undefined,
     primaryButton: {
       text: doc.primaryButtonText || 'Buy',
-      link: `/products/${slug}`,
+      link: `/products/${cleanSlug}`,
     },
     secondaryButton: {
       text: doc.secondaryButtonText || 'Enquire',
@@ -374,9 +375,16 @@ export async function getUnifiedProductFamilies(pageData?: any): Promise<Product
       }
     }
 
-    return dynamicFamilies
+    // Only return families that contain dynamic products, never mix dummy data
+    return dynamicFamilies.filter((f) => f.items.length > 0)
   }
 
-  // 2. Fallback if no products in 'products' collection
-  return baseFamilyDefs
+  // 2. Check if dynamic items exist in products-page collection
+  const hasPageItems = baseFamilyDefs.some((f) => Array.isArray(f.items) && f.items.length > 0)
+  if (hasPageItems) {
+    return baseFamilyDefs.filter((f) => f.items.length > 0)
+  }
+
+  // 3. Fallback only when there is NO dynamic data anywhere
+  return defaultProductFamilies
 }

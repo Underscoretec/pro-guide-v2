@@ -16,6 +16,8 @@ export const metadata: Metadata = {
     'Buy 3D temporal bone, paranasal sinus and larynx simulation models on ProGuide.',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function ProductsPage() {
   const pageData = await getProductsPage()
   const families = await getUnifiedProductFamilies(pageData)

@@ -294,7 +294,7 @@ export interface Product {
   id: number;
   name: string;
   /**
-   * URL identifier used in /products/[slug] and /product?p=[slug]
+   * URL identifier used in /products/[slug] and /product?p=[slug]. Automatically formatted without spaces or leading slashes.
    */
   slug: string;
   /**

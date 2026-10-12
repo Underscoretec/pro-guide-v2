@@ -337,30 +337,34 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
 
             {/* Meta Information */}
             <div className="pt-6 border-t border-[#F0F2F5] flex flex-col gap-1.5 text-[11px] text-[#6B7280]">
-              <div>
-                <span className="font-bold text-[#1F2328] uppercase tracking-wider">
-                  SKU:
-                </span>{' '}
-                <span>{product.sku || 'N/A'}</span>
-              </div>
-              <div>
-                <span className="font-bold text-[#1F2328] uppercase tracking-wider">
-                  CATEGORIES:
-                </span>{' '}
-                <span className="text-[#6B7280]">
-                  {product.category || product.name}
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-[#1F2328] uppercase tracking-wider">
-                  TAGS:
-                </span>{' '}
-                <span className="text-[#6B7280]">
-                  {product.tags && product.tags.length > 0
-                    ? product.tags.join(', ')
-                    : 'simulation, 3d model, surgery, ent'}
-                </span>
-              </div>
+              {product.sku ? (
+                <div>
+                  <span className="font-bold text-[#1F2328] uppercase tracking-wider">
+                    SKU:
+                  </span>{' '}
+                  <span>{product.sku}</span>
+                </div>
+              ) : null}
+              {product.category ? (
+                <div>
+                  <span className="font-bold text-[#1F2328] uppercase tracking-wider">
+                    CATEGORIES:
+                  </span>{' '}
+                  <span className="text-[#6B7280]">
+                    {product.category}
+                  </span>
+                </div>
+              ) : null}
+              {product.tags && product.tags.length > 0 ? (
+                <div>
+                  <span className="font-bold text-[#1F2328] uppercase tracking-wider">
+                    TAGS:
+                  </span>{' '}
+                  <span className="text-[#6B7280]">
+                    {product.tags.join(', ')}
+                  </span>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
@@ -400,11 +404,11 @@ export const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ product 
               <h2 className="text-[15.5px] font-bold text-[#1F2328] mb-3">
                 {product.detailHeading || product.name}
               </h2>
-              <p className="text-[13px] text-[#6B7280] leading-[1.75] mb-4">
-                {product.detailParagraph1 ||
-                  product.shortDescription ||
-                  'Engineered for comprehensive hands-on surgical simulation workshops with life-like tactile and visual feedback.'}
-              </p>
+              {(product.detailParagraph1 || product.shortDescription) && (
+                <p className="text-[13px] text-[#6B7280] leading-[1.75] mb-4">
+                  {product.detailParagraph1 || product.shortDescription}
+                </p>
+              )}
               {product.detailParagraph2 && (
                 <p className="text-[13px] text-[#6B7280] leading-[1.75] mb-8">
                   {product.detailParagraph2}

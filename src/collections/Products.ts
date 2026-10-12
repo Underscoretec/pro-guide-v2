@@ -32,8 +32,22 @@ export const Products: CollectionConfig = {
       unique: true,
       index: true,
       label: 'Slug (e.g. tb, pns, pnsb, larynx)',
+      hooks: {
+        beforeValidate: [
+          ({ value, data }) => {
+            const raw = value || data?.name || ''
+            return String(raw)
+              .toLowerCase()
+              .trim()
+              .replace(/^\/+|\/+$/g, '')
+              .replace(/\s+/g, '-')
+              .replace(/[^a-z0-9-_]/g, '')
+          },
+        ],
+      },
       admin: {
-        description: 'URL identifier used in /products/[slug] and /product?p=[slug]',
+        description:
+          'URL identifier used in /products/[slug] and /product?p=[slug]. Automatically formatted without spaces or leading slashes.',
       },
     },
     {
