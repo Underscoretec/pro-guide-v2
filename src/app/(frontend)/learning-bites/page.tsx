@@ -2,6 +2,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import LearningBitesContent from '@/components/LearningBites/LearningBitesContent'
 import getLearningBitesPage from '@/lib/payload/learningBites'
+import { roboto } from '@/font'
 
 export const metadata: Metadata = {
   title: 'Learning Bites | ProGuide',
@@ -13,7 +14,7 @@ export default async function LearningBitesPage() {
   const data = await getLearningBitesPage()
 
   return (
-    <main className="flex-1 bg-white">
+    <main className={`${roboto.className} flex-1 bg-white`}>
       <LearningBitesContent data={data} />
     </main>
   )

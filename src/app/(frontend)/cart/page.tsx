@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import { CartView } from '@/components/Cart/CartView'
+import { roboto } from '@/font'
 
 export const metadata: Metadata = {
   title: 'Shopping Cart | ProGuide 3D Simulation Models',
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function CartPage() {
   return (
-    <main className="flex-1 bg-white">
+    <main className={`${roboto.className} flex-1 bg-white`}>
       <CartView />
     </main>
   )

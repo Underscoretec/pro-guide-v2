@@ -9,6 +9,7 @@ import { AddressForm, type Address } from '@/components/Profile/AddressForm'
 import { setDefaultAddress, removeAddress } from '@/lib/profile/actions'
 import { createOnlineOrder } from '@/lib/orders/actions'
 import type { ShippingAddress } from '@/payload-types'
+import { roboto } from '@/font'
 
 declare global {
   interface Window {
@@ -295,7 +296,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   }
 
   return (
-    <div className="bg-white min-h-[75vh] py-10 md:py-14">
+    <div className={`${roboto.className} bg-white min-h-[75vh] py-10 md:py-14`}>
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Title */}
         <h1 className="text-[26px] md:text-[30px] font-bold text-ink tracking-tight mb-8 uppercase">

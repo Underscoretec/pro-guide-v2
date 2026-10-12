@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import { WorkshopDetailContent } from '@/components/Workshops/WorkshopDetailContent'
+import { roboto } from '@/font'
 
 export async function generateMetadata({
   params,
@@ -28,5 +29,9 @@ export default async function WorkshopDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const resolvedParams = await params
-  return <WorkshopDetailContent slug={resolvedParams.slug} />
+  return (
+    <main className={`${roboto.className} flex-1 bg-white`}>
+      <WorkshopDetailContent slug={resolvedParams.slug} />
+    </main>
+  )
 }
