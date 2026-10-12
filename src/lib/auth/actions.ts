@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { generatePayloadCookie } from 'payload'
 import { getPayloadClient } from '@/lib/payload/client'
 import { issueOtp, validateStoredOtp, clearOtp, type OtpStep } from '@/lib/authOtp'
+import { generateOtp } from '../otp'
 
 export type AuthState = {
   error?: string
@@ -62,6 +63,16 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
 
   let userId: number | string
   try {
+    const rawCountry = (values.country || '').trim()
+    const countryLower = rawCountry.toLowerCase()
+    const isIndia =
+      !rawCountry ||
+      countryLower === 'india' ||
+      countryLower === 'in' ||
+      countryLower === 'bharat' ||
+      countryLower === 'ind'
+
+    const otp = generateOtp()
     const user = await payload.create({
       collection: 'users',
       overrideAccess: true,
@@ -72,6 +83,8 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
         fullName: values.fullName,
         phoneNumber: values.phoneNumber,
         institution: values.institution || undefined,
+        country: rawCountry || 'India',
+        isIndia,
         isEmailVerified: false,
         isPhoneVerified: false,
       },

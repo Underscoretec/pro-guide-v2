@@ -76,6 +76,9 @@ export async function seedProducts() {
       badge: userCustomMastoid?.badge || 'Foundation',
       displayOrder: 1,
       price: userCustomMastoid?.price || 20000,
+      familyId: 'family1',
+      familyTitle: 'Family 01 · Otology — Artificial Temporal Bone Series',
+      familySubtitle: 'From first mastoid drilling to cochlear implantation and skull base work.',
       category: 'Otology — Artificial Temporal Bone Series',
       sku: 'PG-TB-001',
       shortDescription:
@@ -108,6 +111,9 @@ export async function seedProducts() {
       badge: 'Advanced',
       displayOrder: 2,
       price: 25000,
+      familyId: 'family2',
+      familyTitle: 'Family 02 · Rhinology — Paranasal Sinus (PNS) Series',
+      familySubtitle: 'Sinus anatomy as you actually meet it through the endoscope.',
       category: 'Rhinology — Paranasal Sinus (PNS) Series',
       sku: 'PG-PNS-002',
       shortDescription:
@@ -137,6 +143,9 @@ export async function seedProducts() {
       badge: 'Task',
       displayOrder: 3,
       price: 20000,
+      familyId: 'family2',
+      familyTitle: 'Family 02 · Rhinology — Paranasal Sinus (PNS) Series',
+      familySubtitle: 'Sinus anatomy as you actually meet it through the endoscope.',
       category: 'Rhinology — Paranasal Sinus (PNS) Series',
       sku: 'PG-PNS-001',
       shortDescription:
@@ -166,6 +175,9 @@ export async function seedProducts() {
       badge: 'Family 04 · Laryngology',
       displayOrder: 4,
       price: 20000,
+      familyId: 'family4',
+      familyTitle: 'Family 04 · Laryngology, Vestibular & Custom Series',
+      familySubtitle: 'Advanced simulation models for airway, balance testing, and patient-specific surgical preparation.',
       category: 'Laryngology, Vestibular & Custom Series',
       sku: 'PG-LRX-001',
       shortDescription:
@@ -195,6 +207,9 @@ export async function seedProducts() {
       badge: 'Complete',
       displayOrder: 5,
       price: 20000,
+      familyId: 'family1',
+      familyTitle: 'Family 01 · Otology — Artificial Temporal Bone Series',
+      familySubtitle: 'From first mastoid drilling to cochlear implantation and skull base work.',
       category: 'Otology — Artificial Temporal Bone Series',
       sku: 'PG-TB-002',
       shortDescription:
@@ -211,6 +226,9 @@ export async function seedProducts() {
       badge: 'Advanced',
       displayOrder: 6,
       price: 20000,
+      familyId: 'family1',
+      familyTitle: 'Family 01 · Otology — Artificial Temporal Bone Series',
+      familySubtitle: 'From first mastoid drilling to cochlear implantation and skull base work.',
       category: 'Otology — Artificial Temporal Bone Series',
       sku: 'PG-TB-003',
       shortDescription:
@@ -227,6 +245,9 @@ export async function seedProducts() {
       badge: 'Task',
       displayOrder: 7,
       price: 20000,
+      familyId: 'family1',
+      familyTitle: 'Family 01 · Otology — Artificial Temporal Bone Series',
+      familySubtitle: 'From first mastoid drilling to cochlear implantation and skull base work.',
       category: 'Otology — Artificial Temporal Bone Series',
       sku: 'PG-TB-004',
       shortDescription:
@@ -243,6 +264,9 @@ export async function seedProducts() {
       badge: 'Only from OSSA+',
       displayOrder: 8,
       price: 20000,
+      familyId: 'family3',
+      familyTitle: 'Family 03 · Interventional Rhinology — Balloon Sinuplasty Series',
+      familySubtitle: 'The only dedicated balloon dilation trainers in surgical simulation.',
       category: 'Interventional Rhinology — Balloon Sinuplasty Series',
       sku: 'PG-BLN-001',
       shortDescription:
@@ -259,6 +283,9 @@ export async function seedProducts() {
       badge: 'Only from OSSA+',
       displayOrder: 9,
       price: 20000,
+      familyId: 'family3',
+      familyTitle: 'Family 03 · Interventional Rhinology — Balloon Sinuplasty Series',
+      familySubtitle: 'The only dedicated balloon dilation trainers in surgical simulation.',
       category: 'Interventional Rhinology — Balloon Sinuplasty Series',
       sku: 'PG-BLN-002',
       shortDescription:
@@ -275,6 +302,9 @@ export async function seedProducts() {
       badge: 'Only from OSSA+',
       displayOrder: 10,
       price: 20000,
+      familyId: 'family3',
+      familyTitle: 'Family 03 · Interventional Rhinology — Balloon Sinuplasty Series',
+      familySubtitle: 'The only dedicated balloon dilation trainers in surgical simulation.',
       category: 'Interventional Rhinology — Balloon Sinuplasty Series',
       sku: 'PG-BLN-003',
       shortDescription:
@@ -291,6 +321,9 @@ export async function seedProducts() {
       badge: 'Family 05 · Vestibular',
       displayOrder: 11,
       price: 20000,
+      familyId: 'family4',
+      familyTitle: 'Family 04 · Laryngology, Vestibular & Custom Series',
+      familySubtitle: 'Advanced simulation models for airway, balance testing, and patient-specific surgical preparation.',
       category: 'Laryngology, Vestibular & Custom Series',
       sku: 'PG-VST-001',
       shortDescription:
@@ -307,6 +340,9 @@ export async function seedProducts() {
       badge: 'Family 06 · Pathological & Custom',
       displayOrder: 12,
       price: 20000,
+      familyId: 'family4',
+      familyTitle: 'Family 04 · Laryngology, Vestibular & Custom Series',
+      familySubtitle: 'Advanced simulation models for airway, balance testing, and patient-specific surgical preparation.',
       category: 'Laryngology, Vestibular & Custom Series',
       sku: 'PG-CST-001',
       shortDescription:
@@ -321,7 +357,16 @@ export async function seedProducts() {
   for (const item of catalogToSeed) {
     const existing = existingProducts.docs.find((p: any) => p.slug === item.slug)
     if (existing) {
-      console.log(`Product "${item.name}" (${item.slug}) already exists, skipping create.`)
+      console.log(`Updating product "${item.name}" (${item.slug}) with familyId: ${item.familyId}...`)
+      await payload.update({
+        collection: 'products',
+        id: existing.id,
+        data: {
+          familyId: item.familyId,
+          familyTitle: (item as any).familyTitle,
+          familySubtitle: (item as any).familySubtitle,
+        } as any,
+      })
     } else {
       console.log(`Creating product "${item.name}" (${item.slug})...`)
       await payload.create({
@@ -331,7 +376,7 @@ export async function seedProducts() {
     }
   }
 
-  console.log('Seeding completed successfully!')
+  console.log('Seeding / syncing completed successfully!')
   process.exit(0)
 }
 

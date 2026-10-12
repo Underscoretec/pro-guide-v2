@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { roboto } from '@/font'
 
 interface HeroSectionProps {
   data?: any
@@ -154,7 +155,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
         : currentIndex - 1
 
   return (
-    <div className="bg-gradient-to-b from-[#FBF9FD] to-[#F1EBF9] border-b border-line">
+    <div className={`${roboto.className} border-b border-line`}>
       <div className="max-w-[1200px] mx-auto px-6 py-11 pb-12 grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-[42px] items-center">
         {/* Left Column Content */}
         <div>
@@ -195,7 +196,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
         {/* Right Column Images Section */}
         <div className="flex flex-col gap-3">
           {/* Top Image: Still & Static */}
-          <div className="w-full rounded-[10px] overflow-hidden shadow-[0_20px_44px_rgba(76,21,96,0.22)] relative aspect-[16/10]">
+          <div className="w-full rounded-[10px] overflow-hidden relative aspect-[16/10]">
             <Image
               src={mainImage}
               alt="Faculty guiding a delegate during hands-on dissection"
@@ -227,7 +228,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
                       return (
                         <div
                           key={itemIdx}
-                          className="rounded-[10px] overflow-hidden shadow-[0_20px_44px_rgba(76,21,96,0.22)] relative aspect-[3/4] bg-white group/card"
+                          className="rounded-[10px] overflow-hidden relative aspect-[3/4] bg-white group/card"
                         >
                           <Image
                             src={src}

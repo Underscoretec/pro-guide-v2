@@ -17,6 +17,19 @@ export function generateInvoicePdfBuffer(order: any): Buffer {
   const margin = 44
   const contentWidth = pageWidth - margin * 2
 
+  const formatPdfPrice = (amount: number) => {
+    if (data.currency === 'USD') {
+      return `$${Number(amount || 0).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+    }
+    return `Rs ${Number(amount || 0).toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`
+  }
+
   // --- Header ---
   let y = 48
   doc.setFont('helvetica', 'bold')
@@ -180,10 +193,7 @@ export function generateInvoicePdfBuffer(order: any): Buffer {
     doc.text(itemLines, margin + 6, y + 12)
     doc.text(String(item.quantity || 1), margin + descW + qtyW / 2, y + 13, { align: 'center' })
     doc.text(
-      `Rs ${Number(item.totalPrice).toLocaleString('en-IN', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`,
+      formatPdfPrice(item.totalPrice),
       margin + contentWidth - 6,
       y + 13,
       { align: 'right' }
@@ -198,10 +208,7 @@ export function generateInvoicePdfBuffer(order: any): Buffer {
     doc.setFont('helvetica', 'normal')
     doc.text(data.discountLabel, margin + 6, y + 12)
     doc.text(
-      `Rs ${Number(data.discount).toLocaleString('en-IN', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`,
+      formatPdfPrice(data.discount),
       margin + contentWidth - 6,
       y + 12,
       { align: 'right' }
@@ -215,10 +222,7 @@ export function generateInvoicePdfBuffer(order: any): Buffer {
   doc.setFont('helvetica', 'bold')
   doc.text('Subtotal', margin + 6, y + 12)
   doc.text(
-    `Rs ${Number(data.taxableSubtotal).toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`,
+    formatPdfPrice(data.taxableSubtotal),
     margin + contentWidth - 6,
     y + 12,
     { align: 'right' }
@@ -232,10 +236,19 @@ export function generateInvoicePdfBuffer(order: any): Buffer {
     doc.setFont('helvetica', 'normal')
     doc.text('IGST @ 18%', margin + 6, y + 12)
     doc.text(
-      `Rs ${Number(data.taxAmount).toLocaleString('en-IN', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`,
+      formatPdfPrice(data.taxAmount),
+      margin + contentWidth - 6,
+      y + 12,
+      { align: 'right' }
+    )
+    y += rowH
+  } else if (data.currency === 'USD') {
+    doc.rect(margin, y, descW + qtyW, rowH)
+    doc.rect(margin + descW + qtyW, y, amtW, rowH)
+    doc.setFont('helvetica', 'normal')
+    doc.text('Export Sales (0% Tax)', margin + 6, y + 12)
+    doc.text(
+      formatPdfPrice(0),
       margin + contentWidth - 6,
       y + 12,
       { align: 'right' }
@@ -249,10 +262,7 @@ export function generateInvoicePdfBuffer(order: any): Buffer {
   doc.setFont('helvetica', 'bold')
   doc.text('TOTAL PAID', margin + 6, y + 12)
   doc.text(
-    `Rs ${Number(data.totalAmount).toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`,
+    formatPdfPrice(data.totalAmount),
     margin + contentWidth - 6,
     y + 12,
     { align: 'right' }
@@ -271,10 +281,7 @@ export function generateInvoicePdfBuffer(order: any): Buffer {
   doc.text('Amount Paid: ', margin, y)
   doc.setFont('helvetica', 'normal')
   doc.text(
-    `Rs ${Number(data.totalAmount).toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`,
+    formatPdfPrice(data.totalAmount),
     margin + 65,
     y
   )

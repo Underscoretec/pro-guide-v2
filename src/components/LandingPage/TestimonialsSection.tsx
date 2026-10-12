@@ -1,4 +1,5 @@
 import React from 'react'
+import { roboto } from '@/font'
 
 interface TestimonialsSectionProps {
   data?: any
@@ -74,7 +75,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ data, 
   return (
     <>
       {/* Feedback Chips Section */}
-      <section className="py-[52px] bg-[#F8F8FA] border-t border-b border-line">
+      <section className={`${roboto.className} py-[52px] bg-[#F8F8FA] border-t border-b border-line`}>
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="sechead">
             <h2 className="font-bold text-ink">{feedbackTitle}</h2>
@@ -98,7 +99,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ data, 
       </section>
 
       {/* Testimonials Gradient Section */}
-      <section className="py-[52px]">
+      <section className={`${roboto.className} py-[52px]`}>
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="sechead">
             <h2 className="font-bold text-ink">{storiesTitle}</h2>
