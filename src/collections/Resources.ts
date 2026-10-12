@@ -1,254 +1,10 @@
-import type { Block, CollectionConfig } from 'payload'
-
-export const ResourcesHeroBlock: Block = {
-  slug: 'resources-hero',
-  fields: [
-    {
-      name: 'crumbHomeText',
-      type: 'text',
-      defaultValue: 'Home',
-    },
-    {
-      name: 'crumbCurrentText',
-      type: 'text',
-      defaultValue: 'Resources',
-    },
-    {
-      name: 'title',
-      type: 'text',
-      defaultValue: 'Why 3D Simulation Models',
-    },
-    {
-      name: 'description',
-      type: 'textarea',
-      defaultValue:
-        "Everything surgeons ask us about the models — why they work, what they're made of, and every procedure that can be performed on them.",
-    },
-  ],
-}
-
-export const WhySimulationBlock: Block = {
-  slug: 'why-simulation',
-  fields: [
-    {
-      name: 'title',
-      type: 'text',
-      defaultValue: 'Why 3D Simulation Models',
-    },
-    {
-      name: 'points',
-      type: 'array',
-      fields: [
-        {
-          name: 'num',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'text',
-          type: 'textarea',
-          required: true,
-        },
-      ],
-    },
-  ],
-}
-
-export const ModelFeaturesBlock: Block = {
-  slug: 'model-features',
-  fields: [
-    {
-      name: 'title',
-      type: 'text',
-      defaultValue: '3D Simulation Bone Model Features',
-    },
-    {
-      name: 'features',
-      type: 'array',
-      fields: [
-        {
-          name: 'num',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'text',
-          type: 'text',
-          required: true,
-        },
-      ],
-    },
-  ],
-}
-
-export const TemporalBoneProceduresBlock: Block = {
-  slug: 'temporal-bone-procedures',
-  fields: [
-    {
-      name: 'title',
-      type: 'text',
-      defaultValue: 'Procedures That Can Be Performed Using the Temporal Bone Model',
-    },
-    {
-      name: 'procedures',
-      type: 'array',
-      fields: [
-        {
-          name: 'name',
-          type: 'text',
-          required: true,
-        },
-      ],
-    },
-    {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-    },
-    {
-      name: 'imageUrl',
-      type: 'text',
-      defaultValue: '/images/photo_lab1.jpg',
-    },
-  ],
-}
-
-export const SinusProceduresBlock: Block = {
-  slug: 'sinus-procedures',
-  fields: [
-    {
-      name: 'title',
-      type: 'text',
-      defaultValue: 'Procedures on the Paranasal Sinus Model',
-    },
-    {
-      name: 'procedures',
-      type: 'array',
-      fields: [
-        {
-          name: 'name',
-          type: 'text',
-          required: true,
-        },
-      ],
-    },
-    {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-    },
-    {
-      name: 'imageUrl',
-      type: 'text',
-      defaultValue: '/images/photo_lab2.jpg',
-    },
-  ],
-}
-
-export const LarynxProceduresBlock: Block = {
-  slug: 'larynx-procedures',
-  fields: [
-    {
-      name: 'title',
-      type: 'text',
-      defaultValue: 'Procedures on the Larynx Model',
-    },
-    {
-      name: 'procedures',
-      type: 'array',
-      fields: [
-        {
-          name: 'name',
-          type: 'text',
-          required: true,
-        },
-      ],
-    },
-    {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-    },
-    {
-      name: 'imageUrl',
-      type: 'text',
-      defaultValue: '/images/photo_micro.jpg',
-    },
-  ],
-}
-
-export const VariantsBlock: Block = {
-  slug: 'variants',
-  fields: [
-    {
-      name: 'title',
-      type: 'text',
-      defaultValue: 'Temporal Bone Variants Available',
-    },
-    {
-      name: 'variantsList',
-      type: 'array',
-      fields: [
-        {
-          name: 'code',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'title',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'desc',
-          type: 'textarea',
-          required: true,
-        },
-      ],
-    },
-  ],
-}
-
-export const DoctorAcknowledgmentBlock: Block = {
-  slug: 'doctor-acknowledgment',
-  fields: [
-    {
-      name: 'title',
-      type: 'text',
-      defaultValue: 'Acknowledgment From a Globally Acclaimed Otolaryngologist',
-    },
-    {
-      name: 'quote',
-      type: 'textarea',
-      required: true,
-    },
-    {
-      name: 'doctorName',
-      type: 'text',
-      defaultValue: 'Dr. Milind Kirtane',
-    },
-    {
-      name: 'doctorTitle',
-      type: 'textarea',
-    },
-    {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-    },
-    {
-      name: 'imageUrl',
-      type: 'text',
-      defaultValue: '/images/photo_lab2.jpg',
-    },
-  ],
-}
+import type { CollectionConfig } from 'payload'
 
 export const Resources: CollectionConfig = {
   slug: 'resources',
   labels: {
-    singular: 'Resources Page',
-    plural: 'Resources Pages',
+    singular: 'Resource',
+    plural: 'Resources',
   },
   admin: {
     useAsTitle: 'title',
@@ -262,29 +18,136 @@ export const Resources: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
-      defaultValue: 'Resources Page',
+      defaultValue: 'Resource Library & PDF Catalogues',
     },
     {
-      name: 'sections',
-      type: 'blocks',
-      blocks: [
-        ResourcesHeroBlock,
-        WhySimulationBlock,
-        ModelFeaturesBlock,
-        TemporalBoneProceduresBlock,
-        SinusProceduresBlock,
-        LarynxProceduresBlock,
-        VariantsBlock,
-        DoctorAcknowledgmentBlock,
+      name: 'hero',
+      type: 'group',
+      fields: [
+        { name: 'crumbHomeText', type: 'text', defaultValue: 'Home' },
+        { name: 'crumbCategoryText', type: 'text', defaultValue: 'Resources' },
+        { name: 'crumbCurrentText', type: 'text', defaultValue: 'Brochures & Catalogues' },
+        { name: 'title', type: 'text', defaultValue: 'Resource Library & PDF Catalogues' },
+        {
+          name: 'description',
+          type: 'textarea',
+          defaultValue:
+            "Access and download verified educational materials, curriculum modules, and technical brochures for ProGuide's Otolaryngology Head & Neck 3D simulation models and hands-on dissection workshops.",
+        },
+        { name: 'directPdfDownloadText', type: 'text', defaultValue: 'Direct PDF Download' },
+        { name: 'directPdfDownloadLink', type: 'text', defaultValue: '#' },
+        { name: 'instantViewerText', type: 'text', defaultValue: 'Instant In-Browser Viewer' },
+        { name: 'instantViewerLink', type: 'text', defaultValue: '#' },
       ],
     },
     {
-      name: 'seo',
+      name: 'filterTabs',
+      type: 'array',
+      label: 'Filter Category Tabs',
+      fields: [
+        { name: 'label', type: 'text', required: true },
+        { name: 'key', type: 'text', required: true },
+      ],
+    },
+    {
+      name: 'sectionHeader',
       type: 'group',
       fields: [
-        { name: 'title', type: 'text' },
+        {
+          name: 'title',
+          type: 'text',
+          defaultValue: 'Official ProGuide Brochures & Documents',
+        },
+        {
+          name: 'subtitle',
+          type: 'textarea',
+          defaultValue:
+            'Review the comprehensive course itineraries, surgical dissection station setups, and complete product dimension tables.',
+        },
+        {
+          name: 'downloadAllText',
+          type: 'text',
+          defaultValue: 'Download All Package (.zip)',
+        },
+        { name: 'downloadAllLink', type: 'text', defaultValue: '#' },
+      ],
+    },
+    {
+      name: 'documents',
+      type: 'array',
+      label: 'Resource Documents / Catalogues',
+      fields: [
+        { name: 'title', type: 'text', required: true },
+        {
+          name: 'category',
+          type: 'select',
+          required: true,
+          options: [
+            { label: 'Workshop Brochures', value: 'workshop' },
+            { label: 'Product Catalogues', value: 'product' },
+            { label: 'Clinical & Simulation Guides', value: 'clinical' },
+          ],
+          defaultValue: 'workshop',
+        },
+        { name: 'badgeText', type: 'text', label: 'Top Badge Label (e.g. WORKSHOP BROCHURE)' },
+        {
+          name: 'badgeColor',
+          type: 'select',
+          options: [
+            { label: 'Orange / Amber', value: 'orange' },
+            { label: 'Purple', value: 'purple' },
+            { label: 'Green', value: 'green' },
+            { label: 'Blue', value: 'blue' },
+          ],
+          defaultValue: 'orange',
+        },
+        { name: 'yearOrVol', type: 'text', label: 'Tag / Date / Volume (e.g. Oct 2026, Vol. IV)' },
         { name: 'description', type: 'textarea' },
-        { name: 'keywords', type: 'text' },
+        { name: 'viewPdfText', type: 'text', defaultValue: 'View PDF' },
+        { name: 'viewPdfLink', type: 'text', defaultValue: '#' },
+        { name: 'downloadPdfText', type: 'text', defaultValue: 'Download PDF' },
+        { name: 'downloadPdfLink', type: 'text', defaultValue: '#' },
+        {
+          name: 'downloadFile',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'PDF File Upload (Optional)',
+        },
+        { name: 'spineBadgeTag', type: 'text', label: 'Left Spine Tag (e.g. PDF, 24 PAGES)' },
+        { name: 'spineTitle', type: 'text', label: 'Left Spine Vertical Title' },
+        {
+          name: 'spineBg',
+          type: 'select',
+          options: [
+            { label: 'Purple', value: 'purple' },
+            { label: 'Dark Purple', value: 'dark-purple' },
+            { label: 'Dark Green', value: 'green' },
+            { label: 'Amber / Orange', value: 'orange' },
+          ],
+          defaultValue: 'purple',
+        },
+      ],
+    },
+    {
+      name: 'ctaBanner',
+      type: 'group',
+      label: 'Institutional Request CTA Banner',
+      fields: [
+        {
+          name: 'title',
+          type: 'text',
+          defaultValue: 'Require Institutional Course Packages or Printed Physical Catalogues?',
+        },
+        {
+          name: 'subtitle',
+          type: 'textarea',
+          defaultValue:
+            'ProGuide coordinates with ENT departments, teaching hospitals, and surgical skill labs worldwide to provide customized bulk models, workshop facilitation kits, and printed course syllabi.',
+        },
+        { name: 'primaryBtnText', type: 'text', defaultValue: 'Request Call Back' },
+        { name: 'primaryBtnLink', type: 'text', defaultValue: '/contact' },
+        { name: 'secondaryBtnText', type: 'text', defaultValue: 'Email Programme Co-ordinator' },
+        { name: 'secondaryBtnLink', type: 'text', defaultValue: 'mailto:info@pro-guide.in' },
       ],
     },
   ],

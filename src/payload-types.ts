@@ -74,6 +74,7 @@ export interface Config {
     media: Media;
     'home-page': HomePage;
     resources: Resource;
+    '3d-simulation': DSimulation;
     'contact-page': ContactPage;
     'contact-submissions': ContactSubmission;
     'products-page': ProductsPage;
@@ -98,6 +99,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
+    '3d-simulation': DSimulationSelect<false> | DSimulationSelect<true>;
     'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
     'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     'products-page': ProductsPageSelect<false> | ProductsPageSelect<true>;
@@ -292,7 +294,7 @@ export interface Product {
   id: number;
   name: string;
   /**
-   * URL identifier used in /products/[slug] and /product?p=[slug]
+   * URL identifier used in /products/[slug] and /product?p=[slug]. Automatically formatted without spaces or leading slashes.
    */
   slug: string;
   /**
@@ -310,6 +312,19 @@ export interface Product {
    */
   priceUSD?: number | null;
   category?: string | null;
+  /**
+   * Select which Product Family this product belongs to (e.g. Family 1, Family 2...).
+   */
+  familyId?:
+    ('family1' | 'family2' | 'family3' | 'family4' | 'otology' | 'rhinology' | 'balloon' | 'laryngology-custom') | null;
+  /**
+   * Name / Title of this Product Family (e.g. "Family 01 · Otology — Artificial Temporal Bone Series"). If edited here, it dynamically updates the family title on the /products page without requiring an extra collection.
+   */
+  familyTitle?: string | null;
+  /**
+   * Subtitle of this Product Family shown below the title on /products page. (Optional)
+   */
+  familySubtitle?: string | null;
   sku?: string | null;
   shortDescription?: string | null;
   variant?: string | null;
@@ -641,6 +656,67 @@ export interface HomePage {
  * via the `definition` "resources".
  */
 export interface Resource {
+  id: number;
+  title: string;
+  hero?: {
+    crumbHomeText?: string | null;
+    crumbCategoryText?: string | null;
+    crumbCurrentText?: string | null;
+    title?: string | null;
+    description?: string | null;
+    directPdfDownloadText?: string | null;
+    directPdfDownloadLink?: string | null;
+    instantViewerText?: string | null;
+    instantViewerLink?: string | null;
+  };
+  filterTabs?:
+    | {
+        label: string;
+        key: string;
+        id?: string | null;
+      }[]
+    | null;
+  sectionHeader?: {
+    title?: string | null;
+    subtitle?: string | null;
+    downloadAllText?: string | null;
+    downloadAllLink?: string | null;
+  };
+  documents?:
+    | {
+        title: string;
+        category: 'workshop' | 'product' | 'clinical';
+        badgeText?: string | null;
+        badgeColor?: ('orange' | 'purple' | 'green' | 'blue') | null;
+        yearOrVol?: string | null;
+        description?: string | null;
+        viewPdfText?: string | null;
+        viewPdfLink?: string | null;
+        downloadPdfText?: string | null;
+        downloadPdfLink?: string | null;
+        downloadFile?: (number | null) | Media;
+        spineBadgeTag?: string | null;
+        spineTitle?: string | null;
+        spineBg?: ('purple' | 'dark-purple' | 'green' | 'orange') | null;
+        id?: string | null;
+      }[]
+    | null;
+  ctaBanner?: {
+    title?: string | null;
+    subtitle?: string | null;
+    primaryBtnText?: string | null;
+    primaryBtnLink?: string | null;
+    secondaryBtnText?: string | null;
+    secondaryBtnLink?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "3d-simulation".
+ */
+export interface DSimulation {
   id: number;
   title: string;
   sections?:
@@ -1169,6 +1245,10 @@ export interface PayloadLockedDocument {
         value: number | Resource;
       } | null)
     | ({
+        relationTo: '3d-simulation';
+        value: number | DSimulation;
+      } | null)
+    | ({
         relationTo: 'contact-page';
         value: number | ContactPage;
       } | null)
@@ -1379,6 +1459,9 @@ export interface ProductsSelect<T extends boolean = true> {
   price?: T;
   priceUSD?: T;
   category?: T;
+  familyId?: T;
+  familyTitle?: T;
+  familySubtitle?: T;
   sku?: T;
   shortDescription?: T;
   variant?: T;
@@ -1728,6 +1811,72 @@ export interface HomePageSelect<T extends boolean = true> {
  * via the `definition` "resources_select".
  */
 export interface ResourcesSelect<T extends boolean = true> {
+  title?: T;
+  hero?:
+    | T
+    | {
+        crumbHomeText?: T;
+        crumbCategoryText?: T;
+        crumbCurrentText?: T;
+        title?: T;
+        description?: T;
+        directPdfDownloadText?: T;
+        directPdfDownloadLink?: T;
+        instantViewerText?: T;
+        instantViewerLink?: T;
+      };
+  filterTabs?:
+    | T
+    | {
+        label?: T;
+        key?: T;
+        id?: T;
+      };
+  sectionHeader?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        downloadAllText?: T;
+        downloadAllLink?: T;
+      };
+  documents?:
+    | T
+    | {
+        title?: T;
+        category?: T;
+        badgeText?: T;
+        badgeColor?: T;
+        yearOrVol?: T;
+        description?: T;
+        viewPdfText?: T;
+        viewPdfLink?: T;
+        downloadPdfText?: T;
+        downloadPdfLink?: T;
+        downloadFile?: T;
+        spineBadgeTag?: T;
+        spineTitle?: T;
+        spineBg?: T;
+        id?: T;
+      };
+  ctaBanner?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        primaryBtnText?: T;
+        primaryBtnLink?: T;
+        secondaryBtnText?: T;
+        secondaryBtnLink?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "3d-simulation_select".
+ */
+export interface DSimulationSelect<T extends boolean = true> {
   title?: T;
   sections?:
     | T

@@ -32,8 +32,22 @@ export const Products: CollectionConfig = {
       unique: true,
       index: true,
       label: 'Slug (e.g. tb, pns, pnsb, larynx)',
+      hooks: {
+        beforeValidate: [
+          ({ value, data }) => {
+            const raw = value || data?.name || ''
+            return String(raw)
+              .toLowerCase()
+              .trim()
+              .replace(/^\/+|\/+$/g, '')
+              .replace(/\s+/g, '-')
+              .replace(/[^a-z0-9-_]/g, '')
+          },
+        ],
+      },
       admin: {
-        description: 'URL identifier used in /products/[slug] and /product?p=[slug]',
+        description:
+          'URL identifier used in /products/[slug] and /product?p=[slug]. Automatically formatted without spaces or leading slashes.',
       },
     },
     {
@@ -78,6 +92,44 @@ export const Products: CollectionConfig = {
       name: 'category',
       type: 'text',
       label: 'Category',
+    },
+    {
+      name: 'familyId',
+      type: 'select',
+      label: 'Product Family',
+      defaultValue: 'family1',
+      options: [
+        { label: 'Family 1', value: 'family1' },
+        { label: 'Family 2', value: 'family2' },
+        { label: 'Family 3', value: 'family3' },
+        { label: 'Family 4', value: 'family4' },
+        // Legacy options to keep existing data compatible:
+        { label: 'Family 1 (Otology)', value: 'otology' },
+        { label: 'Family 2 (Rhinology)', value: 'rhinology' },
+        { label: 'Family 3 (Balloon Sinuplasty)', value: 'balloon' },
+        { label: 'Family 4 (Laryngology & Custom)', value: 'laryngology-custom' },
+      ],
+      admin: {
+        description: 'Select which Product Family this product belongs to (e.g. Family 1, Family 2...).',
+      },
+    },
+    {
+      name: 'familyTitle',
+      type: 'text',
+      label: 'Product Family Title',
+      admin: {
+        description:
+          'Name / Title of this Product Family (e.g. "Family 01 · Otology — Artificial Temporal Bone Series"). If edited here, it dynamically updates the family title on the /products page without requiring an extra collection.',
+      },
+    },
+    {
+      name: 'familySubtitle',
+      type: 'text',
+      label: 'Product Family Subtitle',
+      admin: {
+        description:
+          'Subtitle of this Product Family shown below the title on /products page. (Optional)',
+      },
     },
     {
       name: 'sku',

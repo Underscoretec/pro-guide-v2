@@ -241,7 +241,8 @@ export function mapProductDocToItem(doc: any): ProductItem {
     mediaUrl = doc.image
   }
   const imageUrl = mediaUrl || doc.imageUrl || '/images/prod1.jpg'
-  const slug = doc.slug || String(doc.id)
+  const rawSlug = doc.slug || String(doc.id)
+  const cleanSlug = String(rawSlug).trim().replace(/^\/+|\/+$/g, '')
 
   const galleryImages: string[] = []
   if (imageUrl) {
@@ -257,8 +258,11 @@ export function mapProductDocToItem(doc: any): ProductItem {
   }
 
   return {
-    id: slug,
+    id: cleanSlug,
     name: doc.name,
+    familyId: doc.familyId || undefined,
+    familyTitle: doc.familyTitle || undefined,
+    familySubtitle: doc.familySubtitle || undefined,
     badge: doc.badge || undefined,
     price: typeof doc.price === 'number' ? doc.price : 20000,
     priceUSD: typeof doc.priceUSD === 'number' ? doc.priceUSD : undefined,
@@ -269,7 +273,7 @@ export function mapProductDocToItem(doc: any): ProductItem {
     bulletPoints: Array.isArray(doc.bulletPoints) ? doc.bulletPoints : undefined,
     primaryButton: {
       text: doc.primaryButtonText || 'Buy',
-      link: `/products/${slug}`,
+      link: `/products/${cleanSlug}`,
     },
     secondaryButton: {
       text: doc.secondaryButtonText || 'Enquire',
@@ -281,76 +285,106 @@ export function mapProductDocToItem(doc: any): ProductItem {
 export async function getUnifiedProductFamilies(pageData?: any): Promise<ProductFamily[]> {
   const catalogProducts = await getCatalogProducts()
 
-  // 1. If dynamic products exist in Payload 'products' collection, show ONLY dynamic products
+  // Base list of family titles/subtitles from pageData or defaultProductFamilies
+  let baseFamilyDefs: ProductFamily[] = defaultProductFamilies
+  if (pageData?.families && Array.isArray(pageData.families) && pageData.families.length > 0) {
+    baseFamilyDefs = pageData.families.map((fam: any, idx: number) => {
+      const defaultDef = defaultProductFamilies[idx] || defaultProductFamilies[0]
+      return {
+        familyId: fam.familyId || defaultDef.familyId,
+        title: fam.title || defaultDef.title,
+        subtitle: fam.subtitle || defaultDef.subtitle,
+        isAlt: fam.isAlt !== undefined ? fam.isAlt : defaultDef.isAlt,
+        items: Array.isArray(fam.items) ? fam.items.map(mapPageFamilyItemToProductItem) : [],
+      }
+    })
+  }
+
+  // 1. If dynamic products exist in Payload 'products' collection
   if (catalogProducts && catalogProducts.length > 0) {
-    const dynamicFamilies: ProductFamily[] = defaultProductFamilies.map((defFamily) => ({
+    const dynamicFamilies: ProductFamily[] = baseFamilyDefs.map((defFamily) => ({
       familyId: defFamily.familyId,
       title: defFamily.title,
       subtitle: defFamily.subtitle,
       isAlt: defFamily.isAlt,
-      items: [], // Start empty so NO dummy cards are included when dynamic products are present
+      items: [], // Start empty for dynamic products
     }))
 
     for (const prodDoc of catalogProducts) {
       const item = mapProductDocToItem(prodDoc)
+      const familyIdDoc = (prodDoc.familyId || '').toLowerCase().trim()
       const slug = (prodDoc.slug || '').toLowerCase()
       const cat = (prodDoc.category || '').toLowerCase()
 
-      // Find target family by matching category or familyId
-      let targetFamily = dynamicFamilies.find((f) => {
+      // 1. Find target family by explicit familyId property (supporting family1..family4 & legacy names)
+      let targetFamily = dynamicFamilies.find((f, idx) => {
         const fid = (f.familyId || '').toLowerCase()
-        const ftitle = (f.title || '').toLowerCase()
-        return (
-          (cat && (fid.includes(cat) || ftitle.includes(cat))) ||
-          (slug && (slug.includes(fid) || fid.includes(slug)))
-        )
+        if (familyIdDoc === 'family1' && (idx === 0 || fid === 'otology')) return true
+        if (familyIdDoc === 'family2' && (idx === 1 || fid === 'rhinology')) return true
+        if (familyIdDoc === 'family3' && (idx === 2 || fid === 'balloon')) return true
+        if (familyIdDoc === 'family4' && (idx === 3 || fid.includes('laryngology'))) return true
+        return familyIdDoc && (fid === familyIdDoc || fid.includes(familyIdDoc) || familyIdDoc.includes(fid))
       })
 
-      // Fallback matching logic based on keywords in slug or category
+      // 2. Find target family by category or title matching
       if (!targetFamily) {
-        if (slug.includes('tb') || slug.includes('mastoid') || slug.includes('bone') || cat.includes('otology')) {
+        targetFamily = dynamicFamilies.find((f) => {
+          const fid = (f.familyId || '').toLowerCase()
+          const ftitle = (f.title || '').toLowerCase()
+          return (
+            (cat && (fid.includes(cat) || ftitle.includes(cat) || cat.includes(fid))) ||
+            (slug && (slug.includes(fid) || fid.includes(slug)))
+          )
+        })
+      }
+
+      // 3. Fallback keyword matching
+      if (!targetFamily) {
+        if (slug.includes('tb') || slug.includes('mastoid') || slug.includes('bone') || cat.includes('otology') || familyIdDoc.includes('otology')) {
           targetFamily = dynamicFamilies[0]
-        } else if (slug.includes('pns') || cat.includes('rhinology')) {
+        } else if (slug.includes('pns') || cat.includes('rhinology') || familyIdDoc.includes('rhinology')) {
           targetFamily = dynamicFamilies[1]
-        } else if (slug.includes('balloon') || cat.includes('balloon')) {
+        } else if (slug.includes('balloon') || cat.includes('balloon') || familyIdDoc.includes('balloon')) {
           targetFamily = dynamicFamilies[2]
-        } else if (slug.includes('larynx') || cat.includes('laryngology') || cat.includes('vestibular')) {
+        } else if (slug.includes('larynx') || cat.includes('laryngology') || cat.includes('vestibular') || familyIdDoc.includes('laryngology')) {
           targetFamily = dynamicFamilies[3]
+        } else if (familyIdDoc) {
+          // Dynamic new family group
+          targetFamily = {
+            familyId: familyIdDoc,
+            title: prodDoc.familyTitle || `Family ${prodDoc.familyId}`,
+            subtitle: prodDoc.familySubtitle || '',
+            isAlt: dynamicFamilies.length % 2 === 0,
+            items: [],
+          }
+          dynamicFamilies.push(targetFamily)
         } else {
           targetFamily = dynamicFamilies[0]
         }
       }
 
       if (targetFamily) {
+        // Dynamically override family title and subtitle if set on product
+        if (prodDoc.familyTitle && typeof prodDoc.familyTitle === 'string' && prodDoc.familyTitle.trim()) {
+          targetFamily.title = prodDoc.familyTitle.trim()
+        }
+        if (prodDoc.familySubtitle && typeof prodDoc.familySubtitle === 'string' && prodDoc.familySubtitle.trim()) {
+          targetFamily.subtitle = prodDoc.familySubtitle.trim()
+        }
         targetFamily.items.push(item)
       }
     }
 
-    const activeFamilies = dynamicFamilies.filter((f) => f.items.length > 0)
-    if (activeFamilies.length > 0) {
-      return activeFamilies
-    }
+    // Only return families that contain dynamic products, never mix dummy data
+    return dynamicFamilies.filter((f) => f.items.length > 0)
   }
 
-  // 2. If pageData has explicitly configured families with items, map them
-  if (pageData?.families && Array.isArray(pageData.families) && pageData.families.length > 0) {
-    const hasCustomItems = pageData.families.some(
-      (fam: any) => Array.isArray(fam.items) && fam.items.length > 0
-    )
-    if (hasCustomItems) {
-      return pageData.families.map((fam: any, idx: number) => {
-        const defaultDef = defaultProductFamilies[idx] || defaultProductFamilies[0]
-        return {
-          familyId: fam.familyId || defaultDef.familyId,
-          title: fam.title || defaultDef.title,
-          subtitle: fam.subtitle || defaultDef.subtitle,
-          isAlt: fam.isAlt !== undefined ? fam.isAlt : defaultDef.isAlt,
-          items: Array.isArray(fam.items) ? fam.items.map(mapPageFamilyItemToProductItem) : [],
-        }
-      })
-    }
+  // 2. Check if dynamic items exist in products-page collection
+  const hasPageItems = baseFamilyDefs.some((f) => Array.isArray(f.items) && f.items.length > 0)
+  if (hasPageItems) {
+    return baseFamilyDefs.filter((f) => f.items.length > 0)
   }
 
-  // 3. Fallback: Only show dummy fallback product families if NO dynamic data is available
+  // 3. Fallback only when there is NO dynamic data anywhere
   return defaultProductFamilies
 }

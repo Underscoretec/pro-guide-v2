@@ -65,11 +65,14 @@ export const getLandingProducts = cache(async () => {
         }
       }
 
+      const rawSlug = doc.slug || String(doc.id)
+      const cleanSlug = String(rawSlug).trim().replace(/^\/+|\/+$/g, '')
+
       return {
-        id: doc.slug || String(doc.id),
+        id: cleanSlug,
         title: doc.name,
         name: doc.name,
-        slug: doc.slug,
+        slug: cleanSlug,
         badge: doc.badge || undefined,
         variant: doc.variant || 'Available in Left and Right variant',
         rawPrice: typeof doc.price === 'number' ? doc.price : 20000,
@@ -82,7 +85,7 @@ export const getLandingProducts = cache(async () => {
         image: doc.image,
         imageUrl: mainImageUrl || '/images/prod1.jpg',
         images: galleryImages.length > 0 ? galleryImages : undefined,
-        detailsUrl: `/products/${doc.slug}`,
+        detailsUrl: `/products/${cleanSlug}`,
         primaryButtonText: doc.primaryButtonText || 'Buy',
         secondaryButtonText: doc.secondaryButtonText || 'Enquire',
         secondaryButtonLink:
