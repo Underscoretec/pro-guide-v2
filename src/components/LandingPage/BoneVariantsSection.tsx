@@ -40,7 +40,7 @@ export const BoneVariantsSection: React.FC<BoneVariantsProps> = ({ data }) => {
           <div className="rule" />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[2px] bg-line border border-line rounded-[8px] overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[2px] bg-line border border-line rounded-sm overflow-hidden">
           {list.map((v: any, idx: number) => (
             <div key={idx} className="bg-white py-[26px] px-5 text-center flex flex-col items-center">
               <div className="w-[52px] h-[52px] mx-auto mb-[10px] rounded-full bg-tint text-purple flex items-center justify-center text-[22px] font-extrabold">

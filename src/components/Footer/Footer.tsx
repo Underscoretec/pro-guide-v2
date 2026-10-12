@@ -182,7 +182,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
                 key={idx}
                 href={soc.url || '#'}
                 aria-label={soc.platform}
-                className="w-[30px] h-[30px] rounded-[6px] bg-white text-purple flex items-center justify-center font-bold text-[13px] hover:bg-tint transition-colors"
+                className="w-[30px] h-[30px] rounded-sm bg-white text-purple flex items-center justify-center font-bold text-[13px] hover:bg-tint transition-colors"
               >
                 {soc.platform}
               </a>

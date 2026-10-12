@@ -88,7 +88,7 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white border border-line rounded-[10px] p-7 shadow-[0_14px_34px_rgba(31,35,40,0.08)]"
+          className="bg-white border border-line rounded-sm p-7 shadow-[0_14px_34px_rgba(31,35,40,0.08)]"
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-[14px] mb-[14px]">
             <input
@@ -98,7 +98,7 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
               required
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="w-full border border-[#C9CDD3] rounded-[6px] py-[11px] px-3 text-[14px] outline-none focus:border-purple transition-colors text-ink"
+              className="w-full border border-[#C9CDD3] rounded-sm py-[11px] px-3 text-[14px] outline-none focus:border-purple transition-colors text-ink"
             />
             <input
               type="text"
@@ -107,7 +107,7 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
               required
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="w-full border border-[#C9CDD3] rounded-[6px] py-[11px] px-3 text-[14px] outline-none focus:border-purple transition-colors text-ink"
+              className="w-full border border-[#C9CDD3] rounded-sm py-[11px] px-3 text-[14px] outline-none focus:border-purple transition-colors text-ink"
             />
           </div>
 
@@ -118,7 +118,7 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
               placeholder="Country"
               value={country}
               onChange={(e) => setCountry(e.target.value)}
-              className="w-full border border-[#C9CDD3] rounded-[6px] py-[11px] px-3 text-[14px] outline-none focus:border-purple transition-colors text-ink"
+              className="w-full border border-[#C9CDD3] rounded-sm py-[11px] px-3 text-[14px] outline-none focus:border-purple transition-colors text-ink"
             />
             <input
               type="tel"
@@ -127,7 +127,7 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
               required
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
-              className="w-full border border-[#C9CDD3] rounded-[6px] py-[11px] px-3 text-[14px] outline-none focus:border-purple transition-colors text-ink"
+              className="w-full border border-[#C9CDD3] rounded-sm py-[11px] px-3 text-[14px] outline-none focus:border-purple transition-colors text-ink"
             />
           </div>
 
@@ -139,7 +139,7 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-purple text-white py-[10px] px-5 rounded-[5px] font-bold text-[13.5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-purple text-white py-[10px] px-5 rounded-sm font-bold text-[13.5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Submitting...' : 'Submit'}
           </button>

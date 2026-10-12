@@ -40,12 +40,12 @@ export const WorkshopGlimpsesSection: React.FC<WorkshopGlimpsesProps> = ({ data 
         </div>
 
         {/* Large Main Collage Image */}
-        <Link href="/workshops.html" className="block overflow-hidden rounded-[10px]">
+        <Link href="/workshops.html" className="block overflow-hidden rounded-sm">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={collageImage}
             alt={title}
-            className="w-full rounded-[10px] shadow-[0_16px_36px_rgba(31,35,40,0.18)] hover:opacity-95 transition-opacity"
+            className="w-full rounded-sm shadow-[0_16px_36px_rgba(31,35,40,0.18)] hover:opacity-95 transition-opacity"
           />
         </Link>
 
@@ -56,12 +56,12 @@ export const WorkshopGlimpsesSection: React.FC<WorkshopGlimpsesProps> = ({ data 
             const imageSrc = mediaImage || item.imageUrl || item.image || '/images/ws_lab.jpg'
 
             return (
-              <div key={idx} className="rounded-[8px] overflow-hidden aspect-[16/10]">
+              <div key={idx} className="rounded-sm overflow-hidden aspect-[16/10]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={imageSrc}
                   alt={item.alt || 'Workshop glimpse'}
-                  className="w-full h-full object-cover rounded-[8px] hover:scale-105 transition-transform"
+                  className="w-full h-full object-cover rounded-sm hover:scale-105 transition-transform"
                 />
               </div>
             )

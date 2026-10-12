@@ -266,7 +266,7 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
             return (
               <div
                 key={key}
-                className="bg-white border border-line rounded-[8px] overflow-hidden flex flex-col transition-all duration-[180ms] hover:shadow-[0_14px_30px_rgba(31,35,40,0.12)] hover:-translate-y-[3px]"
+                className="bg-white border border-line rounded-sm overflow-hidden flex flex-col transition-all duration-[180ms] hover:shadow-[0_14px_30px_rgba(31,35,40,0.12)] hover:-translate-y-[3px]"
               >
                 {/* Product Image Hover Slider */}
                 <ProductImageSlider
@@ -300,14 +300,14 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                   <div className="flex gap-2 mt-3 pt-1">
                     <Link
                       href={prod.secondaryButtonLink || detailsHref}
-                      className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-white text-ink rounded-[5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
+                      className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-white text-ink rounded-sm border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
                     >
                       {prod.secondaryButtonText || 'View Details'}
                     </Link>
                     <button
                       type="button"
                       onClick={(e) => handleAddToCart(e, prod, imageSrc)}
-                      className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-purple text-white rounded-[5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all cursor-pointer"
+                      className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-purple text-white rounded-sm border border-purple hover:bg-purple-d hover:border-purple-d transition-all cursor-pointer"
                     >
                       {prod.primaryButtonText === 'Buy' ? 'Add to Cart' : prod.primaryButtonText || 'Add to Cart'}
                     </button>
@@ -322,13 +322,13 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
         <p className="text-center mt-[22px] flex items-center justify-center gap-3">
           <Link
             href="/products"
-            className="inline-block bg-white text-ink px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
+            className="inline-block bg-white text-ink px-5 py-[10px] rounded-sm font-bold text-[13.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
           >
             All Products &rarr;
           </Link>
           <Link
             href="/cart"
-            className="inline-block bg-purple text-white px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-purple hover:bg-purple-d transition-all shadow-sm"
+            className="inline-block bg-purple text-white px-5 py-[10px] rounded-sm font-bold text-[13.5px] border border-purple hover:bg-purple-d transition-all shadow-sm"
           >
             View Cart &rarr;
           </Link>

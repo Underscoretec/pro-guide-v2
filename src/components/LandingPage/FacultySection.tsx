@@ -53,7 +53,7 @@ export const FacultySection: React.FC<FacultySectionProps> = ({ data, faculty })
             return (
               <div
                 key={key}
-                className="bg-white border border-line rounded-[8px] p-[22px] text-left shadow-sm hover:shadow-md transition-shadow"
+                className="bg-white border border-line rounded-sm p-[22px] text-left shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="w-[72px] h-[72px] rounded-full bg-purple text-white flex items-center justify-center font-extrabold text-[22px] mb-3">
                   {member.initials}
