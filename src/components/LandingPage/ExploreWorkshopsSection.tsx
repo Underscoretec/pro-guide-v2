@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { roboto } from '@/font'
 
 interface ExploreWorkshopsProps {
   data?: any
@@ -81,7 +82,7 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
   const filteredWorkshops = list.filter((ws: any) => ws.category === activeTab)
 
   return (
-    <section id="workshops" className="py-[52px]">
+    <section id="workshops" className={`${roboto.className} py-[52px]`}>
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="sechead">
           <h2 className="font-bold text-ink">{title}</h2>

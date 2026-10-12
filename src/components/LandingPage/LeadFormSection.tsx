@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { roboto } from '@/font'
 
 interface LeadFormProps {
   data?: any
@@ -72,7 +73,7 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
   }
 
   return (
-    <section className="py-[52px]">
+    <section className={`${roboto.className} py-[52px]`}>
       <ToastContainer />
       <div className="max-w-[860px] mx-auto px-6">
         <div className="sechead">

@@ -1,4 +1,5 @@
 import React from 'react'
+import { roboto } from '@/font'
 
 interface BoneVariantsProps {
   data?: any
@@ -32,7 +33,7 @@ export const BoneVariantsSection: React.FC<BoneVariantsProps> = ({ data }) => {
   const list = data?.variantsList && data.variantsList.length > 0 ? data.variantsList : defaultVariants
 
   return (
-    <section className="py-[52px] bg-[#F8F8FA] border-t border-b border-line">
+    <section className={`${roboto.className} py-[52px] bg-[#F8F8FA] border-t border-b border-line`}>
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="sechead">
           <h2 className="font-bold text-ink">{title}</h2>
