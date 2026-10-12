@@ -9,7 +9,7 @@ export const Products: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'slug', 'price', 'category', 'showOnLandingPage', 'updatedAt'],
+    defaultColumns: ['name', 'slug', 'price', 'priceUSD', 'category', 'showOnLandingPage', 'updatedAt'],
     group: 'Shop',
   },
   access: {
@@ -63,7 +63,16 @@ export const Products: CollectionConfig = {
       name: 'price',
       type: 'number',
       required: true,
-      label: 'Price in INR',
+      label: 'Price in INR (₹)',
+    },
+    {
+      name: 'priceUSD',
+      type: 'number',
+      required: false,
+      label: 'Price in USD ($)',
+      admin: {
+        description: 'International price in USD for customers outside India. If empty, falls back to INR price.',
+      },
     },
     {
       name: 'category',

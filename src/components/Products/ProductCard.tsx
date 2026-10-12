@@ -15,6 +15,7 @@ export interface ProductItem {
   images?: (string | { image?: any; imageUrl?: string; url?: string })[]
   description?: string
   price?: number
+  priceUSD?: number
   bulletPoints?: (string | { point: string })[]
   primaryButton?: {
     text?: string
@@ -88,7 +89,25 @@ const nameOrUrlGalleries: Record<string, string[]> = {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const router = useRouter()
-  const { addToCart } = useCart()
+  const cart = useCart()
+  const { addToCart } = cart
+  const isIndia = cart?.isIndia !== false
+
+  const formatPrice = (amount: number) => {
+    if (typeof cart?.formatPrice === 'function') {
+      return cart.formatPrice(amount)
+    }
+    if (!isIndia) {
+      return `$${Number(amount || 0).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+    }
+    return `Rs ${Number(amount || 0).toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`
+  }
 
   const firstGalleryImage =
     Array.isArray(item.images) && item.images.length > 0
@@ -197,6 +216,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
       : []
 
   const price = typeof item.price === 'number' && !isNaN(item.price) ? item.price : 20000
+  const activePrice = !isIndia && typeof item.priceUSD === 'number' && item.priceUSD > 0 ? item.priceUSD : price
 
   const handleBuy = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -204,16 +224,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
       id: item.id || item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
       name: item.name,
       price,
+      priceUSD: item.priceUSD,
       imageUrl: imgSrc,
       quantity: 1,
     })
     router.push('/cart')
   }
 
-  const formattedPrice = `Rs ${price.toLocaleString('en-IN', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`
+  const formattedPrice = formatPrice(activePrice)
 
   const productSlug =
     (item.primaryButton?.link && item.primaryButton.link.startsWith('/products/')

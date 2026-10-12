@@ -4,6 +4,7 @@ export interface ProductDetailData {
   name: string
   familyId?: string
   price: number
+  priceUSD?: number
   category: string
   sku: string
   tags: string[]
@@ -655,12 +656,12 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
       return {
         id: String(doc.id),
         slug: doc.slug || cleanSlug,
-        name: doc.name,
-        familyId: doc.familyId || undefined,
-        price: typeof doc.price === 'number' ? doc.price : 0,
-        category: doc.category || '',
-        sku: doc.sku || '',
-        tags: Array.isArray(doc.tags) ? doc.tags : [],
+        name: doc.name || defaultProduct.name,
+        price: typeof doc.price === 'number' ? doc.price : defaultProduct.price,
+        priceUSD: typeof doc.priceUSD === 'number' ? doc.priceUSD : (defaultProduct.priceUSD || undefined),
+        category: doc.category || defaultProduct.category,
+        sku: doc.sku || defaultProduct.sku,
+        tags: Array.isArray(doc.tags) && doc.tags.length > 0 ? doc.tags : defaultProduct.tags,
         imageUrl: primaryImage,
         images: galleryImages,
         shortDescription: doc.shortDescription || '',
@@ -731,6 +732,7 @@ export async function getProductData(slug?: string | null): Promise<ProductDetai
               slug: cleanSlug,
               name: item.name || defaultProduct.name,
               price: typeof item.price === 'number' ? item.price : defaultProduct.price,
+              priceUSD: typeof item.priceUSD === 'number' ? item.priceUSD : (defaultProduct.priceUSD || undefined),
               category: family.title || defaultProduct.category,
               sku: defaultProduct.sku,
               tags: defaultProduct.tags,

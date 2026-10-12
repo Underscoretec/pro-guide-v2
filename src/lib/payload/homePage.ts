@@ -72,6 +72,8 @@ export const getLandingProducts = cache(async () => {
         slug: doc.slug,
         badge: doc.badge || undefined,
         variant: doc.variant || 'Available in Left and Right variant',
+        rawPrice: typeof doc.price === 'number' ? doc.price : 20000,
+        priceUSD: typeof doc.priceUSD === 'number' ? doc.priceUSD : undefined,
         price:
           typeof doc.price === 'number'
             ? `Rs ${doc.price.toLocaleString('en-IN')}`

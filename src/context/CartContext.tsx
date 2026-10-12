@@ -7,6 +7,7 @@ export interface CartItem {
   id: string
   name: string
   price: number
+  priceUSD?: number
   imageUrl: string
   quantity: number
   variant?: string
@@ -16,6 +17,7 @@ interface AddToCartInput {
   id?: string
   name: string
   price?: number
+  priceUSD?: number
   imageUrl?: string
   quantity?: number
   variant?: string
@@ -34,9 +36,21 @@ interface CartContextType {
   total: number
   itemCount: number
   isHydrated: boolean
+  isIndia: boolean
+  currency: 'INR' | 'USD'
+  currencySymbol: string
+  formatPrice: (amount: number) => string
+  getItemPrice: (item: CartItem) => number
 }
 
 export const DEFAULT_CART_ITEMS: CartItem[] = []
+
+export const getCartItemPrice = (item: CartItem, isIndia: boolean = true): number => {
+  if (!isIndia && typeof item.priceUSD === 'number' && item.priceUSD > 0) {
+    return item.priceUSD
+  }
+  return typeof item.price === 'number' && !isNaN(item.price) ? item.price : 0
+}
 
 const GUEST_CART_KEY = 'proguide_cart_guest'
 const getUserCartKey = (id: string | number) => `proguide_cart_user_${id}`
@@ -65,7 +79,12 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export interface CartProviderProps {
   children: React.ReactNode
-  user?: { id: number | string; email?: string } | null
+  user?: {
+    id: number | string
+    email?: string
+    isIndia?: boolean
+    country?: string
+  } | null
 }
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) => {
@@ -74,6 +93,24 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
   const userId = user?.id ? String(user.id) : null
   const prevUserIdRef = useRef<string | null | undefined>(undefined)
   const activeUserIdRef = useRef<string | null>(userId)
+
+  // International pricing logic: If user is logged in, use user.isIndia. Default to true (India) if guest or true.
+  const isIndia = user ? user.isIndia !== false : true
+  const currency: 'INR' | 'USD' = isIndia ? 'INR' : 'USD'
+  const currencySymbol = isIndia ? 'Rs ' : '$'
+
+  const formatPrice = (amount: number) => {
+    if (!isIndia) {
+      return `$${Number(amount || 0).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+    }
+    return `Rs ${Number(amount || 0).toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`
+  }
 
   // Listen for user changes (login, logout, initial load)
   useEffect(() => {
@@ -204,9 +241,17 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
     }
   }
 
+  const getItemPrice = (item: CartItem): number => {
+    if (!isIndia && typeof item.priceUSD === 'number' && item.priceUSD > 0) {
+      return item.priceUSD
+    }
+    return typeof item.price === 'number' && !isNaN(item.price) ? item.price : 0
+  }
+
   const addToCart = (input: AddToCartInput) => {
     const id = input.id || input.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
     const price = typeof input.price === 'number' && !isNaN(input.price) ? input.price : 20000
+    const priceUSD = typeof input.priceUSD === 'number' && input.priceUSD > 0 ? input.priceUSD : undefined
     const imageUrl = input.imageUrl || '/images/prod1.jpg'
     const qtyToAdd = input.quantity && input.quantity > 0 ? input.quantity : 1
 
@@ -216,6 +261,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
       updated = [...items]
       updated[existingIndex] = {
         ...updated[existingIndex],
+        priceUSD: priceUSD || updated[existingIndex].priceUSD,
         quantity: updated[existingIndex].quantity + qtyToAdd,
       }
     } else {
@@ -225,6 +271,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
           id,
           name: input.name,
           price,
+          priceUSD,
           imageUrl,
           quantity: qtyToAdd,
           variant: input.variant,
@@ -281,14 +328,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
   }
 
   const subtotal = useMemo(() => {
-    return items.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0)
-  }, [items])
+    return items.reduce((sum, item) => sum + getItemPrice(item) * (item.quantity || 1), 0)
+  }, [items, isIndia])
 
   const shipping = 0 // Free Shipping across India
 
   const gst = useMemo(() => {
-    return Math.round(subtotal * 0.18)
-  }, [subtotal])
+    return isIndia ? Math.round(subtotal * 0.18) : 0
+  }, [subtotal, isIndia])
 
   const total = useMemo(() => {
     return subtotal + shipping + gst
@@ -311,6 +358,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
     total,
     itemCount,
     isHydrated,
+    isIndia,
+    currency,
+    currencySymbol,
+    formatPrice,
+    getItemPrice,
   }
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

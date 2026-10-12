@@ -22,13 +22,14 @@ export interface PricedCart {
   subtotal: number
   taxAmount: number
   totalAmount: number
+  currency: 'INR' | 'USD'
 }
 
 /**
  * Prices a cart from the products collection. Client-sent prices are never used.
  * Cart ids may be a product slug or a numeric product id.
  */
-export async function priceCart(lines: CartLineInput[]): Promise<PricedCart> {
+export async function priceCart(lines: CartLineInput[], isIndia: boolean = true): Promise<PricedCart> {
   if (!lines || lines.length === 0) throw new Error('Your cart is empty.')
 
   const payload = await getPayloadClient()
@@ -56,6 +57,11 @@ export async function priceCart(lines: CartLineInput[]): Promise<PricedCart> {
       throw new Error(`"${key}" is not available for online purchase.`)
     }
 
+    const unitPrice =
+      !isIndia && typeof product.priceUSD === 'number' && product.priceUSD > 0
+        ? product.priceUSD
+        : product.price
+
     const media = product.image && typeof product.image === 'object' ? product.image : null
     items.push({
       product: String(product.slug),
@@ -63,12 +69,13 @@ export async function priceCart(lines: CartLineInput[]): Promise<PricedCart> {
       productImage: media?.url || product.imageUrl || '',
       sku: product.sku || `SKU-${product.slug}`,
       quantity,
-      unitPrice: product.price,
-      totalPrice: product.price * quantity,
+      unitPrice,
+      totalPrice: unitPrice * quantity,
     })
   }
 
   const subtotal = items.reduce((sum, i) => sum + i.totalPrice, 0)
-  const taxAmount = Math.round(subtotal * GST_RATE)
-  return { items, subtotal, taxAmount, totalAmount: subtotal + taxAmount }
+  const taxAmount = isIndia ? Math.round(subtotal * GST_RATE) : 0
+  const currency: 'INR' | 'USD' = isIndia ? 'INR' : 'USD'
+  return { items, subtotal, taxAmount, totalAmount: subtotal + taxAmount, currency }
 }

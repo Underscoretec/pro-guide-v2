@@ -18,6 +18,19 @@ import { InvoiceDownloadButton } from '@/components/Orders/InvoiceDownloadButton
 
 export const metadata: Metadata = { title: 'My Orders | ProGuide' }
 
+const formatOrderPrice = (amount: number, currency: string = 'INR') => {
+  if (currency === 'USD') {
+    return `$${Number(amount || 0).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`
+  }
+  return `Rs ${Number(amount || 0).toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`
+}
+
 export default async function OrdersPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/sign-in')
@@ -51,6 +64,7 @@ export default async function OrdersPage() {
       ) : (
         <div className="divide-y divide-line">
           {orders.map((order: any) => {
+            const orderCurrency = order.pricing?.currency || order.currency || 'INR'
             const dateStr = order.createdAt
               ? new Date(order.createdAt).toLocaleDateString('en-IN', {
                   day: '2-digit',
@@ -92,10 +106,7 @@ export default async function OrdersPage() {
                         <span className="text-muted text-[12px]">× {item.quantity}</span>
                       </span>
                       <span className="font-bold text-ink">
-                        Rs{' '}
-                        {(item.totalPrice || 0).toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })}
+                        {formatOrderPrice(item.totalPrice || 0, orderCurrency)}
                       </span>
                     </div>
                   ))}
@@ -113,10 +124,7 @@ export default async function OrdersPage() {
                     </span>
                   </div>
                   <div className="font-extrabold text-[15.5px] text-purple-d">
-                    Total: Rs{' '}
-                    {(order.pricing?.totalAmount || 0).toLocaleString('en-IN', {
-                      minimumFractionDigits: 2,
-                    })}
+                    Total: {formatOrderPrice(order.pricing?.totalAmount || 0, orderCurrency)}
                   </div>
                 </div>
 
@@ -134,7 +142,7 @@ export default async function OrdersPage() {
                     </Link>
                   </div>
                   <span className="text-[11.5px] text-muted">
-                    GST Tax Invoice
+                    {orderCurrency === 'USD' ? 'Export Tax Invoice' : 'GST Tax Invoice'}
                   </span>
                 </div>
               </div>

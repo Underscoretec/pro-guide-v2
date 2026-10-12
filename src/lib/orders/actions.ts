@@ -57,8 +57,10 @@ const normalizeAddress = (addr: AddressInput, fallbackPhone?: string | null) => 
 
 /** Prices the cart server-side and creates the (unpaid) order document. */
 async function createOrderDoc(user: any, params: CreateOrderParams) {
+  const isIndia = user?.isIndia !== false
   const priced = await priceCart(
     params.items.map((i) => ({ id: i.product, quantity: i.quantity })),
+    isIndia,
   )
   const payload = await getPayloadClient()
 
@@ -86,7 +88,7 @@ async function createOrderDoc(user: any, params: CreateOrderParams) {
         shippingAmount: 0,
         taxAmount: priced.taxAmount,
         totalAmount: priced.totalAmount,
-        currency: 'INR',
+        currency: priced.currency || (isIndia ? 'INR' : 'USD'),
       },
       paymentStatus: 'pending',
       // Becomes 'confirmed' only when the webhook reports a successful payment
@@ -120,10 +122,11 @@ export async function createOnlineOrder(
 
     const { order, priced } = await createOrderDoc(user, params)
     const amount = Math.round(priced.totalAmount * 100)
+    const currency = priced.currency || 'INR'
 
     const rzpOrder = await getRazorpayClient().orders.create({
       amount,
-      currency: 'INR',
+      currency,
       receipt: order.orderNumber,
       notes: { orderNumber: order.orderNumber },
     })
@@ -144,7 +147,7 @@ export async function createOnlineOrder(
         orderNumber: order.orderNumber,
         razorpayOrderId: rzpOrder.id,
         amount,
-        currency: 'INR',
+        currency,
         keyId: getRazorpayKeyId(),
       },
     }
