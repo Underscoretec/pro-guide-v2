@@ -35,7 +35,8 @@ export const PartnerLogosSection: React.FC<PartnerLogosProps> = ({ data }) => {
           {title}
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4 items-center">
+        {/* Centered flex wrapper */}
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 items-center">
           {rawList.map((item: any, idx: number) => {
             const logoUrl =
               item?.logo?.url ||
@@ -45,7 +46,7 @@ export const PartnerLogosSection: React.FC<PartnerLogosProps> = ({ data }) => {
             const link = item?.link
 
             const logoCard = (
-              <div className="w-full h-[62px] bg-[#F8F9FA] hover:bg-white border border-[#E9ECEF] hover:border-[#CBDCF0] rounded-sm p-2 flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(76,21,96,0.08)] hover:-translate-y-0.5 transition-all duration-300 group">
+              <div className="w-full h-[62px] bg-white hover:bg-white border border-[#E9ECEF] hover:border-[#CBDCF0] rounded-sm p-2 flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(76,21,96,0.08)] hover:-translate-y-0.5 transition-all duration-300 group">
                 {logoUrl ? (
                   <Image
                     src={logoUrl}
@@ -62,18 +63,22 @@ export const PartnerLogosSection: React.FC<PartnerLogosProps> = ({ data }) => {
               </div>
             )
 
+            // Responsive widths matching: 2 cols on mobile, 4 on sm, 8 on lg
+            const itemClasses =
+              "w-[calc(50%-0.5rem)] sm:w-[calc(25%-0.75rem)] lg:w-[calc(12.5%-0.875rem)] flex-shrink-0"
+
             return link ? (
               <Link
                 key={idx}
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block cursor-pointer no-underline"
+                className={`${itemClasses} block cursor-pointer no-underline`}
               >
                 {logoCard}
               </Link>
             ) : (
-              <div key={idx} className="block">
+              <div key={idx} className={`${itemClasses} block`}>
                 {logoCard}
               </div>
             )
