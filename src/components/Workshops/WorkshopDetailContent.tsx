@@ -292,7 +292,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                     : 'border-transparent text-gray-700 hover:text-[#4A148C] hover:bg-gray-50'
                 }`}
               >
-                Personal Details
+                About the Workshop
               </button>
               <button
                 type="button"
@@ -303,7 +303,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                     : 'border-transparent text-gray-700 hover:text-[#4A148C] hover:bg-gray-50'
                 }`}
               >
-                Professional Experience
+                Professional Section Experience
               </button>
               <button
                 type="button"
