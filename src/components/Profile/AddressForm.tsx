@@ -44,7 +44,7 @@ export const AddressForm: React.FC<{
       <Field label="State / Province" name="state" required defaultValue={v.state} error={e.state} />
       <Field label="Postal Code / PIN" name="postalCode" required defaultValue={v.postalCode} error={e.postalCode} />
       <Field label="Country" name="country" required defaultValue={v.country || 'India'} />
-      <Field className="sm:col-span-2" textarea label="Delivery Notes / Instructions (optional)" name="deliveryNotes" defaultValue={v.deliveryNotes ?? ''} />
+      {/* <Field className="sm:col-span-2" textarea label="Delivery Notes / Instructions (optional)" name="deliveryNotes" defaultValue={v.deliveryNotes ?? ''} /> */}
       <div className="sm:col-span-2 flex items-center gap-3 pt-2">
         <button
           type="submit"

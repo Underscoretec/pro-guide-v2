@@ -16,9 +16,16 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
     { label: 'Cart', url: '/cart' },
     { label: 'Resources', url: '/resources' },
     { label: 'Get Your Own Customized Model', url: '/customized-model' },
-    { label: 'Login/Register', url: 'https://pro-guide.in/' },
+    { label: 'Login/Register', url: '/sign-in' },
   ]
-  const quickLinks = footer?.quickLinks && footer.quickLinks.length > 0 ? footer.quickLinks : defaultQuickLinks
+  const rawQuickLinks = footer?.quickLinks && footer.quickLinks.length > 0 ? footer.quickLinks : defaultQuickLinks
+  const quickLinks = rawQuickLinks.map((item: any) => {
+    const labelLower = item.label?.toLowerCase() || ''
+    if (labelLower.includes('login') || labelLower.includes('register')) {
+      return { ...item, url: '/sign-in' }
+    }
+    return item
+  })
 
   const indianTitle = footer?.indianQuery?.title || 'Contacts for Indian Queries'
   const indianName = footer?.indianQuery?.name || 'Shelly Sequeira'
@@ -40,12 +47,33 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
     'ProGuide is dedicated to equipping individuals, businesses, and organizations with the skills needed for the future by providing accessible and affordable high-quality education. Through collaborations with leading institutions and industry experts, ProGuide offers a wide range of courses, certifications, and professional programs designed to enhance career growth and business success.'
 
   const defaultLegalLinks = [
-    { label: 'Privacy Policy', url: 'https://pro-guide.in/' },
-    { label: 'Terms and Condition', url: 'https://pro-guide.in/' },
-    { label: 'Shipping Policy', url: 'https://pro-guide.in/' },
-    { label: 'Cancellation and Return Policy', url: 'https://pro-guide.in/' },
+    { label: 'Privacy Policy', url: '/privacy-policy' },
+    { label: 'Terms and Condition', url: '/terms&conditions' },
+    { label: 'Shipping Policy', url: '/shipping-policy' },
+    { label: 'Cancellation and Return Policy', url: '/refund-policy' },
   ]
-  const legalLinks = footer?.legalLinks && footer.legalLinks.length > 0 ? footer.legalLinks : defaultLegalLinks
+  const rawLegalLinks = footer?.legalLinks && footer.legalLinks.length > 0 ? footer.legalLinks : defaultLegalLinks
+  const legalLinks = rawLegalLinks
+    .map((item: any) => {
+      const labelLower = item.label?.toLowerCase() || ''
+      if (labelLower.includes('privacy')) {
+        return { label: 'Privacy Policy', url: '/privacy-policy' }
+      }
+      if (labelLower.includes('terms')) {
+        return { label: 'Terms and Condition', url: '/terms&conditions' }
+      }
+      if (labelLower.includes('shipping')) {
+        return { label: 'Shipping Policy', url: '/shipping-policy' }
+      }
+      if (labelLower.includes('cancel') || labelLower.includes('return') || labelLower.includes('refund')) {
+        return { label: 'Cancellation and Return Policy', url: '/refund-policy' }
+      }
+      if (item.url?.startsWith('/')) {
+        return item
+      }
+      return null
+    })
+    .filter(Boolean)
 
   const copyrightText =
     footer?.copyright ||
@@ -184,19 +212,31 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
         {/* Legal & Social Row */}
         <div className="border-t border-white/25 py-[14px] pb-[22px] text-center text-[12.5px] text-[#D9C4E3]">
           <div className="space-x-2">
-            {legalLinks.map((item: any, idx: number) => (
-              <React.Fragment key={idx}>
-                {idx > 0 && <span>|</span>}
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white hover:underline"
-                >
-                  {item.label}
-                </a>
-              </React.Fragment>
-            ))}
+            {legalLinks.map((item: any, idx: number) => {
+              const isInternal = item.url && item.url.startsWith('/')
+              return (
+                <React.Fragment key={idx}>
+                  {idx > 0 && <span>|</span>}
+                  {isInternal ? (
+                    <Link
+                      href={item.url}
+                      className="text-white hover:underline"
+                    >
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white hover:underline"
+                    >
+                      {item.label}
+                    </a>
+                  )}
+                </React.Fragment>
+              )
+            })}
           </div>
 
           <div className="mt-2">
