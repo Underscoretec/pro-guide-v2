@@ -70,60 +70,6 @@ const defaultDocuments: ResourceDocument[] = [
     spineBg: 'purple',
     pdfUrl: '/files/proguide-workshop-brochure-2026.pdf',
   },
-  {
-    id: 'doc-2',
-    title: 'ProGuide 3D Otolaryngology Simulation Models Master Catalogue',
-    category: 'product',
-    badgeText: 'PRODUCT CATALOGUE',
-    badgeColor: 'purple',
-    yearOrVol: 'Vol. IV (2026)',
-    description:
-      'Full specifications for high-fidelity Otology and Rhinology training models, composite material properties, and complete dimension tables.',
-    viewPdfText: 'View PDF',
-    viewPdfLink: '/files/proguide-master-catalogue.pdf',
-    downloadPdfText: 'Download PDF',
-    downloadPdfLink: '/files/proguide-master-catalogue.pdf',
-    spineBadgeTag: '24 PAGES',
-    spineTitle: 'MASTER CATALOG VOL. IV',
-    spineBg: 'dark-purple',
-    pdfUrl: '/files/proguide-master-catalogue.pdf',
-  },
-  {
-    id: 'doc-3',
-    title: 'Temporal Bone Drilling Manual & Anatomical Landmark Guide',
-    category: 'clinical',
-    badgeText: 'CLINICAL GUIDE',
-    badgeColor: 'green',
-    yearOrVol: 'Surgical Lab Ed.',
-    description:
-      'Standard operating procedures and station drill protocols for mastoidectomy, facial nerve decompression, and labyrinthotomy.',
-    viewPdfText: 'View PDF',
-    viewPdfLink: '/files/temporal-bone-drilling-manual.pdf',
-    downloadPdfText: 'Download PDF',
-    downloadPdfLink: '/files/temporal-bone-drilling-manual.pdf',
-    spineBadgeTag: '12 PAGES',
-    spineTitle: 'SURGICAL LAB PROTOCOLS',
-    spineBg: 'green',
-    pdfUrl: '/files/temporal-bone-drilling-manual.pdf',
-  },
-  {
-    id: 'doc-4',
-    title: 'Custom Patient-Specific 3D Models Specification Sheet',
-    category: 'product',
-    badgeText: 'PRODUCT SPEC',
-    badgeColor: 'purple',
-    yearOrVol: 'Orders 2026',
-    description:
-      'Guidelines for hospital departments and skills labs to submit anonymized DICOM / CT datasets for patient-specific surgical model preparation.',
-    viewPdfText: 'View PDF',
-    viewPdfLink: '/files/custom-patient-model-specsheet.pdf',
-    downloadPdfText: 'Download PDF',
-    downloadPdfLink: '/files/custom-patient-model-specsheet.pdf',
-    spineBadgeTag: '8 PAGES',
-    spineTitle: 'DICOM / CT SPECIFICATIONS',
-    spineBg: 'orange',
-    pdfUrl: '/files/custom-patient-model-specsheet.pdf',
-  },
 ]
 
 export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = ({ data }) => {
@@ -232,33 +178,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
             </p>
           </div>
 
-          {/* Top Right Action Badges */}
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 self-start md:self-auto">
-            <a
-              href={hero.directPdfDownloadLink || '/files/proguide-workshop-brochure-2026.pdf'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-white/10 backdrop-blur-xs border border-white/20 text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-sm shadow-2xs hover:bg-white/20 transition cursor-pointer"
-            >
-              <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-              </svg>
-              <span>{hero.directPdfDownloadText || 'Direct PDF Download'}</span>
-            </a>
 
-            <a
-              href={hero.instantViewerLink || '/files/proguide-master-catalogue.pdf'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-white/10 backdrop-blur-xs border border-white/20 text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-sm shadow-2xs hover:bg-white/20 transition cursor-pointer"
-            >
-              <svg className="w-4 h-4 text-purple-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-              <span>{hero.instantViewerText || 'Instant In-Browser Viewer'}</span>
-            </a>
-          </div>
         </div>
       </section>
 
@@ -327,8 +247,8 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
 
       {/* Main Content Area */}
       <main className="max-w-[1320px] mx-auto py-8 sm:py-12 px-4 sm:px-6">
-        {/* Section Heading & Download Package Button */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        {/* Section Heading */}
+        <div className="mb-8">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
               {sectionHeader.title || 'Official ProGuide Brochures & Documents'}
@@ -337,18 +257,6 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
               {sectionHeader.subtitle}
             </p>
           </div>
-
-          <a
-            href={sectionHeader.downloadAllLink || '/files/proguide-workshop-brochure-2026.pdf'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="self-start md:self-auto inline-flex items-center gap-2 bg-white border border-gray-300 text-gray-800 text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-sm shadow-2xs hover:bg-gray-50 transition cursor-pointer"
-          >
-            <svg className="w-4 h-4 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            <span>{sectionHeader.downloadAllText || 'Download All Package (.zip)'}</span>
-          </a>
         </div>
 
         {/* Resource Cards Display */}
@@ -440,17 +348,6 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
                       <span>{doc.viewPdfText || 'View PDF'}</span>
                     </button>
 
-                    <a
-                      href={doc.downloadPdfLink || doc.pdfUrl || '/files/proguide-workshop-brochure-2026.pdf'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full bg-[#581C87] hover:bg-[#4C1D95] text-white rounded-sm py-2 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition cursor-pointer"
-                    >
-                      <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                      </svg>
-                      <span>{doc.downloadPdfText || 'Download PDF'}</span>
-                    </a>
                   </div>
                 </div>
               )
@@ -511,17 +408,6 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
                       <span>{doc.viewPdfText || 'View PDF'}</span>
                     </button>
 
-                    <a
-                      href={doc.downloadPdfLink || doc.pdfUrl || '/files/proguide-workshop-brochure-2026.pdf'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 sm:flex-none w-full sm:w-36 bg-[#581C87] hover:bg-[#4C1D95] text-white rounded-sm py-2 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition cursor-pointer"
-                    >
-                      <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                      </svg>
-                      <span>{doc.downloadPdfText || 'Download PDF'}</span>
-                    </a>
                   </div>
                 </div>
               )
@@ -529,33 +415,6 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
           </div>
         )}
 
-        {/* Bottom Institutional Request Callout Banner */}
-        <div className="mt-12 bg-[#FAF5FF] border border-[#E9D5FF] rounded-sm p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-2xs">
-          <div className="max-w-3xl">
-            <h3 className="text-lg sm:text-xl font-bold text-[#4C1D95]">
-              {ctaBanner.title}
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-600 mt-1.5 leading-relaxed">
-              {ctaBanner.subtitle}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full lg:w-auto">
-            <a
-              href={ctaBanner.secondaryBtnLink || 'mailto:info@pro-guide.in'}
-              className="flex-1 sm:flex-none text-center bg-white border border-gray-300 text-gray-800 hover:bg-gray-50 text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-sm shadow-2xs transition whitespace-nowrap"
-            >
-              {ctaBanner.secondaryBtnText || 'Email Programme Co-ordinator'}
-            </a>
-
-            <Link
-              href={ctaBanner.primaryBtnLink || '/contact'}
-              className="flex-1 sm:flex-none text-center bg-[#581C87] hover:bg-[#4C1D95] text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-sm shadow-2xs transition whitespace-nowrap"
-            >
-              {ctaBanner.primaryBtnText || 'Request Call Back'}
-            </Link>
-          </div>
-        </div>
       </main>
 
       {/* PDF View Modal */}
