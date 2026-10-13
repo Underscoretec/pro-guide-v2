@@ -82,7 +82,7 @@ export const WhyArtificialBoneSection: React.FC<WhyArtificialBoneProps> = ({ dat
         </div>
 
         {/* Stat Band */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-[2px] bg-line border border-line rounded-sm overflow-hidden mt-[34px]">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-[2px] border border-line rounded-sm overflow-hidden mt-[34px]">
           {stats.map((st: any, idx: number) => (
             <div key={idx} className="bg-[#F8F8FA] text-center py-[22px] px-[14px]">
               <div className="text-[30px] font-extrabold text-purple leading-tight">
