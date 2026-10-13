@@ -39,7 +39,7 @@ export function LarynxProceduresSection({ data }: LarynxProceduresSectionProps) 
               </li>
             ))}
           </ul>
-          <div className="rounded-[10px] overflow-hidden shadow-lg border-t-4 border-purple">
+          <div className="rounded-sm overflow-hidden shadow-lg border-t-4 border-purple">
             <Image
               src={imgSrc}
               alt="Microlaryngoscopy training"

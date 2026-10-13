@@ -2,6 +2,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import WorkshopsContent from '@/components/Workshops/WorkshopsContent'
 import { getWorkshopsPage } from '@/lib/payload/workshopsPage'
+import { roboto } from '@/font'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,7 +16,7 @@ export default async function WorkshopsPage() {
   const pageData = await getWorkshopsPage()
 
   return (
-    <main className="flex-1 bg-white">
+    <main className={`${roboto.className} flex-1 bg-white`}>
       <WorkshopsContent data={pageData} />
     </main>
   )

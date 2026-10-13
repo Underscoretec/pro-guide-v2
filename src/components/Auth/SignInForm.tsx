@@ -16,12 +16,12 @@ export const SignInForm: React.FC<{ justVerified?: boolean; redirectTo?: string 
     <form action={action} className="space-y-4">
       <input type="hidden" name="redirectTo" value={redirectTo || ''} />
       {redirectTo === '/checkout' && (
-        <div className="bg-[#4A148C]/10 border border-[#4A148C]/25 text-[#4A148C] text-[13px] rounded-[6px] px-3.5 py-2.5 font-medium flex items-center gap-2">
+        <div className="bg-[#4A148C]/10 border border-[#4A148C]/25 text-[#4A148C] text-[13px] rounded-sm px-3.5 py-2.5 font-medium flex items-center gap-2">
           <span>Please sign in or register to complete your order. Your cart items are saved.</span>
         </div>
       )}
       {justVerified && !state.error && (
-        <div className="bg-green/10 border border-green/30 text-green text-[13.5px] rounded-[6px] px-3.5 py-2.5 flex items-center gap-2">
+        <div className="bg-green/10 border border-green/30 text-green text-[13.5px] rounded-sm px-3.5 py-2.5 flex items-center gap-2">
           <FiCheckCircle className="w-4 h-4 shrink-0" />
           <span>Verification complete. You can now sign in.</span>
         </div>

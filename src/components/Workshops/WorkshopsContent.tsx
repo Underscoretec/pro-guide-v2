@@ -174,7 +174,7 @@ export const WorkshopsContent: React.FC<WorkshopsContentProps> = ({ data }) => {
             <img
               src={glimpsesImg}
               alt={glimpsesCaption}
-              className="rounded-[10px] shadow-[0_16px_36px_rgba(31,35,40,0.18)] w-full block"
+              className="rounded-sm shadow-[0_16px_36px_rgba(31,35,40,0.18)] w-full block"
             />
           </a>
           <p className="text-center text-[13px] text-muted mt-[10px]">{glimpsesCaption}</p>

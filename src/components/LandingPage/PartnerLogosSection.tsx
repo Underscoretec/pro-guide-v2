@@ -45,7 +45,7 @@ export const PartnerLogosSection: React.FC<PartnerLogosProps> = ({ data }) => {
             const link = item?.link
 
             const logoCard = (
-              <div className="w-full h-[62px] bg-[#F8F9FA] hover:bg-white border border-[#E9ECEF] hover:border-[#CBDCF0] rounded-[8px] p-2 flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(76,21,96,0.08)] hover:-translate-y-0.5 transition-all duration-300 group">
+              <div className="w-full h-[62px] bg-[#F8F9FA] hover:bg-white border border-[#E9ECEF] hover:border-[#CBDCF0] rounded-sm p-2 flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(76,21,96,0.08)] hover:-translate-y-0.5 transition-all duration-300 group">
                 {logoUrl ? (
                   <Image
                     src={logoUrl}

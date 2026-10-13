@@ -140,7 +140,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
             <button
               type="button"
               onClick={() => setOpenDropdownKey(isOpen ? null : dropdownKey)}
-              className={`font-semibold text-[13px] md:text-[13.5px] px-[9px] py-1.5 rounded flex items-center gap-1 transition-colors whitespace-nowrap cursor-pointer ${
+              className={`font-semibold text-[13px] md:text-[13.5px] px-[9px] py-1.5 rounded-sm flex items-center gap-1 transition-colors whitespace-nowrap cursor-pointer ${
                 isParentActive
                   ? 'text-purple bg-tint font-bold'
                   : 'text-ink hover:text-purple hover:bg-tint'
@@ -149,7 +149,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
               {item.label} <span className="text-[10px] text-muted">&#x25BE;</span>
             </button>
             <div
-              className={`absolute top-full left-0 bg-white min-w-[250px] border border-line rounded-[6px] shadow-[0_14px_34px_rgba(31,35,40,0.14)] py-[6px] z-50 transition-all duration-150 ${
+              className={`absolute top-full left-0 bg-white min-w-[250px] border border-line rounded-sm shadow-[0_14px_34px_rgba(31,35,40,0.14)] py-[6px] z-50 transition-all duration-150 ${
                 isOpen ? 'block opacity-100' : 'hidden opacity-0'
               }`}
             >
@@ -180,7 +180,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
         <Link
           key={idx}
           href={item.url || '/'}
-          className={`font-semibold text-[13px] md:text-[13.5px] px-[9px] py-1.5 rounded transition-colors whitespace-nowrap ${
+          className={`font-semibold text-[13px] md:text-[13.5px] px-[9px] py-1.5 rounded-sm transition-colors whitespace-nowrap ${
             isActive
               ? 'text-purple bg-tint font-bold'
               : 'text-ink hover:text-purple hover:bg-tint'
@@ -198,7 +198,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
       {/* Unique Highlighted Products CTA Button */}
       <Link
         href={buyNowUrl}
-        className="relative inline-flex items-center gap-1.5 bg-gradient-to-r from-[#E67E22] via-[#F39C12] to-[#D35400] text-white text-[12.5px] md:text-[13px] font-extrabold px-[13px] md:px-[15px] py-2 rounded-[6px] shadow-[0_4px_14px_rgba(230,126,34,0.38)] hover:shadow-[0_6px_22px_rgba(230,126,34,0.55)] hover:scale-[1.03] active:scale-[0.97] transition-all duration-200 whitespace-nowrap group shrink-0"
+        className="relative inline-flex items-center gap-1.5 bg-gradient-to-r from-[#E67E22] via-[#F39C12] to-[#D35400] text-white text-[12.5px] md:text-[13px] font-extrabold px-[13px] md:px-[15px] py-2 rounded-sm shadow-[0_4px_14px_rgba(230,126,34,0.38)] hover:shadow-[0_6px_22px_rgba(230,126,34,0.55)] hover:scale-[1.03] active:scale-[0.97] transition-all duration-200 whitespace-nowrap group shrink-0"
       >
         <span>{buyNowText}</span>
       </Link>
@@ -231,7 +231,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
       ) : (
         <Link
           href={loginUrl}
-          className="border border-[#C9CDD3] rounded-[5px] px-3.5 md:px-4 py-[8px] text-[13px] md:text-[13.5px] font-bold text-ink hover:border-purple hover:text-purple hover:bg-tint transition-all whitespace-nowrap shrink-0"
+          className="border border-[#C9CDD3] rounded-sm px-3.5 md:px-4 py-[8px] text-[13px] md:text-[13.5px] font-bold text-ink hover:border-purple hover:text-purple hover:bg-tint transition-all whitespace-nowrap shrink-0"
         >
           {loginText}
         </Link>
@@ -296,7 +296,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 text-ink hover:text-purple rounded-md focus:outline-none"
+              className="p-1.5 text-ink hover:text-purple rounded-sm focus:outline-none"
               aria-label="Toggle Navigation Menu"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -323,7 +323,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
         {/* Mobile Dropdown Menu (< 768px) */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-line bg-white px-6 py-4 shadow-lg space-y-3">
-            <div className="flex items-center bg-[#F6F7F8] border border-line rounded-[6px] px-3 py-2 mb-3">
+            <div className="flex items-center bg-[#F6F7F8] border border-line rounded-sm px-3 py-2 mb-3">
               <span className="text-muted text-sm mr-2">&#128269;</span>
               <input
                 type="text"
@@ -378,7 +378,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
               <Link
                 href="/cart"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-center bg-[#F4F4F6] text-ink text-[13.5px] font-bold py-2 rounded-[5px] flex items-center justify-center gap-2 hover:text-purple"
+                className="text-center bg-[#F4F4F6] text-ink text-[13.5px] font-bold py-2 rounded-sm flex items-center justify-center gap-2 hover:text-purple"
               >
                 <FiShoppingCart className="w-[18px] h-[18px]" />
                 <span>Cart</span>
@@ -391,7 +391,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
               <Link
                 href={buyNowUrl}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-center bg-gradient-to-r from-[#E67E22] via-[#F39C12] to-[#D35400] text-white text-[13.5px] font-extrabold py-2.5 rounded-[6px] shadow-md flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all"
+                className="text-center bg-gradient-to-r from-[#E67E22] via-[#F39C12] to-[#D35400] text-white text-[13.5px] font-extrabold py-2.5 rounded-sm shadow-md flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all"
               >
                 <span>{buyNowText}</span>
               </Link>
@@ -399,7 +399,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
                 <Link
                   href="/profile"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-center border border-[#C9CDD3] text-ink text-[13.5px] font-bold py-2 rounded-[5px]"
+                  className="text-center border border-[#C9CDD3] text-ink text-[13.5px] font-bold py-2 rounded-sm"
                 >
                   My Profile
                 </Link>
@@ -407,7 +407,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
                 <Link
                   href={loginUrl}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-center border border-[#C9CDD3] text-ink text-[13.5px] font-bold py-2 rounded-[5px]"
+                  className="text-center border border-[#C9CDD3] text-ink text-[13.5px] font-bold py-2 rounded-sm"
                 >
                   {loginText}
                 </Link>

@@ -238,7 +238,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
               href={hero.directPdfDownloadLink || '/files/proguide-workshop-brochure-2026.pdf'}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-white/10 backdrop-blur-xs border border-white/20 text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-lg shadow-2xs hover:bg-white/20 transition cursor-pointer"
+              className="flex items-center gap-2 bg-white/10 backdrop-blur-xs border border-white/20 text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-sm shadow-2xs hover:bg-white/20 transition cursor-pointer"
             >
               <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -250,7 +250,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
               href={hero.instantViewerLink || '/files/proguide-master-catalogue.pdf'}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-white/10 backdrop-blur-xs border border-white/20 text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-lg shadow-2xs hover:bg-white/20 transition cursor-pointer"
+              className="flex items-center gap-2 bg-white/10 backdrop-blur-xs border border-white/20 text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-sm shadow-2xs hover:bg-white/20 transition cursor-pointer"
             >
               <svg className="w-4 h-4 text-purple-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -292,10 +292,10 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
             </span>
 
             {/* View Mode Toggle Buttons */}
-            <div className="flex items-center bg-gray-100 p-0.5 rounded-lg border border-gray-200 shrink-0">
+            <div className="flex items-center bg-gray-100 p-0.5 rounded-sm border border-gray-200 shrink-0">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-semibold transition cursor-pointer whitespace-nowrap ${
                   viewMode === 'grid'
                     ? 'bg-[#581C87] text-white shadow-2xs'
                     : 'text-gray-600 hover:text-gray-900'
@@ -309,7 +309,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
 
               <button
                 onClick={() => setViewMode('list')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-semibold transition cursor-pointer whitespace-nowrap ${
                   viewMode === 'list'
                     ? 'bg-[#581C87] text-white shadow-2xs'
                     : 'text-gray-600 hover:text-gray-900'
@@ -342,7 +342,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
             href={sectionHeader.downloadAllLink || '/files/proguide-workshop-brochure-2026.pdf'}
             target="_blank"
             rel="noopener noreferrer"
-            className="self-start md:self-auto inline-flex items-center gap-2 bg-white border border-gray-300 text-gray-800 text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-lg shadow-2xs hover:bg-gray-50 transition cursor-pointer"
+            className="self-start md:self-auto inline-flex items-center gap-2 bg-white border border-gray-300 text-gray-800 text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-sm shadow-2xs hover:bg-gray-50 transition cursor-pointer"
           >
             <svg className="w-4 h-4 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -361,24 +361,24 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
               return (
                 <div
                   key={doc.id || idx}
-                  className="bg-white border border-gray-200/90 rounded-2xl p-4 shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between h-full group"
+                  className="bg-white border border-gray-200/90 rounded-sm p-4 shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between h-full group"
                 >
                   {/* Top Card Area with Spine Cover & Content */}
                   <div>
                     <div className="flex gap-3 mb-4">
                       {/* Left Spine / Cover Graphic */}
                       <div
-                        className={`${spineBgClass} w-20 shrink-0 rounded-xl text-white p-2 flex flex-col justify-between items-center text-center shadow-xs relative overflow-hidden min-h-[145px]`}
+                        className={`${spineBgClass} w-20 shrink-0 rounded-sm text-white p-2 flex flex-col justify-between items-center text-center shadow-xs relative overflow-hidden min-h-[145px]`}
                       >
                         {/* Top Spine Badge */}
-                        <span className="bg-white/20 backdrop-blur-2xs text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded text-white border border-white/30">
+                        <span className="bg-white/20 backdrop-blur-2xs text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm text-white border border-white/30">
                           {doc.spineBadgeTag || 'PDF'}
                         </span>
 
                         {/* Center Icon */}
                         <div className="my-2 text-white/90">
                           {doc.spineBg === 'green' ? (
-                            <svg className="w-6 h-6 border-2 border-white/80 rounded p-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-6 h-6 border-2 border-white/80 rounded-sm p-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
                             </svg>
                           ) : doc.spineBg === 'orange' ? (
@@ -404,7 +404,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
                           {/* Badge Header & Date/Vol */}
                           <div className="flex flex-wrap items-center gap-1.5 mb-2">
                             <span
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${badgeClass}`}
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-sm border uppercase tracking-wider ${badgeClass}`}
                             >
                               {doc.badgeText}
                             </span>
@@ -431,7 +431,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
                   <div className="flex flex-col gap-2 pt-2 border-t border-gray-100">
                     <button
                       onClick={() => setActivePdfModal(doc)}
-                      className="w-full bg-purple-50 hover:bg-purple-100 text-[#581C87] rounded-lg py-2 text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="w-full bg-purple-50 hover:bg-purple-100 text-[#581C87] rounded-sm py-2 text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
                     >
                       <svg className="w-3.5 h-3.5 text-[#581C87]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -444,7 +444,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
                       href={doc.downloadPdfLink || doc.pdfUrl || '/files/proguide-workshop-brochure-2026.pdf'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full bg-[#581C87] hover:bg-[#4C1D95] text-white rounded-lg py-2 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition cursor-pointer"
+                      className="w-full bg-[#581C87] hover:bg-[#4C1D95] text-white rounded-sm py-2 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition cursor-pointer"
                     >
                       <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -466,12 +466,12 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
               return (
                 <div
                   key={doc.id || idx}
-                  className="bg-white border border-gray-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs hover:shadow-md transition-shadow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 group"
+                  className="bg-white border border-gray-200/90 rounded-sm p-4 sm:p-5 shadow-2xs hover:shadow-md transition-shadow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 group"
                 >
                   <div className="flex items-start gap-4 flex-1">
                     {/* Spine Cover Icon */}
                     <div
-                      className={`${spineBgClass} w-16 h-20 shrink-0 rounded-xl text-white p-2 flex flex-col justify-between items-center text-center shadow-2xs`}
+                      className={`${spineBgClass} w-16 h-20 shrink-0 rounded-sm text-white p-2 flex flex-col justify-between items-center text-center shadow-2xs`}
                     >
                       <span className="text-[9px] font-bold uppercase">{doc.spineBadgeTag || 'PDF'}</span>
                       <svg className="w-5 h-5 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -482,7 +482,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
 
                     <div>
                       <div className="flex items-center gap-2 mb-1.5">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${badgeClass}`}>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm border uppercase tracking-wider ${badgeClass}`}>
                           {doc.badgeText}
                         </span>
                         <span className="text-xs font-medium text-gray-600">{doc.yearOrVol}</span>
@@ -502,7 +502,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
                   <div className="flex sm:flex-col items-center gap-2.5 w-full sm:w-auto shrink-0 border-t sm:border-t-0 border-gray-100 pt-3 sm:pt-0">
                     <button
                       onClick={() => setActivePdfModal(doc)}
-                      className="flex-1 sm:flex-none w-full sm:w-36 bg-purple-50 hover:bg-purple-100 text-[#581C87] rounded-lg py-2 text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="flex-1 sm:flex-none w-full sm:w-36 bg-purple-50 hover:bg-purple-100 text-[#581C87] rounded-sm py-2 text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
                     >
                       <svg className="w-3.5 h-3.5 text-[#581C87]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -515,7 +515,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
                       href={doc.downloadPdfLink || doc.pdfUrl || '/files/proguide-workshop-brochure-2026.pdf'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 sm:flex-none w-full sm:w-36 bg-[#581C87] hover:bg-[#4C1D95] text-white rounded-lg py-2 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition cursor-pointer"
+                      className="flex-1 sm:flex-none w-full sm:w-36 bg-[#581C87] hover:bg-[#4C1D95] text-white rounded-sm py-2 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition cursor-pointer"
                     >
                       <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -530,7 +530,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
         )}
 
         {/* Bottom Institutional Request Callout Banner */}
-        <div className="mt-12 bg-[#FAF5FF] border border-[#E9D5FF] rounded-2xl p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-2xs">
+        <div className="mt-12 bg-[#FAF5FF] border border-[#E9D5FF] rounded-sm p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-2xs">
           <div className="max-w-3xl">
             <h3 className="text-lg sm:text-xl font-bold text-[#4C1D95]">
               {ctaBanner.title}
@@ -543,14 +543,14 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full lg:w-auto">
             <a
               href={ctaBanner.secondaryBtnLink || 'mailto:info@pro-guide.in'}
-              className="flex-1 sm:flex-none text-center bg-white border border-gray-300 text-gray-800 hover:bg-gray-50 text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-lg shadow-2xs transition whitespace-nowrap"
+              className="flex-1 sm:flex-none text-center bg-white border border-gray-300 text-gray-800 hover:bg-gray-50 text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-sm shadow-2xs transition whitespace-nowrap"
             >
               {ctaBanner.secondaryBtnText || 'Email Programme Co-ordinator'}
             </a>
 
             <Link
               href={ctaBanner.primaryBtnLink || '/contact'}
-              className="flex-1 sm:flex-none text-center bg-[#581C87] hover:bg-[#4C1D95] text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-lg shadow-2xs transition whitespace-nowrap"
+              className="flex-1 sm:flex-none text-center bg-[#581C87] hover:bg-[#4C1D95] text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-sm shadow-2xs transition whitespace-nowrap"
             >
               {ctaBanner.primaryBtnText || 'Request Call Back'}
             </Link>
@@ -561,7 +561,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
       {/* PDF View Modal */}
       {activePdfModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-200">
+          <div className="bg-white rounded-sm max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-200">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 bg-gray-50">
               <div>
@@ -575,7 +575,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
 
               <button
                 onClick={() => setActivePdfModal(null)}
-                className="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-200 transition cursor-pointer"
+                className="text-gray-400 hover:text-gray-600 p-2 rounded-sm hover:bg-gray-200 transition cursor-pointer"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -597,7 +597,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
                   className="w-full h-[65vh] border-0 bg-white"
                 />
               ) : (
-                <div className="bg-white p-8 rounded-xl shadow-md max-w-lg text-center border border-gray-200 my-8">
+                <div className="bg-white p-8 rounded-sm shadow-md max-w-lg text-center border border-gray-200 my-8">
                   <h4 className="text-lg font-bold text-gray-900 mb-2">
                     {activePdfModal.title}
                   </h4>
@@ -637,7 +637,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
                     '/files/proguide-workshop-brochure-2026.pdf'
                   }
                   download
-                  className="bg-[#581C87] hover:bg-[#4C1D95] text-white px-4 py-1.5 rounded-md text-xs font-semibold shadow-2xs flex items-center gap-1.5 transition"
+                  className="bg-[#581C87] hover:bg-[#4C1D95] text-white px-4 py-1.5 rounded-sm text-xs font-semibold shadow-2xs flex items-center gap-1.5 transition"
                 >
                   <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -647,7 +647,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
 
                 <button
                   onClick={() => setActivePdfModal(null)}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-xs font-semibold transition"
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-sm text-xs font-semibold transition"
                 >
                   Close
                 </button>

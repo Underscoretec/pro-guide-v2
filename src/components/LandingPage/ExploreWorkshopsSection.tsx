@@ -94,7 +94,7 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
           <button
             type="button"
             onClick={() => setActiveTab('temporal')}
-            className={`border-[1.5px] rounded-[20px] py-2 px-[18px] text-[13.5px] font-semibold transition-all ${
+            className={`border-[1.5px] rounded-sm py-2 px-[18px] text-[13.5px] font-semibold transition-all ${
               activeTab === 'temporal'
                 ? 'bg-purple border-purple text-white'
                 : 'bg-white border-line text-muted hover:border-purple/50'
@@ -105,7 +105,7 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
           <button
             type="button"
             onClick={() => setActiveTab('sinus')}
-            className={`border-[1.5px] rounded-[20px] py-2 px-[18px] text-[13.5px] font-semibold transition-all ${
+            className={`border-[1.5px] rounded-sm py-2 px-[18px] text-[13.5px] font-semibold transition-all ${
               activeTab === 'sinus'
                 ? 'bg-purple border-purple text-white'
                 : 'bg-white border-line text-muted hover:border-purple/50'
@@ -116,7 +116,7 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
           <button
             type="button"
             onClick={() => setActiveTab('larynx')}
-            className={`border-[1.5px] rounded-[20px] py-2 px-[18px] text-[13.5px] font-semibold transition-all ${
+            className={`border-[1.5px] rounded-sm py-2 px-[18px] text-[13.5px] font-semibold transition-all ${
               activeTab === 'larynx'
                 ? 'bg-purple border-purple text-white'
                 : 'bg-white border-line text-muted hover:border-purple/50'
@@ -136,7 +136,7 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
             return (
               <div
                 key={key}
-                className="bg-white border border-line rounded-[8px] overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow"
+                className="bg-white border border-line rounded-sm overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="aspect-[16/9] overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -161,7 +161,7 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
                       href={ws.brochureUrl || '/ProGuide_3D_Workshops_2026.pdf'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 py-[9px] px-2 text-[12px] font-bold text-center bg-white text-ink rounded-[5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
+                      className="flex-1 py-[9px] px-2 text-[12px] font-bold text-center bg-white text-ink rounded-sm border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
                     >
                       Download Brochure
                     </a>
@@ -169,7 +169,7 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
                       href={ws.registrationUrl || 'https://pro-guide.in/'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 py-[9px] px-2 text-[12px] font-bold text-center bg-purple text-white rounded-[5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all"
+                      className="flex-1 py-[9px] px-2 text-[12px] font-bold text-center bg-purple text-white rounded-sm border border-purple hover:bg-purple-d hover:border-purple-d transition-all"
                     >
                       Register for Workshop
                     </a>
@@ -183,7 +183,7 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
         <p className="text-center mt-[22px]">
           <Link
             href="/workshops"
-            className="inline-block bg-white text-ink px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
+            className="inline-block bg-white text-ink px-5 py-[10px] rounded-sm font-bold text-[13.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
           >
             View all programmes &rarr;
           </Link>
