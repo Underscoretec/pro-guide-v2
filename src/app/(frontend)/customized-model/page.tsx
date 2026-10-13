@@ -2,6 +2,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { CustomizedModelContent } from '@/components/CustomizedModel/CustomizedModelContent'
 import { getCustomizedModelPage } from '@/lib/payload/customizedModel'
+import { roboto } from '@/font'
 
 export const metadata: Metadata = {
   title: 'Get Your Own Customized 3D Model | ProGuide',
@@ -13,7 +14,7 @@ export default async function CustomizedModelPage() {
   const data = await getCustomizedModelPage()
 
   return (
-    <main className="flex-1 bg-white">
+    <main className={`${roboto.className} flex-1 bg-white`}>
       <CustomizedModelContent data={data} />
     </main>
   )

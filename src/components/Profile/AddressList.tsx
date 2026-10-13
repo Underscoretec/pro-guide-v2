@@ -4,6 +4,7 @@ import React, { useState, useTransition } from 'react'
 import { removeAddress, setDefaultAddress } from '@/lib/profile/actions'
 import { AddressForm } from './AddressForm'
 import { FiMapPin, FiPlus, FiPhone, FiEdit2, FiTrash2, FiCheck } from 'react-icons/fi'
+import { roboto } from '@/font'
 
 type Address = {
   id: number | string

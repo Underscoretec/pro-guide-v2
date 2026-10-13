@@ -5,6 +5,7 @@ import { getCurrentUser } from '@/lib/auth/session'
 import { getPayloadClient } from '@/lib/payload/client'
 import { CheckoutView } from '@/components/Cart/CheckoutView'
 import type { ShippingAddress } from '@/payload-types'
+import { roboto } from '@/font'
 
 export const metadata: Metadata = {
   title: 'Shipping and Checkout | ProGuide 3D Simulation Models',
@@ -30,7 +31,7 @@ export default async function CheckoutPage() {
   })
 
   return (
-    <main className="flex-1 bg-white">
+    <main className={`${roboto.className} flex-1 bg-white`}>
       <CheckoutView
         user={{
           id: user.id,

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCart, getCartItemPrice, type CartItem } from '@/context/CartContext'
+import { roboto } from '@/font'
 
 export const CartView: React.FC = () => {
   const cart = useCart()
@@ -65,7 +66,7 @@ export const CartView: React.FC = () => {
   }
 
   return (
-    <div className="bg-white min-h-[70vh] py-10 md:py-14">
+    <div className={`${roboto.className} bg-white min-h-[70vh] py-10 md:py-14`}>
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Title */}
         <h1 className="text-[26px] md:text-[30px] font-bold text-ink tracking-tight mb-8 uppercase">

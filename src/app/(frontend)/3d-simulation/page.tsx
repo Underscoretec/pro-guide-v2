@@ -12,6 +12,7 @@ import {
   VariantsSection,
   DoctorAcknowledgmentSection,
 } from '@/components/Resources'
+import { roboto } from '@/font'
 
 export const metadata: Metadata = {
   title: 'Why 3D Simulation Models & Procedures | ProGuide',
@@ -58,7 +59,7 @@ export default async function ThreeDSimulationPage() {
   const doctorData = getBlockData('doctor-acknowledgment')
 
   return (
-    <main className="flex-1">
+    <main className={`${roboto.className} flex-1`}>
       <ResourcesHero data={heroData} />
       <WhySimulationSection data={whyData} />
       <ModelFeaturesSection data={featuresData} />
