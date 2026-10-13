@@ -206,9 +206,9 @@ export const WorkshopsContent: React.FC<WorkshopsContentProps> = ({ data }) => {
                     <div className="meta">{ws.meta}</div>
                     <div className="actions">
                       <a className="btn ghost" href={ws.brochureUrl} target="_blank" rel="noopener noreferrer">
-                        Download Brochure
+                        Download Flyer
                       </a>
-                      <a className="btn" href={ws.registrationUrl} target="_blank" rel="noopener noreferrer">
+                      <a className="btn" href="/sign-up">
                         Register
                       </a>
                     </div>
@@ -245,9 +245,9 @@ export const WorkshopsContent: React.FC<WorkshopsContentProps> = ({ data }) => {
                     <div className="meta">{ws.meta}</div>
                     <div className="actions">
                       <a className="btn ghost" href={ws.brochureUrl} target="_blank" rel="noopener noreferrer">
-                        Download Brochure
+                        Download Flyer
                       </a>
-                      <a className="btn" href={ws.registrationUrl} target="_blank" rel="noopener noreferrer">
+                      <a className="btn" href="/sign-up">
                         Register
                       </a>
                     </div>
@@ -284,9 +284,9 @@ export const WorkshopsContent: React.FC<WorkshopsContentProps> = ({ data }) => {
                     <div className="meta">{ws.meta}</div>
                     <div className="actions">
                       <a className="btn ghost" href={ws.brochureUrl} target="_blank" rel="noopener noreferrer">
-                        Download Brochure
+                        Download Flyer
                       </a>
-                      <a className="btn" href={ws.registrationUrl} target="_blank" rel="noopener noreferrer">
+                      <a className="btn" href="/sign-up">
                         Register
                       </a>
                     </div>
