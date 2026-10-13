@@ -6,28 +6,28 @@ const Termscondition = () => {
   return (
     <div className={`${roboto.className} bg-[#F8F8FA] min-h-screen flex flex-col`}>
       {/* Hero Banner Section */}
-      <div className="phero !py-4 sm:!py-5">
+      <div className="phero" style={{ padding: '18px 0' }}>
         <div className="wrap max-w-[1200px] mx-auto px-4 sm:px-6">
-          <div className="crumb text-xs text-[#D9BEE6] mb-1.5">
+          <div className="crumb text-xs text-[#D9BEE6] mb-1">
             <Link href="/" className="text-white hover:underline">
               Home
             </Link>{' '}
             / <span className="text-white font-medium">Terms & Conditions</span>
           </div>
-          <h1 className="text-[clamp(22px,2.6vw,32px)] font-bold text-white leading-tight">
+          <h1 className="text-[clamp(22px,2.6vw,30px)] font-bold text-white leading-tight">
             TERMS OF SERVICE
           </h1>
-          <p className="text-[#E4D3EC] max-w-[820px] mt-1.5 text-[14px] sm:text-[14.5px]">
+          <p className="text-[#E4D3EC] max-w-[820px] mt-1 text-[13.5px] sm:text-[14px]">
             Please read these Terms of Service carefully before accessing or using our website and services.
           </p>
         </div>
       </div>
 
       {/* Main Content Section */}
-      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-3 sm:pt-4 pb-8 flex-1 w-full">
-        <div className="bg-white border border-[#E3E5E9] rounded-sm p-4 sm:p-6 md:p-8 shadow-xs space-y-5 sm:space-y-6 text-[#374151]">
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 sm:py-5 flex-1 w-full">
+        <div className="bg-white border border-[#E3E5E9] rounded-sm p-4 sm:p-6 md:p-8 shadow-xs space-y-4 text-[#374151]">
           {/* OVERVIEW */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               OVERVIEW
             </h2>
@@ -62,10 +62,10 @@ const Termscondition = () => {
               Your continued use of or access to the website following the posting of any changes constitutes
               acceptance of those changes.
             </p>
-          </section>
+          </div>
 
           {/* ONLINE STORE TERMS */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               ONLINE STORE TERMS
             </h2>
@@ -84,10 +84,10 @@ const Termscondition = () => {
             <p className="text-[14px] sm:text-[14.5px] leading-[1.65]">
               A breach or violation of any of the Terms will result in an immediate termination of your Services.
             </p>
-          </section>
+          </div>
 
           {/* GENERAL CONDITIONS */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               GENERAL CONDITIONS
             </h2>
@@ -109,10 +109,10 @@ const Termscondition = () => {
               The headings used in this agreement are included for convenience only and will not limit or otherwise
               affect these Terms.
             </p>
-          </section>
+          </div>
 
           {/* ACCURACY, COMPLETENESS AND TIMELINESS OF INFORMATION */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               ACCURACY, COMPLETENESS AND TIMELINESS OF INFORMATION
             </h2>
@@ -128,10 +128,10 @@ const Termscondition = () => {
               site at any time, but we have no obligation to update any information on our site. You agree that it
               is your responsibility to monitor changes to our site.
             </p>
-          </section>
+          </div>
 
           {/* MODIFICATIONS TO THE SERVICE AND PRICES */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               MODIFICATIONS TO THE SERVICE AND PRICES
             </h2>
@@ -146,10 +146,10 @@ const Termscondition = () => {
               We shall not be liable to you or to any third-party for any modification, price change, suspension or
               discontinuance of the Service.
             </p>
-          </section>
+          </div>
 
           {/* PRODUCTS OR SERVICES */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               PRODUCTS OR SERVICES
             </h2>
@@ -175,10 +175,10 @@ const Termscondition = () => {
               We do not warrant that the quality of any products, services, information, or other material purchased
               or obtained by you will meet your expectations, or that any errors in the Service will be corrected.
             </p>
-          </section>
+          </div>
 
           {/* ACCURACY OF BILLING AND ACCOUNT INFORMATION */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               ACCURACY OF BILLING AND ACCOUNT INFORMATION
             </h2>
@@ -200,10 +200,10 @@ const Termscondition = () => {
             <p className="text-[14px] sm:text-[14.5px] leading-[1.65]">
               For more detail, please review our Returns Policy.
             </p>
-          </section>
+          </div>
 
           {/* OPTIONAL TOOLS */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               OPTIONAL TOOLS
             </h2>
@@ -226,10 +226,10 @@ const Termscondition = () => {
               release of new tools and resources). Such new features and/or services shall also be subject to these
               Terms of Service.
             </p>
-          </section>
+          </div>
 
           {/* THIRD-PARTY LINKS */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               THIRD-PARTY LINKS
             </h2>
@@ -250,10 +250,10 @@ const Termscondition = () => {
               in any transaction. Complaints, claims, concerns, or questions regarding third-party products should
               be directed to the third-party.
             </p>
-          </section>
+          </div>
 
           {/* USER COMMENTS, FEEDBACK AND OTHER SUBMISSIONS */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               USER COMMENTS, FEEDBACK AND OTHER SUBMISSIONS
             </h2>
@@ -280,10 +280,10 @@ const Termscondition = () => {
               any comments you make and their accuracy. We take no responsibility and assume no liability for any
               comments posted by you or any third-party.
             </p>
-          </section>
+          </div>
 
           {/* PERSONAL INFORMATION */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               PERSONAL INFORMATION
             </h2>
@@ -294,10 +294,10 @@ const Termscondition = () => {
               </Link>
               .
             </p>
-          </section>
+          </div>
 
           {/* ERRORS, INACCURACIES AND OMISSIONS */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               ERRORS, INACCURACIES AND OMISSIONS
             </h2>
@@ -315,10 +315,10 @@ const Termscondition = () => {
               update or refresh date applied in the Service or on any related website, should be taken to indicate
               that all information in the Service or on any related website has been modified or updated.
             </p>
-          </section>
+          </div>
 
           {/* PROHIBITED USES */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               PROHIBITED USES
             </h2>
@@ -338,10 +338,10 @@ const Termscondition = () => {
               Internet. We reserve the right to terminate your use of the Service or any related website for violating
               any of the prohibited uses.
             </p>
-          </section>
+          </div>
 
           {/* DISCLAIMER OF WARRANTIES; LIMITATION OF LIABILITY */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               DISCLAIMER OF WARRANTIES; LIMITATION OF LIABILITY
             </h2>
@@ -381,10 +381,10 @@ const Termscondition = () => {
               liability for consequential or incidental damages, in such states or jurisdictions, our liability shall
               be limited to the maximum extent permitted by law.
             </p>
-          </section>
+          </div>
 
           {/* INDEMNIFICATION */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               INDEMNIFICATION
             </h2>
@@ -397,10 +397,10 @@ const Termscondition = () => {
               breach of these Terms of Service or the documents they incorporate by reference, or your violation of
               any law or the rights of a third-party.
             </p>
-          </section>
+          </div>
 
           {/* SEVERABILITY */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               SEVERABILITY
             </h2>
@@ -410,10 +410,10 @@ const Termscondition = () => {
               applicable law, and the unenforceable portion shall be deemed to be severed from these Terms of Service,
               such determination shall not affect the validity and enforceability of any other remaining provisions.
             </p>
-          </section>
+          </div>
 
           {/* TERMINATION */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               TERMINATION
             </h2>
@@ -432,10 +432,10 @@ const Termscondition = () => {
               and you will remain liable for all amounts due up to and including the date of termination; and/or
               accordingly may deny you access to our Services (or any part thereof).
             </p>
-          </section>
+          </div>
 
           {/* ENTIRE AGREEMENT */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               ENTIRE AGREEMENT
             </h2>
@@ -454,10 +454,10 @@ const Termscondition = () => {
               Any ambiguities in the interpretation of these Terms of Service shall not be construed against the
               drafting party.
             </p>
-          </section>
+          </div>
 
           {/* GOVERNING LAW */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               GOVERNING LAW
             </h2>
@@ -465,10 +465,10 @@ const Termscondition = () => {
               These Terms of Service and any separate agreements whereby we provide you Services shall be governed
               by and construed in accordance with the laws of India and jurisdiction of Mumbai, Maharashtra, India.
             </p>
-          </section>
+          </div>
 
           {/* CHANGES TO TERMS OF SERVICE */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               CHANGES TO TERMS OF SERVICE
             </h2>
@@ -481,10 +481,10 @@ const Termscondition = () => {
               periodically for changes. Your continued use of or access to our website or the Service following the
               posting of any changes to these Terms of Service constitutes acceptance of those changes.
             </p>
-          </section>
+          </div>
 
           {/* CONTACT INFORMATION */}
-          <section>
+          <div>
             <h2 className="text-[17px] sm:text-[19px] font-bold text-ink mb-2 pb-1.5 border-b border-line">
               CONTACT INFORMATION
             </h2>
@@ -498,7 +498,7 @@ const Termscondition = () => {
               </a>
               .
             </p>
-          </section>
+          </div>
         </div>
       </main>
     </div>
