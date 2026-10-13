@@ -39,7 +39,7 @@ export default async function OrdersPage() {
   const orders = await getUserOrders()
 
   return (
-    <div className="bg-white rounded-sm shadow-sm border border-line min-h-[400px] overflow-hidden">
+    <div className={`${roboto.className} bg-white rounded-sm shadow-sm border border-line min-h-[400px] overflow-hidden`}>
       <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-line bg-white">
         <div className="flex items-center gap-2.5">
           <FiPackage className="text-purple w-5 h-5" />

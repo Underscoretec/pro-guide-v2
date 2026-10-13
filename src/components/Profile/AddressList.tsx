@@ -26,7 +26,7 @@ export const AddressList: React.FC<{ addresses: Address[]; fullName: string; pho
   const close = React.useCallback(() => setEditing(null), [])
 
   return (
-    <div className="bg-white rounded-sm shadow-sm border border-line overflow-hidden">
+    <div className={`${roboto.className} bg-white rounded-sm shadow-sm border border-line overflow-hidden`}>
       <div className="flex flex-wrap items-center justify-between gap-3 px-6 sm:px-8 py-5 border-b border-line bg-white">
         <div className="flex items-center gap-2.5">
           <FiMapPin className="text-purple w-5 h-5" />
