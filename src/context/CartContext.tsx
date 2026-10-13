@@ -37,6 +37,7 @@ interface CartContextType {
   itemCount: number
   isHydrated: boolean
   isIndia: boolean
+  isLoggedIn: boolean
   currency: 'INR' | 'USD'
   currencySymbol: string
   formatPrice: (amount: number) => string
@@ -359,6 +360,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
     itemCount,
     isHydrated,
     isIndia,
+    isLoggedIn: !!userId,
     currency,
     currencySymbol,
     formatPrice,

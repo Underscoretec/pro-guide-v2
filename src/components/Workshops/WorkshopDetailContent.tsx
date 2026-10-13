@@ -225,7 +225,7 @@ const defaultWorkshopDetail = {
 
 export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) => {
   const [activeTab, setActiveTab] = useState<'details' | 'experience' | 'philosophy'>('details')
-  const { addToCart } = useCart()
+  const { addToCart, isLoggedIn } = useCart()
   const router = useRouter()
 
   const formattedSlug = slug?.toLowerCase() || ''
@@ -431,10 +431,11 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                 <div className="pt-1">
                   <button
                     type="button"
-                    onClick={handleAddToCart}
-                    className="w-full text-center bg-[#4A148C] hover:bg-[#380e6b] text-white font-bold py-3.5 rounded-sm transition-all shadow-md hover:shadow-lg text-sm cursor-pointer active:scale-[0.99]"
+                    onClick={isLoggedIn ? undefined : () => router.push('/sign-up')}
+                    disabled={isLoggedIn}
+                    className="w-full text-center bg-[#4A148C] hover:bg-[#380e6b] text-white font-bold py-3.5 rounded-sm transition-all shadow-md hover:shadow-lg text-sm cursor-pointer active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-[#4A148C]"
                   >
-                    Add to Cart
+                    {isLoggedIn ? 'Already Registered' : 'Register your interest'}
                   </button>
                 </div>
               </div>
