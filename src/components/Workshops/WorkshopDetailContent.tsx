@@ -424,7 +424,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                   </span>
                   <span className="inline-flex items-center" title="India">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="https://flagcdn.com/w40/in.png" alt="India Flag" className="w-5 h-3.5 rounded-sm shadow-sm object-cover" />
+                    <img src="https://flagcdn.com/w40/in.png" alt="India Flag" className="w-5 h-3.5  shadow-sm object-cover" />
                   </span>
                 </div>
 
@@ -433,7 +433,11 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                     type="button"
                     onClick={isLoggedIn ? undefined : () => router.push('/sign-up')}
                     disabled={isLoggedIn}
-                    className="w-full text-center bg-[#4A148C] hover:bg-[#380e6b] text-white font-bold py-3.5 rounded-sm transition-all shadow-md hover:shadow-lg text-sm cursor-pointer active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-[#4A148C]"
+                    className={`w-full text-center font-bold py-3.5 rounded-sm transition-all shadow-md text-sm ${
+                      isLoggedIn
+                        ? 'bg-green-800 text-white cursor-not-allowed opacity-90'
+                        : 'bg-[#4A148C] hover:bg-[#380e6b] text-white cursor-pointer hover:shadow-lg active:scale-[0.99]'
+                    }`}
                   >
                     {isLoggedIn ? 'Already Registered' : 'Register your interest'}
                   </button>
