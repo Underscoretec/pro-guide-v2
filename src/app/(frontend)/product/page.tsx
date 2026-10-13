@@ -2,6 +2,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { ProductDetailsView } from '@/components/Products'
 import { getProductData } from '@/lib/products'
+import { roboto } from '@/font'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,7 +27,7 @@ export default async function ProductQueryPage({ searchParams }: ProductQueryPag
   const product = await getProductData(slugParam)
 
   return (
-    <main className="flex-1">
+    <main className={`${roboto.className} flex-1`}>
       <ProductDetailsView product={product} />
     </main>
   )

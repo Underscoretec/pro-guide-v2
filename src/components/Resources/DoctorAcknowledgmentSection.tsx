@@ -39,7 +39,7 @@ export function DoctorAcknowledgmentSection({ data }: DoctorAcknowledgmentSectio
               {doctorTitle}
             </p>
           </div>
-          <div className="rounded-[10px] overflow-hidden shadow-lg">
+          <div className="rounded-sm overflow-hidden shadow-lg">
             <Image
               src={imgSrc}
               alt="Workshop training floor"

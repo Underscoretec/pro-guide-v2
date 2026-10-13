@@ -54,7 +54,7 @@ export const WhyArtificialBoneSection: React.FC<WhyArtificialBoneProps> = ({ dat
         {/* Split Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-[44px] items-center">
           {/* Photo */}
-          <div className="rounded-[10px] overflow-hidden shadow-[0_16px_36px_rgba(31,35,40,0.16)] border-t-[6px] border-purple">
+          <div className="rounded-sm overflow-hidden shadow-[0_16px_36px_rgba(31,35,40,0.16)] ">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={image}
@@ -82,7 +82,7 @@ export const WhyArtificialBoneSection: React.FC<WhyArtificialBoneProps> = ({ dat
         </div>
 
         {/* Stat Band */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-[2px] bg-line border border-line rounded-[8px] overflow-hidden mt-[34px]">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-[2px] border border-line rounded-sm overflow-hidden mt-[34px]">
           {stats.map((st: any, idx: number) => (
             <div key={idx} className="bg-[#F8F8FA] text-center py-[22px] px-[14px]">
               <div className="text-[30px] font-extrabold text-purple leading-tight">

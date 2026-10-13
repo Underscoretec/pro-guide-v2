@@ -44,7 +44,7 @@ export const AddressForm: React.FC<{
       <Field label="State / Province" name="state" required defaultValue={v.state} error={e.state} />
       <Field label="Postal Code / PIN" name="postalCode" required defaultValue={v.postalCode} error={e.postalCode} />
       <Field label="Country" name="country" required defaultValue={v.country || 'India'} />
-      <Field className="sm:col-span-2" textarea label="Delivery Notes / Instructions (optional)" name="deliveryNotes" defaultValue={v.deliveryNotes ?? ''} />
+      {/* <Field className="sm:col-span-2" textarea label="Delivery Notes / Instructions (optional)" name="deliveryNotes" defaultValue={v.deliveryNotes ?? ''} /> */}
       <div className="sm:col-span-2 flex items-center gap-3 pt-2">
         <button
           type="submit"
@@ -60,7 +60,7 @@ export const AddressForm: React.FC<{
             if (onCancel) onCancel()
             else onDone()
           }}
-          className="border border-[#C9CDD3] rounded-[6px] px-5 py-[10px] text-[14px] font-semibold text-ink hover:border-purple hover:text-purple hover:bg-white transition-all cursor-pointer inline-flex items-center gap-1.5"
+          className="border border-[#C9CDD3] rounded-sm px-5 py-[10px] text-[14px] font-semibold text-ink hover:border-purple hover:text-purple hover:bg-white transition-all cursor-pointer inline-flex items-center gap-1.5"
         >
           <FiX className="w-4 h-4" />
           <span>Cancel</span>

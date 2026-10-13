@@ -180,13 +180,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href={primaryLink}
-              className="inline-block bg-purple text-white px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all text-center shadow-sm"
+              className="inline-block bg-purple text-white px-5 py-[10px] rounded-sm font-bold text-[13.5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all text-center shadow-sm"
             >
               {primaryText}
             </Link>
             <Link
               href={secondaryLink}
-              className="inline-block bg-white text-ink px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all text-center shadow-sm"
+              className="inline-block bg-white text-ink px-5 py-[10px] rounded-sm font-bold text-[13.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all text-center shadow-sm"
             >
               {secondaryText}
             </Link>
@@ -196,7 +196,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
         {/* Right Column Images Section */}
         <div className="flex flex-col gap-3">
           {/* Top Image: Still & Static */}
-          <div className="w-full rounded-[10px] overflow-hidden relative aspect-[16/10]">
+          <div className="w-full rounded-sm overflow-hidden relative aspect-[16/10]">
             <Image
               src={mainImage}
               alt="Faculty guiding a delegate during hands-on dissection"
@@ -213,7 +213,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            <div className="overflow-hidden w-full rounded-[10px]">
+            <div className="overflow-hidden w-full rounded-sm">
               <div
                 className={`flex ${withTransition ? 'transition-transform duration-700 ease-in-out' : ''}`}
                 style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -228,7 +228,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
                       return (
                         <div
                           key={itemIdx}
-                          className="rounded-[10px] overflow-hidden relative aspect-[3/4] bg-white group/card"
+                          className="rounded-sm overflow-hidden relative aspect-[3/4] bg-white group/card"
                         >
                           <Image
                             src={src}

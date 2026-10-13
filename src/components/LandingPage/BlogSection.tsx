@@ -60,7 +60,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ data, posts }) => {
             return (
               <div
                 key={key}
-                className="bg-white border border-line rounded-[8px] overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow"
+                className="bg-white border border-line rounded-sm overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="aspect-[16/9] overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}

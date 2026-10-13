@@ -39,7 +39,7 @@ export function SinusProceduresSection({ data }: SinusProceduresSectionProps) {
           <div className="rule"></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-[44px] items-start">
-          <div className="rounded-[10px] overflow-hidden shadow-lg border-t-4 border-purple order-2 md:order-1">
+          <div className="rounded-sm overflow-hidden shadow-lg border-t-4 border-purple order-2 md:order-1">
             <Image
               src={imgSrc}
               alt="Endoscopic sinus surgery training"

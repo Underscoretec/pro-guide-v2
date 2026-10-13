@@ -86,7 +86,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ data, 
             {feedbackChips.map((item: any, idx: number) => (
               <div
                 key={idx}
-                className="bg-white border border-line border-l-4 border-l-purple rounded-[6px] p-[16px_18px] text-[14px] text-[#3A4048] flex flex-col justify-between shadow-sm"
+                className="bg-white border border-line border-l-4 border-l-purple rounded-sm p-[16px_18px] text-[14px] text-[#3A4048] flex flex-col justify-between shadow-sm"
               >
                 <p className="leading-relaxed">{item.quote}</p>
                 <span className="block mt-[10px] text-[12px] font-bold text-purple uppercase tracking-[0.6px]">
@@ -110,7 +110,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ data, 
             {learnerStories.map((story: any, idx: number) => (
               <div
                 key={idx}
-                className="bg-gradient-to-br from-[#4A148C] to-[#673AB7] rounded-[10px] text-[#F2E8F6] p-6 relative text-[14.5px] leading-relaxed shadow-md flex flex-col justify-between"
+                className="bg-gradient-to-br from-[#4A148C] to-[#673AB7] rounded-sm text-[#F2E8F6] p-6 relative text-[14.5px] leading-relaxed shadow-md flex flex-col justify-between"
               >
                 <div
                   className="absolute top-1 right-4 text-[60px] text-white/25 font-serif select-none pointer-events-none leading-none"

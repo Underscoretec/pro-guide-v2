@@ -6,12 +6,8 @@ import {
   ResourcesHero,
   WhySimulationSection,
   ModelFeaturesSection,
-  TemporalBoneProceduresSection,
-  SinusProceduresSection,
-  LarynxProceduresSection,
-  VariantsSection,
-  DoctorAcknowledgmentSection,
 } from '@/components/Resources'
+import { roboto } from '@/font'
 
 export const metadata: Metadata = {
   title: 'Why 3D Simulation Models & Procedures | ProGuide',
@@ -51,22 +47,24 @@ export default async function ThreeDSimulationPage() {
   }
   const whyData = getBlockData('why-simulation')
   const featuresData = getBlockData('model-features')
-  const temporalData = getBlockData('temporal-bone-procedures')
-  const sinusData = getBlockData('sinus-procedures')
-  const larynxData = getBlockData('larynx-procedures')
-  const variantsData = getBlockData('variants')
-  const doctorData = getBlockData('doctor-acknowledgment')
 
   return (
-    <main className="flex-1">
+    <main className={`${roboto.className} flex-1`}>
       <ResourcesHero data={heroData} />
       <WhySimulationSection data={whyData} />
       <ModelFeaturesSection data={featuresData} />
-      <TemporalBoneProceduresSection data={temporalData} />
-      <SinusProceduresSection data={sinusData} />
-      <LarynxProceduresSection data={larynxData} />
-      <VariantsSection data={variantsData} />
-      <DoctorAcknowledgmentSection data={doctorData} />
+      <section className="py-[52px] bg-white text-center">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <a
+            href="https://ossaplussim.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-purple text-white px-7 py-3 rounded-sm font-bold text-[14px] sm:text-[15px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm hover:shadow-md cursor-pointer"
+          >
+            To Know More About 3D Simulation
+          </a>
+        </div>
+      </section>
     </main>
   )
 }

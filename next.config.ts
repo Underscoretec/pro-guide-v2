@@ -33,6 +33,26 @@ const nextConfig: NextConfig = {
         destination: '/products',
       },
       {
+        source: '/terms-and-condition',
+        destination: '/terms&conditions',
+      },
+      {
+        source: '/terms-and-conditions',
+        destination: '/terms&conditions',
+      },
+      {
+        source: '/privacy-statement',
+        destination: '/privacy-policy',
+      },
+      {
+        source: '/cancellation-policy',
+        destination: '/refund-policy',
+      },
+      {
+        source: '/cancellation-and-return-policy',
+        destination: '/refund-policy',
+      },
+      {
         source: '/:path*.html',
         destination: '/:path*',
       },

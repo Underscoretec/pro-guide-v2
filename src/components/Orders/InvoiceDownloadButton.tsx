@@ -69,7 +69,7 @@ export const InvoiceDownloadButton: React.FC<InvoiceDownloadButtonProps> = ({
       title="Download PDF Invoice"
       className={
         className ||
-        'inline-flex items-center gap-1.5 bg-purple hover:bg-purple-d text-white text-[12px] font-bold px-3 py-1.5 rounded-[5px] shadow-xs hover:shadow transition-all disabled:opacity-60 cursor-pointer'
+        'inline-flex items-center gap-1.5 bg-purple hover:bg-purple-d text-white text-[12px] font-bold px-3 py-1.5 rounded-sm shadow-xs hover:shadow transition-all disabled:opacity-60 cursor-pointer'
       }
     >
       {isDownloading ? (

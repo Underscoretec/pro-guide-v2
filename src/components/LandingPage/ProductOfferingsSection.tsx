@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
+import { roboto } from '@/font'
 
 interface ProductOfferingsProps {
   data?: any
@@ -151,7 +152,7 @@ const defaultProducts = [
 export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data, products }) => {
   const router = useRouter()
   const cart = useCart()
-  const { addToCart } = cart
+  const { addToCart, isLoggedIn } = cart
   const isIndia = cart?.isIndia !== false
 
   const formatPrice = (amount: number) => {
@@ -202,7 +203,7 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
   }
 
   return (
-    <section id="products" className="py-[52px] bg-[#F8F8FA] border-t border-b border-line">
+    <section id="products" className={`${roboto.className} py-[52px] bg-[#F8F8FA] border-t border-b border-line`}>
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Section Heading */}
         <div className="sechead">
@@ -265,7 +266,7 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
             return (
               <div
                 key={key}
-                className="bg-white border border-line rounded-[8px] overflow-hidden flex flex-col transition-all duration-[180ms] hover:shadow-[0_14px_30px_rgba(31,35,40,0.12)] hover:-translate-y-[3px]"
+                className="bg-white border border-line rounded-sm overflow-hidden flex flex-col transition-all duration-[180ms] hover:shadow-[0_14px_30px_rgba(31,35,40,0.12)] hover:-translate-y-[3px]"
               >
                 {/* Product Image Hover Slider */}
                 <ProductImageSlider
@@ -282,34 +283,55 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
                     </Link>
                   </h3>
                   <div className="text-[12.5px] text-muted">{prod.variant}</div>
-                  <div className="font-extrabold text-[16px] text-ink mt-1">
-                    {!isIndia && typeof prod.priceUSD === 'number' && prod.priceUSD > 0
-                      ? formatPrice(prod.priceUSD)
-                      : (typeof prod.rawPrice === 'number' ? formatPrice(prod.rawPrice) : prod.price)}{' '}
-                    {isIndia ? (
-                      prod.gstNote && (
-                        <small className="font-semibold text-muted text-[11.5px]">{prod.gstNote}</small>
-                      )
-                    ) : (
-                      <small className="font-semibold text-emerald-600 text-[11.5px]">(0% GST)</small>
-                    )}
-                  </div>
+                  {isLoggedIn && (
+                    <div className="font-extrabold text-[16px] text-ink mt-1">
+                      {!isIndia && typeof prod.priceUSD === 'number' && prod.priceUSD > 0
+                        ? formatPrice(prod.priceUSD)
+                        : (typeof prod.rawPrice === 'number' ? formatPrice(prod.rawPrice) : prod.price)}{' '}
+                      {isIndia ? (
+                        prod.gstNote && (
+                          <small className="font-semibold text-muted text-[11.5px]">{prod.gstNote}</small>
+                        )
+                      ) : (
+                        <small className="font-semibold text-emerald-600 text-[11.5px]">(0% GST)</small>
+                      )}
+                    </div>
+                  )}
 
                   {/* Actions */}
-                  <div className="flex gap-2 mt-3 pt-1">
-                    <Link
-                      href={prod.secondaryButtonLink || detailsHref}
-                      className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-white text-ink rounded-[5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
-                    >
-                      {prod.secondaryButtonText || 'View Details'}
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={(e) => handleAddToCart(e, prod, imageSrc)}
-                      className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-purple text-white rounded-[5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all cursor-pointer"
-                    >
-                      {prod.primaryButtonText === 'Buy' ? 'Add to Cart' : prod.primaryButtonText || 'Add to Cart'}
-                    </button>
+                  <div className="flex gap-1.5 sm:gap-2 mt-auto pt-3">
+                    {isLoggedIn ? (
+                      <>
+                        <Link
+                          href={prod.secondaryButtonLink || `/contact?product=${encodeURIComponent(prod.title || prod.name || '')}`}
+                          className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-white text-ink rounded-sm border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all whitespace-nowrap"
+                        >
+                          Enquire
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={(e) => handleAddToCart(e, prod, imageSrc)}
+                          className="flex-1 py-[9px] px-2 text-[12.5px] font-bold text-center bg-purple text-white rounded-sm border border-purple hover:bg-purple-d hover:border-purple-d transition-all cursor-pointer whitespace-nowrap"
+                        >
+                          Add to Cart
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          href={prod.secondaryButtonLink || `/contact?product=${encodeURIComponent(prod.title || prod.name || '')}`}
+                          className="w-[36%] sm:w-[38%] shrink-0 py-[9px] px-2 text-[12px] sm:text-[12.5px] font-bold text-center bg-white text-ink rounded-sm border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all whitespace-nowrap flex items-center justify-center"
+                        >
+                          Enquire
+                        </Link>
+                        <Link
+                          href="/sign-up"
+                          className="flex-1 py-[9px] px-1 text-[12px] min-[280px]:text-[12.5px] font-bold text-center bg-purple text-white rounded-sm border border-purple hover:bg-purple-d hover:border-purple-d transition-all cursor-pointer whitespace-nowrap flex items-center justify-center tracking-tight"
+                        >
+                          To buy register now
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -321,13 +343,13 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
         <p className="text-center mt-[22px] flex items-center justify-center gap-3">
           <Link
             href="/products"
-            className="inline-block bg-white text-ink px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
+            className="inline-block bg-white text-ink px-5 py-[10px] rounded-sm font-bold text-[13.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
           >
             All Products &rarr;
           </Link>
           <Link
             href="/cart"
-            className="inline-block bg-purple text-white px-5 py-[10px] rounded-[5px] font-bold text-[13.5px] border border-purple hover:bg-purple-d transition-all shadow-sm"
+            className="inline-block bg-purple text-white px-5 py-[10px] rounded-sm font-bold text-[13.5px] border border-purple hover:bg-purple-d transition-all shadow-sm"
           >
             View Cart &rarr;
           </Link>

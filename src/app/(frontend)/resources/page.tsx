@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import ResourceLibraryContent from '@/components/ResourceLibrary/ResourceLibraryContent'
+import { roboto } from '@/font'
 
 export const metadata: Metadata = {
   title: 'Resource Library & PDF Catalogues | ProGuide',
@@ -25,7 +26,7 @@ export default async function ResourcesPage() {
   }
 
   return (
-    <main className="flex-1">
+    <main className={`${roboto.className} flex-1`}>
       <ResourceLibraryContent data={resourcesData} />
     </main>
   )

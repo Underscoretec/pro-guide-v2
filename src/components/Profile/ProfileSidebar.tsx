@@ -30,7 +30,7 @@ export const ProfileSidebar: React.FC = () => {
   }
 
   return (
-    <aside className="bg-white rounded-[8px] shadow-sm border border-line self-start overflow-hidden">
+    <aside className="bg-white rounded-sm shadow-sm border border-line self-start overflow-hidden">
       <div className="px-5 py-4 text-[15px] font-bold text-ink border-b border-line flex items-center gap-2">
         <FiUser className="w-4 h-4 text-purple" />
         <span>My Account</span>
