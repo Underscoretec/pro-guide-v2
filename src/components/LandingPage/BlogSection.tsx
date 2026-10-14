@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { roboto } from '@/font'
 
 interface BlogSectionProps {
@@ -6,39 +7,17 @@ interface BlogSectionProps {
   posts?: any[]
 }
 
-const defaultPosts = [
-  {
-    imageUrl: '/images/photo_micro.jpg',
-    category: 'Temporal Bone',
-    title: 'Mastering Temporal Bone Anatomy \u2014 The Key to Surgical Excellence',
-    excerpt:
-      'Why the temporal bone remains the defining challenge of otologic training, and how simulation accelerates the learning curve.',
-    meta: 'By ProGuide Editorial \u00B7 5 min read',
-  },
-  {
-    imageUrl: '/images/photo_lab1.jpg',
-    category: 'Workshops',
-    title: 'Why Hands-On Workshops Are Essential for ENT Surgeons',
-    excerpt:
-      'Medical education is evolving \u2014 and hands-on workshops are now a fundamental part of surgical training for safe, independent practice.',
-    meta: 'By ProGuide Editorial \u00B7 4 min read',
-  },
-  {
-    imageUrl: '/images/photo_lab2.jpg',
-    category: '3D Training',
-    title: 'How 3D Simulation Is Revolutionizing ENT Surgical Training',
-    excerpt:
-      "Surgical training has witnessed a transformation with the introduction of high-fidelity 3D simulation models \u2014 here's what changed.",
-    meta: 'By ProGuide Editorial \u00B7 6 min read',
-  },
-]
-
 export const BlogSection: React.FC<BlogSectionProps> = ({ data, posts }) => {
+  // Prefer blogs fetched from Payload 'blogs' collection, fallback to data?.postsList if configured in page
+  const list = (posts && posts.length > 0) ? posts : (data?.postsList || [])
+
+  // If no blog data is available from Payload, do not show the blog section
+  if (!list || list.length === 0) {
+    return null
+  }
+
   const tag = data?.tag || 'Catch the latest updates on'
   const title = data?.title || 'The ProGuide Blog'
-
-  const rawList = data?.postsList || posts || []
-  const list = rawList.length > 0 ? rawList : defaultPosts
 
   return (
     <section className={`${roboto.className} py-[52px] bg-[#F8F8FA] border-t border-b border-line`}>
@@ -55,36 +34,57 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ data, posts }) => {
           {list.map((post: any, idx: number) => {
             const mediaImage = typeof post.image === 'object' && post.image ? post.image.url : null
             const imageSrc = mediaImage || post.imageUrl || '/images/photo_micro.jpg'
+            const postSlug = post.slug || String(post.id || idx)
+            const postHref = `/blog/${postSlug}`
             const key = post.id || post.slug || idx
 
+            const authorName = post.author || 'ProGuide Editorial'
+            const readTime = post.readTime || '5 min read'
+            const metaText = post.meta || `By ${authorName} · ${readTime}`
+
             return (
-              <div
+              <article
                 key={key}
-                className="bg-white border border-line rounded-sm overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow"
+                className="bg-white border border-line rounded-sm overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-all group"
               >
-                <div className="aspect-[16/9] overflow-hidden">
+                <Link href={postHref} className="aspect-[16/9] overflow-hidden block bg-[#F0F0F2]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={imageSrc}
-                    alt={post.title}
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    alt={post.title || 'Blog image'}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                </div>
+                </Link>
                 <div className="p-4 flex-1 flex flex-col gap-[6px]">
-                  <span className="text-[11px] font-extrabold tracking-[1.2px] uppercase text-orange">
-                    {post.category}
-                  </span>
+                  {post.category && (
+                    <span className="text-[11px] font-extrabold tracking-[1.2px] uppercase text-orange">
+                      {post.category}
+                    </span>
+                  )}
                   <h3 className="text-[15.5px] font-bold text-ink leading-[1.4]">
-                    {post.title}
+                    <Link
+                      href={postHref}
+                      className="text-ink hover:text-purple transition-colors no-underline"
+                    >
+                      {post.title}
+                    </Link>
                   </h3>
-                  <p className="text-[13px] text-muted leading-relaxed">
-                    {post.excerpt}
-                  </p>
-                  <div className="text-[12px] text-muted mt-auto pt-2 border-t border-dashed border-line">
-                    {post.meta}
+                  {post.excerpt && (
+                    <p className="text-[13px] text-muted leading-relaxed line-clamp-3">
+                      {post.excerpt}
+                    </p>
+                  )}
+                  <div className="text-[12px] text-muted mt-auto pt-2 border-t border-dashed border-line flex items-center justify-between">
+                    <span>{metaText}</span>
+                    <Link
+                      href={postHref}
+                      className="text-purple hover:text-purple-d font-semibold text-[12px] inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                    >
+                      Read &rarr;
+                    </Link>
                   </div>
                 </div>
-              </div>
+              </article>
             )
           })}
         </div>
