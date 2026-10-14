@@ -212,38 +212,7 @@ const seedTestimonials = [
   },
 ]
 
-const seedPosts = [
-  {
-    title: 'Mastering Temporal Bone Anatomy — The Key to Surgical Excellence',
-    slug: 'temporal-bone-anatomy',
-    category: 'Temporal Bone',
-    excerpt:
-      'Why the temporal bone remains the defining challenge of otologic training, and how simulation accelerates the learning curve.',
-    meta: 'By ProGuide Editorial · 5 min read',
-    imageUrl: '/images/photo_micro.jpg',
-    order: 1,
-  },
-  {
-    title: 'Why Hands-On Workshops Are Essential for ENT Surgeons',
-    slug: 'hands-on-workshops-essential',
-    category: 'Workshops',
-    excerpt:
-      'Medical education is evolving — and hands-on workshops are now a fundamental part of surgical training for safe, independent practice.',
-    meta: 'By ProGuide Editorial · 4 min read',
-    imageUrl: '/images/photo_lab1.jpg',
-    order: 2,
-  },
-  {
-    title: 'How 3D Simulation Is Revolutionizing ENT Surgical Training',
-    slug: '3d-simulation-revolutionizing-ent',
-    category: '3D Training',
-    excerpt:
-      "Surgical training has witnessed a transformation with the introduction of high-fidelity 3D simulation models — here's what changed.",
-    meta: 'By ProGuide Editorial · 6 min read',
-    imageUrl: '/images/photo_lab2.jpg',
-    order: 3,
-  },
-]
+const seedPosts: any[] = []
 
 export async function seed() {
   console.log('🌱 Starting Payload CMS database seed...')
@@ -539,7 +508,7 @@ export async function seed() {
         blockType: 'blog' as const,
         tag: 'Catch the latest updates on',
         title: 'The ProGuide Blog',
-        postsList: seedPosts,
+        postsList: [],
       },
     ],
   }
