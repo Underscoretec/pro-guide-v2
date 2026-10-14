@@ -440,9 +440,9 @@ export interface Blog {
   } | null;
   status?: ('published' | 'draft') | null;
   /**
-   * Optionally highlight this post on the landing page.
+   * Designates whether this post is Part 1, 2, or 3 of the blog series.
    */
-  featured?: boolean | null;
+  partNumber?: ('1' | '2' | '3' | 'none') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -624,7 +624,7 @@ export interface HomePage {
             subtitle?: string | null;
             facultyList?:
               | {
-                  initials: string;
+                  image?: (number | null) | Media;
                   name: string;
                   role: string;
                   bio: string;
@@ -641,6 +641,9 @@ export interface HomePage {
               | {
                   quote: string;
                   author: string;
+                  designation?: string | null;
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -649,6 +652,9 @@ export interface HomePage {
               | {
                   quote: string;
                   author: string;
+                  designation?: string | null;
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -1117,11 +1123,10 @@ export interface TrainingCoursesPage {
   managementTeamTitle?: string | null;
   managementTeam?:
     | {
-        initials: string;
+        photo?: (number | null) | Media;
         name: string;
         role: string;
         bio: string;
-        photo?: (number | null) | Media;
         imageUrl?: string | null;
         id?: string | null;
       }[]
@@ -1589,7 +1594,7 @@ export interface BlogsSelect<T extends boolean = true> {
   publishedDate?: T;
   content?: T;
   status?: T;
-  featured?: T;
+  partNumber?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1803,7 +1808,7 @@ export interface HomePageSelect<T extends boolean = true> {
               facultyList?:
                 | T
                 | {
-                    initials?: T;
+                    image?: T;
                     name?: T;
                     role?: T;
                     bio?: T;
@@ -1821,6 +1826,9 @@ export interface HomePageSelect<T extends boolean = true> {
                 | {
                     quote?: T;
                     author?: T;
+                    designation?: T;
+                    image?: T;
+                    imageUrl?: T;
                     id?: T;
                   };
               storiesTitle?: T;
@@ -1829,6 +1837,9 @@ export interface HomePageSelect<T extends boolean = true> {
                 | {
                     quote?: T;
                     author?: T;
+                    designation?: T;
+                    image?: T;
+                    imageUrl?: T;
                     id?: T;
                   };
               id?: T;
@@ -2323,11 +2334,10 @@ export interface TrainingCoursesPageSelect<T extends boolean = true> {
   managementTeam?:
     | T
     | {
-        initials?: T;
+        photo?: T;
         name?: T;
         role?: T;
         bio?: T;
-        photo?: T;
         imageUrl?: T;
         id?: T;
       };

@@ -347,7 +347,7 @@ export const FacultyBlock: Block = {
       name: 'facultyList',
       type: 'array',
       fields: [
-        { name: 'initials', type: 'text', required: true },
+        { name: 'image', type: 'upload', relationTo: 'media' },
         { name: 'name', type: 'text', required: true },
         { name: 'role', type: 'text', required: true },
         { name: 'bio', type: 'textarea', required: true },
@@ -370,6 +370,9 @@ export const TestimonialsBlock: Block = {
       fields: [
         { name: 'quote', type: 'textarea', required: true },
         { name: 'author', type: 'text', required: true },
+        { name: 'designation', type: 'text', label: 'Designation / Role' },
+        { name: 'image', type: 'upload', relationTo: 'media', label: 'Author Photo' },
+        { name: 'imageUrl', type: 'text', label: 'Author Photo URL (optional if uploaded above)' },
       ],
     },
     {
@@ -383,6 +386,9 @@ export const TestimonialsBlock: Block = {
       fields: [
         { name: 'quote', type: 'textarea', required: true },
         { name: 'author', type: 'text', required: true },
+        { name: 'designation', type: 'text', label: 'Designation / Role' },
+        { name: 'image', type: 'upload', relationTo: 'media', label: 'Author Photo' },
+        { name: 'imageUrl', type: 'text', label: 'Author Photo URL (optional if uploaded above)' },
       ],
     },
   ],
