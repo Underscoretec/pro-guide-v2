@@ -62,18 +62,22 @@ export const PartnerLogosSection: React.FC<PartnerLogosProps> = ({ data }) => {
               </div>
             )
 
+            // Responsive widths matching: 2 cols on mobile, 4 on sm, 8 on lg
+            const itemClasses =
+              "w-[calc(50%-0.5rem)] sm:w-[calc(25%-0.75rem)] lg:w-[calc(12.5%-0.875rem)] flex-shrink-0"
+
             return link ? (
               <Link
                 key={idx}
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block cursor-pointer no-underline"
+                className={`${itemClasses} block cursor-pointer no-underline`}
               >
                 {logoCard}
               </Link>
             ) : (
-              <div key={idx} className="block">
+              <div key={idx} className={`${itemClasses} block`}>
                 {logoCard}
               </div>
             )

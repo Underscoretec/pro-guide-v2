@@ -225,7 +225,7 @@ const defaultWorkshopDetail = {
 
 export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) => {
   const [activeTab, setActiveTab] = useState<'details' | 'experience' | 'philosophy'>('details')
-  const { addToCart } = useCart()
+  const { addToCart, isLoggedIn } = useCart()
   const router = useRouter()
 
   const formattedSlug = slug?.toLowerCase() || ''
@@ -292,7 +292,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                     : 'border-transparent text-gray-700 hover:text-[#4A148C] hover:bg-gray-50'
                 }`}
               >
-                Personal Details
+                About the Workshop
               </button>
               <button
                 type="button"
@@ -303,7 +303,7 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                     : 'border-transparent text-gray-700 hover:text-[#4A148C] hover:bg-gray-50'
                 }`}
               >
-                Professional Experience
+                Professional Section Experience
               </button>
               <button
                 type="button"
@@ -424,17 +424,22 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
                   </span>
                   <span className="inline-flex items-center" title="India">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="https://flagcdn.com/w40/in.png" alt="India Flag" className="w-5 h-3.5 rounded-sm shadow-sm object-cover" />
+                    <img src="https://flagcdn.com/w40/in.png" alt="India Flag" className="w-5 h-3.5  shadow-sm object-cover" />
                   </span>
                 </div>
 
                 <div className="pt-1">
                   <button
                     type="button"
-                    onClick={handleAddToCart}
-                    className="w-full text-center bg-[#4A148C] hover:bg-[#380e6b] text-white font-bold py-3.5 rounded-sm transition-all shadow-md hover:shadow-lg text-sm cursor-pointer active:scale-[0.99]"
+                    onClick={isLoggedIn ? undefined : () => router.push('/sign-up')}
+                    disabled={isLoggedIn}
+                    className={`w-full text-center font-bold py-3.5 rounded-sm transition-all shadow-md text-sm ${
+                      isLoggedIn
+                        ? 'bg-green-800 text-white cursor-not-allowed opacity-90'
+                        : 'bg-[#4A148C] hover:bg-[#380e6b] text-white cursor-pointer hover:shadow-lg active:scale-[0.99]'
+                    }`}
                   >
-                    Add to Cart
+                    {isLoggedIn ? 'Already Registered' : 'Register your interest'}
                   </button>
                 </div>
               </div>

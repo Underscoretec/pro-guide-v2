@@ -8,6 +8,7 @@ import * as migration_20261012_055128_add_family_title_and_subtitle from './2026
 import * as migration_20261012_073305 from './20261012_073305';
 import * as migration_20261014_061001 from './20261014_061001';
 import * as migration_20261014_061717 from './20261014_061717';
+import * as migration_20261013_113510_add_blogs from './20261013_113510_add_blogs';
 
 export const migrations = [
   {
@@ -59,5 +60,10 @@ export const migrations = [
     up: migration_20261014_061717.up,
     down: migration_20261014_061717.down,
     name: '20261014_061717'
+  },
+  {
+    up: migration_20261013_113510_add_blogs.up,
+    down: migration_20261013_113510_add_blogs.down,
+    name: '20261013_113510_add_blogs'
   },
 ];

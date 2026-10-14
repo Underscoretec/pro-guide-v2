@@ -1,5 +1,6 @@
 import React from 'react'
 import { getHomePage, getLandingProducts } from '@/lib/payload/homePage'
+import { getLandingBlogs } from '@/lib/payload/blogs'
 import {
   HeroSection,
   PartnerLogosSection,
@@ -18,9 +19,10 @@ import {
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
-  const [page, landingProducts] = await Promise.all([
+  const [page, landingProducts, blogs] = await Promise.all([
     getHomePage(),
     getLandingProducts(),
+    getLandingBlogs(),
   ])
 
   const heroBlock = page?.sections?.find((b: any) => b.blockType === 'hero')
@@ -36,6 +38,10 @@ export default async function HomePage() {
   const leadFormBlock = page?.sections?.find((b: any) => b.blockType === 'lead-form')
   const blogBlock = page?.sections?.find((b: any) => b.blockType === 'blog')
 
+  const hasBlogs =
+    (blogs && blogs.length > 0) ||
+    (blogBlock?.postsList && blogBlock.postsList.length > 0)
+
   return (
     <main className="flex-1">
       <HeroSection data={heroBlock} />
@@ -49,7 +55,7 @@ export default async function HomePage() {
       <TestimonialsSection data={testimonialsBlock} />
       {/* <BoneVariantsSection data={variantsBlock} /> */}
       <LeadFormSection data={leadFormBlock} />
-      <BlogSection data={blogBlock} />
+      {hasBlogs && <BlogSection data={blogBlock} posts={blogs} />}
     </main>
   )
 }

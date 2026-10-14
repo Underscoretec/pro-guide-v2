@@ -92,7 +92,7 @@ const nameOrUrlGalleries: Record<string, string[]> = {
 export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const router = useRouter()
   const cart = useCart()
-  const { addToCart } = cart
+  const { addToCart, isLoggedIn } = cart
   const isIndia = cart?.isIndia !== false
 
   const formatPrice = (amount: number) => {
@@ -300,9 +300,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
           ) : (
             <span />
           )}
-          <span className="text-[12.5px] font-semibold text-muted whitespace-nowrap">
-            {formattedPrice}
-          </span>
+          {isLoggedIn && (
+            <span className="text-[12.5px] font-semibold text-muted whitespace-nowrap">
+              {formattedPrice}
+            </span>
+          )}
         </div>
 
         <Link href={`/products/${productSlug}`}>
@@ -331,23 +333,40 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
           </div>
         )}
 
-        {/* Pinned Bottom Buttons: Buy and Enquire */}
-        <div className="mt-auto pt-2 flex items-center gap-2">
-          
-          <Link
-            href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
-            className="flex-1 text-center bg-white text-ink px-2.5 sm:px-3.5 py-[9px] rounded-sm font-bold text-[12.5px] sm:text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm"
-          >
-            {item.secondaryButton?.text || 'Enquire'}
-          </Link>
-          <button
-            type="button"
-            onClick={handleBuy}
-            className="flex-1 text-center bg-purple text-white px-2.5 sm:px-3.5 py-[9px] rounded-sm font-bold text-[12.5px] sm:text-[13px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer"
-          >
-            {item.primaryButton?.text || 'Buy'}
-          </button>
-
+        {/* Pinned Bottom Buttons: Enquire and Add to Cart / To buy register now */}
+        <div className="mt-auto pt-2 flex items-center gap-1.5 sm:gap-2">
+          {isLoggedIn ? (
+            <>
+              <Link
+                href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
+                className="flex-1 text-center bg-white text-ink px-2.5 sm:px-3.5 py-[9px] rounded-sm font-bold text-[12.5px] sm:text-[13px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm whitespace-nowrap"
+              >
+                Enquire
+              </Link>
+              <button
+                type="button"
+                onClick={handleBuy}
+                className="flex-1 text-center bg-purple text-white px-2.5 sm:px-3.5 py-[9px] rounded-sm font-bold text-[12.5px] sm:text-[13px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer whitespace-nowrap"
+              >
+                Add to Cart
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href={item.secondaryButton?.link || `/contact?product=${encodeURIComponent(item.name)}`}
+                className="w-[36%] sm:w-[38%] shrink-0 py-[9px] px-2 text-center bg-white text-ink rounded-sm font-bold text-[12px] sm:text-[12.5px] border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all shadow-sm whitespace-nowrap flex items-center justify-center"
+              >
+                Enquire
+              </Link>
+              <Link
+                href="/sign-up"
+                className="flex-1 px-1.5 py-[9px] text-center bg-purple text-white rounded-sm font-bold text-[12px] min-[280px]:text-[12.5px] border border-purple hover:bg-purple-d hover:border-purple-d transition-all shadow-sm cursor-pointer whitespace-nowrap flex items-center justify-center tracking-tight"
+              >
+                To buy register now
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </div>

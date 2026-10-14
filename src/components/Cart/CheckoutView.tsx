@@ -751,7 +751,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     )}
 
                     {/* Order Notes / Instructions */}
-                    <div className="mt-6 pt-6 border-t border-[#E5E7EB]">
+                    {/* <div className="mt-6 pt-6 border-t border-[#E5E7EB]">
                       <label
                         htmlFor="orderNotes"
                         className="block text-[13px] font-bold text-ink uppercase tracking-wider mb-2"
@@ -767,7 +767,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                         placeholder="Notes about your order, e.g. special instructions for delivery."
                         className="w-full border border-[#E5E7EB] rounded-sm p-3 text-[13px] text-ink placeholder-[#9CA3AF] focus:outline-none focus:border-[#5E007B] focus:ring-1 focus:ring-[#5E007B]"
                       />
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
