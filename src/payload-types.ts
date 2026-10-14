@@ -624,7 +624,7 @@ export interface HomePage {
             subtitle?: string | null;
             facultyList?:
               | {
-                  initials: string;
+                  image?: (number | null) | Media;
                   name: string;
                   role: string;
                   bio: string;
@@ -1809,7 +1809,7 @@ export interface HomePageSelect<T extends boolean = true> {
               facultyList?:
                 | T
                 | {
-                    initials?: T;
+                    image?: T;
                     name?: T;
                     role?: T;
                     bio?: T;

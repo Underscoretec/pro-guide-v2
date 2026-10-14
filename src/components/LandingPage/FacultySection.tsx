@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 import { roboto } from '@/font'
 
 interface FacultySectionProps {
@@ -8,19 +9,16 @@ interface FacultySectionProps {
 
 const defaultFaculty = [
   {
-    initials: 'PN',
     name: 'Dr. Prashant Naik',
     role: 'MS (ENT), DLO \u2014 ENT Specialist',
     bio: 'Creator of a precise 3D-printed replica of the temporal bone. Active member of the AAO-HNSF and the Politzer Society, and peer reviewer for the Otolaryngology\u2013Head and Neck Surgery journal. Runs hands-on dissection workshops and manages an open-access temporal bone dissection lab for aspiring and established otologists.',
   },
   {
-    initials: 'MK',
     name: 'Dr. Milind Kirtane',
     role: 'MS, DORL, DSc (Hon.) \u2014 Padma Shri Awardee',
     bio: "Consulting ENT Surgeon at P. D. Hinduja National Hospital, Breach Candy and Saifee Hospital, Mumbai, and Honorary Surgeon at King Edward Memorial Hospital. One of India's most respected cochlear implant surgeons and a pioneer of ENT surgical teaching.",
   },
   {
-    initials: 'GF',
     name: 'Guest Faculty',
     role: 'Visiting professors & senior surgeons',
     bio: 'Each workshop edition brings visiting national and international faculty for station teaching and live demonstration. Faculty for upcoming editions are announced on the registration page.',
@@ -50,13 +48,23 @@ export const FacultySection: React.FC<FacultySectionProps> = ({ data, faculty })
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
           {list.map((member: any, idx: number) => {
             const key = member.id || member.name || idx
+            const imageUrl =
+              member?.image?.url || (typeof member?.image === 'string' ? member.image : null)
             return (
               <div
                 key={key}
                 className="bg-white border border-line rounded-sm p-[22px] text-left shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="w-[72px] h-[72px] rounded-full bg-purple text-white flex items-center justify-center font-extrabold text-[22px] mb-3">
-                  {member.initials}
+                <div className="relative w-[72px] h-[72px] rounded-full overflow-hidden bg-[#F1ECF7] mb-3">
+                  {imageUrl && (
+                    <Image
+                      src={imageUrl}
+                      alt={member.name || 'Faculty'}
+                      fill
+                      sizes="72px"
+                      className="object-cover"
+                    />
+                  )}
                 </div>
                 <h3 className="text-[17px] font-bold text-ink">
                   {member.name}

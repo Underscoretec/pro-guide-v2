@@ -1,4 +1,5 @@
 import React from 'react'
+import { FiCheck } from 'react-icons/fi'
 import { roboto } from '@/font'
 
 interface WhyArtificialBoneProps {
@@ -44,7 +45,7 @@ export const WhyArtificialBoneSection: React.FC<WhyArtificialBoneProps> = ({ dat
   const stats = data?.stats && data.stats.length > 0 ? data.stats : defaultStats
 
   return (
-    <section className={`${roboto.className} py-[52px] bg-[#F8F8FA] border-t border-b border-line`}>
+    <section className={`${roboto.className} py-[52px] bg-white border-t border-b border-line`}>
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="sechead">
           <h2 className="font-bold text-ink">{title}</h2>
@@ -66,9 +67,9 @@ export const WhyArtificialBoneSection: React.FC<WhyArtificialBoneProps> = ({ dat
           {/* Checks List */}
           <ul className="list-none space-y-2">
             {checkItems.map((item: any, idx: number) => (
-              <li key={idx} className="relative pl-[34px] py-[10px]">
-                <span className="absolute left-1 top-3 text-purple font-extrabold bg-tint w-[22px] h-[22px] rounded-full flex items-center justify-center text-[12px]">
-                  &#10003;
+              <li key={idx} className="relative pl-[52px] py-[10px]">
+                <span className="absolute left-0 top-[8px] text-purple bg-[#EEE8F7] w-[38px] h-[38px] rounded-full flex items-center justify-center">
+                  <FiCheck className="w-[20px] h-[20px]" strokeWidth={2.5} />
                 </span>
                 <b className="block text-[15.5px] font-bold text-ink mb-1">
                   {item.title}
@@ -84,7 +85,7 @@ export const WhyArtificialBoneSection: React.FC<WhyArtificialBoneProps> = ({ dat
         {/* Stat Band */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-[2px] border border-line rounded-sm overflow-hidden mt-[34px]">
           {stats.map((st: any, idx: number) => (
-            <div key={idx} className="bg-[#F8F8FA] text-center py-[22px] px-[14px]">
+            <div key={idx} className="bg-white text-center py-[22px] px-[14px]">
               <div className="text-[30px] font-extrabold text-purple leading-tight">
                 {st.value}
               </div>

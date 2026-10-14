@@ -347,7 +347,7 @@ export const FacultyBlock: Block = {
       name: 'facultyList',
       type: 'array',
       fields: [
-        { name: 'initials', type: 'text', required: true },
+        { name: 'image', type: 'upload', relationTo: 'media' },
         { name: 'name', type: 'text', required: true },
         { name: 'role', type: 'text', required: true },
         { name: 'bio', type: 'textarea', required: true },

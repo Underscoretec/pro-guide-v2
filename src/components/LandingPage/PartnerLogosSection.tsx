@@ -45,14 +45,14 @@ export const PartnerLogosSection: React.FC<PartnerLogosProps> = ({ data }) => {
             const link = item?.link
 
             const logoCard = (
-              <div className="w-full h-[88px] bg-white hover:bg-white border border-[#E9ECEF] hover:border-[#CBDCF0] rounded p-3 flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(76,21,96,0.08)] hover:-translate-y-0.5 transition-all duration-300 group">
+              <div className="w-full h-[88px] bg-white hover:bg-white border border-[#E9ECEF] hover:border-[#CBDCF0] rounded p-1.5 flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(76,21,96,0.08)] hover:-translate-y-0.5 transition-all duration-300 group">
                 {logoUrl ? (
                   <Image
                     src={logoUrl}
                     alt={name}
-                    width={138}
-                    height={48}
-                    className="max-h-[56px] w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    width={240}
+                    height={120}
+                    className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
                   <span className="font-bold tracking-[0.5px] text-[#8A8F98] text-[13px] text-center line-clamp-2">
@@ -62,9 +62,8 @@ export const PartnerLogosSection: React.FC<PartnerLogosProps> = ({ data }) => {
               </div>
             )
 
-            // Responsive widths matching: 2 cols on mobile, 4 on sm, 8 on lg
-            const itemClasses =
-              "w-[calc(50%-0.5rem)] sm:w-[calc(25%-0.75rem)] lg:w-[calc(12.5%-0.875rem)] flex-shrink-0"
+            // Width is controlled by the parent grid columns
+            const itemClasses = 'w-full min-w-0'
 
             return link ? (
               <Link
