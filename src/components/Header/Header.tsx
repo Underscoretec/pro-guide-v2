@@ -75,7 +75,8 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
         { label: '3D Temporal Bone', url: '/workshops#temporal' },
         { label: 'Paranasal Sinus', url: '/workshops#sinus' },
         { label: 'Microlaryngoscopy & Laser Surgeries', url: '/workshops#larynx' },
-        { label: 'Types of Training Courses Conducted', url: '/training-courses' },
+        // Same route as 'About Faculty & Training' — hidden for now
+        // { label: 'Types of Training Courses Conducted', url: '/training-courses' },
       ],
     },
     { label: 'Resources', url: '/resources' },
@@ -105,10 +106,13 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
   const navItems = rawNavItems.map((item: any) => ({
     ...item,
     url: sanitizeUrl(item.url, item.label),
-    dropdownItems: item.dropdownItems?.map((drop: any) => ({
-      ...drop,
-      url: sanitizeUrl(drop.url, drop.label),
-    })),
+    dropdownItems: item.dropdownItems
+      // Hide duplicate link to /training-courses (also shown as 'About Faculty & Training')
+      ?.filter((drop: any) => drop.label !== 'Types of Training Courses Conducted')
+      .map((drop: any) => ({
+        ...drop,
+        url: sanitizeUrl(drop.url, drop.label),
+      })),
   }))
 
   const buyNowText =
