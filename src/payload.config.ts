@@ -22,6 +22,7 @@ import { LearningBitesPage } from './collections/LearningBitesPage'
 import { Carts } from './collections/Carts'
 import { Orders } from './collections/Orders'
 import { Products } from './collections/Products'
+import { Blogs } from './collections/Blogs'
 import Header from './globals/Header'
 import Footer from './globals/Footer'
 
@@ -40,6 +41,7 @@ export default buildConfig({
     ShippingAddresses,
     Orders,
     Products,
+    Blogs,
     Media,
     HomePage,
     Resources,

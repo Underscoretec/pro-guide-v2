@@ -71,6 +71,7 @@ export interface Config {
     'shipping-addresses': ShippingAddress;
     orders: Order;
     products: Product;
+    blogs: Blog;
     media: Media;
     'home-page': HomePage;
     resources: Resource;
@@ -96,6 +97,7 @@ export interface Config {
     'shipping-addresses': ShippingAddressesSelect<false> | ShippingAddressesSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    blogs: BlogsSelect<false> | BlogsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
@@ -390,6 +392,59 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs".
+ */
+export interface Blog {
+  id: number;
+  title: string;
+  subtitle?: string | null;
+  /**
+   * URL slug for the blog details page (e.g. /blog/mastering-anatomy). Generated automatically from title if left empty.
+   */
+  slug: string;
+  category?: string | null;
+  /**
+   * Brief overview displayed on blog cards on the home page.
+   */
+  excerpt?: string | null;
+  /**
+   * Cover image used on blog cards (landing page & blog listing). Images inside the article can be added directly in the text editor below.
+   */
+  image?: (number | null) | Media;
+  imageUrl?: string | null;
+  author?: string | null;
+  authorTitle?: string | null;
+  authorLocation?: string | null;
+  readTime?: string | null;
+  publishedDate?: string | null;
+  /**
+   * Compose and format full blog article using the rich text editor.
+   */
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  status?: ('published' | 'draft') | null;
+  /**
+   * Optionally highlight this post on the landing page.
+   */
+  featured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1233,6 +1288,10 @@ export interface PayloadLockedDocument {
         value: number | Product;
       } | null)
     | ({
+        relationTo: 'blogs';
+        value: number | Blog;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
       } | null)
@@ -1508,6 +1567,29 @@ export interface ProductsSelect<T extends boolean = true> {
         variant?: T;
         compatibility?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs_select".
+ */
+export interface BlogsSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  slug?: T;
+  category?: T;
+  excerpt?: T;
+  image?: T;
+  imageUrl?: T;
+  author?: T;
+  authorTitle?: T;
+  authorLocation?: T;
+  readTime?: T;
+  publishedDate?: T;
+  content?: T;
+  status?: T;
+  featured?: T;
   updatedAt?: T;
   createdAt?: T;
 }
