@@ -1,7 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getBlogBySlug } from '@/lib/payload/blogs'
+import { getBlogBySlug, getAllBlogs } from '@/lib/payload/blogs'
 import { BlogDetailView } from '@/components/Blog'
 
 export const dynamic = 'force-dynamic'
@@ -35,11 +35,14 @@ export async function generateMetadata({
 
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const { slug } = await params
-  const blog = await getBlogBySlug(slug)
+  const [blog, allBlogs] = await Promise.all([
+    getBlogBySlug(slug),
+    getAllBlogs(),
+  ])
 
   if (!blog) {
     notFound()
   }
 
-  return <BlogDetailView blog={blog} />
+  return <BlogDetailView blog={blog} allBlogs={allBlogs} />
 }

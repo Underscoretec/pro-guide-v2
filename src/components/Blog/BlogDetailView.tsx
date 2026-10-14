@@ -7,6 +7,7 @@ import { FaArrowLeft } from 'react-icons/fa'
 
 interface BlogDetailViewProps {
   blog: BlogItem
+  allBlogs?: BlogItem[]
 }
 
 function formatDate(dateStr?: string) {
@@ -24,7 +25,10 @@ function formatDate(dateStr?: string) {
   }
 }
 
-export const BlogDetailView: React.FC<BlogDetailViewProps> = ({ blog }) => {
+export const BlogDetailView: React.FC<BlogDetailViewProps> = ({
+  blog,
+  allBlogs = [],
+}) => {
   const publishedText = formatDate(blog.publishedDate || blog.createdAt)
 
   // Build byline parts (credentials, location, date, read time)
@@ -35,6 +39,76 @@ export const BlogDetailView: React.FC<BlogDetailViewProps> = ({ blog }) => {
     if (publishedText) bylineParts.push(publishedText)
     if (blog.readTime) bylineParts.push(blog.readTime)
   }
+
+  // Series navigation: only if this blog is part of a series (not 'none')
+  const DEFAULT_SERIES_TITLES: Record<number, string> = {
+    1: 'Methodology',
+    2: 'Anatomy',
+    3: 'Dissection',
+  }
+
+  // Pool all published blogs, ensuring the current blog is included
+  const blogsPool = [...allBlogs]
+  if (
+    !blogsPool.some(
+      (b) => String(b.id) === String(blog.id) || b.slug === blog.slug
+    )
+  ) {
+    blogsPool.push(blog)
+  }
+
+  // Filter only blogs belonging to the series (partNumber is not 'none')
+  const seriesBlogs = blogsPool.filter((b) => b.partNumber !== 'none')
+
+  // Sort series blogs:
+  // 1. By explicit partNumber if distinct
+  // 2. Otherwise chronologically by creation date ascending (oldest first)
+  const sortedSeries = [...seriesBlogs].sort((a, b) => {
+    const pA = a.partNumber ? parseInt(a.partNumber, 10) : NaN
+    const pB = b.partNumber ? parseInt(b.partNumber, 10) : NaN
+
+    if (!isNaN(pA) && !isNaN(pB) && pA !== pB) {
+      return pA - pB
+    }
+    if (!isNaN(pA) && isNaN(pB)) return -1
+    if (isNaN(pA) && !isNaN(pB)) return 1
+
+    const dateA = new Date(a.createdAt || 0).getTime()
+    const dateB = new Date(b.createdAt || 0).getTime()
+    return dateA - dateB
+  })
+
+  // Check if every blog in the series has a unique explicit part number ('1', '2', '3')
+  const explicitParts = sortedSeries
+    .map((b) => b.partNumber)
+    .filter((p): p is string => Boolean(p && ['1', '2', '3'].includes(p)))
+  const hasDistinctExplicit =
+    explicitParts.length === sortedSeries.length &&
+    new Set(explicitParts).size === sortedSeries.length
+
+  // Build the dynamic series parts array.
+  // ONLY creates items for blogs that actually exist in the database (1 blog -> 1 part, 2 blogs -> 2 parts, 3 blogs -> 3 parts)
+  // All paths are 100% dynamic (`/blog/${item.slug}`) with NO static fallback paths.
+  const seriesParts = sortedSeries.slice(0, 3).map((item, index) => {
+    const partNum =
+      hasDistinctExplicit && item.partNumber
+        ? parseInt(item.partNumber, 10)
+        : index + 1
+
+    const defaultTitle = DEFAULT_SERIES_TITLES[partNum] || `Part ${partNum}`
+    const label = `Part ${partNum} · ${defaultTitle}`
+    const isCurrent =
+      String(item.id) === String(blog.id) || item.slug === blog.slug
+
+    return {
+      num: partNum,
+      label,
+      href: `/blog/${item.slug}`,
+      isCurrent,
+    }
+  })
+
+  const showSeriesParts = blog.partNumber !== 'none' && seriesParts.length > 0
 
   return (
     <article className={`${roboto.className} flex-1 bg-white`}>
@@ -79,6 +153,26 @@ export const BlogDetailView: React.FC<BlogDetailViewProps> = ({ blog }) => {
             <p className="text-[15px] md:text-[16.5px] text-[#4B5563] leading-relaxed mt-2 mb-2 font-normal">
               {blog.excerpt}
             </p>
+          )}
+
+          {/* Dynamic Series Navigation: only shows parts for blogs that actually exist */}
+          {showSeriesParts && (
+            <div className="flex items-center gap-2.5 flex-wrap mt-5 mb-5">
+              {seriesParts.map((p) => (
+                <Link
+                  key={p.num}
+                  href={p.isCurrent ? '#' : p.href}
+                  aria-current={p.isCurrent ? 'page' : undefined}
+                  className={`inline-flex items-center px-3.5 py-1.5 rounded-[4px] text-[13px] md:text-[13.5px] transition-all no-underline ${
+                    p.isCurrent
+                      ? 'border-2 border-purple text-purple bg-[#FAF7FD] font-bold shadow-xs cursor-default'
+                      : 'border border-[#E3E5E9] text-[#4B5563] bg-white font-medium hover:border-purple/70 hover:text-purple hover:bg-[#FAF7FD] cursor-pointer'
+                  }`}
+                >
+                  {p.label}
+                </Link>
+              ))}
+            </div>
           )}
 
           {/* Divider line before byline */}
