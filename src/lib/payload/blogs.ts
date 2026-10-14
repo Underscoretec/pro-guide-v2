@@ -18,6 +18,7 @@ export interface BlogItem {
   publishedDate?: string
   content?: any
   meta?: string
+  partNumber?: string
   createdAt?: string
 }
 
@@ -46,6 +47,7 @@ export const formatBlogItem = (doc: any): BlogItem => {
     publishedDate: doc.publishedDate || doc.createdAt,
     content: doc.content,
     meta,
+    partNumber: doc.partNumber || undefined,
     createdAt: doc.createdAt,
   }
 }

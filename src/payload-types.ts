@@ -440,9 +440,9 @@ export interface Blog {
   } | null;
   status?: ('published' | 'draft') | null;
   /**
-   * Optionally highlight this post on the landing page.
+   * Designates whether this post is Part 1, 2, or 3 of the blog series.
    */
-  featured?: boolean | null;
+  partNumber?: ('1' | '2' | '3' | 'none') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1589,7 +1589,7 @@ export interface BlogsSelect<T extends boolean = true> {
   publishedDate?: T;
   content?: T;
   status?: T;
-  featured?: T;
+  partNumber?: T;
   updatedAt?: T;
   createdAt?: T;
 }
