@@ -1123,11 +1123,10 @@ export interface TrainingCoursesPage {
   managementTeamTitle?: string | null;
   managementTeam?:
     | {
-        initials: string;
+        photo?: (number | null) | Media;
         name: string;
         role: string;
         bio: string;
-        photo?: (number | null) | Media;
         imageUrl?: string | null;
         id?: string | null;
       }[]
@@ -2335,11 +2334,10 @@ export interface TrainingCoursesPageSelect<T extends boolean = true> {
   managementTeam?:
     | T
     | {
-        initials?: T;
+        photo?: T;
         name?: T;
         role?: T;
         bio?: T;
-        photo?: T;
         imageUrl?: T;
         id?: T;
       };

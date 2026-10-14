@@ -107,7 +107,7 @@ section.purple h2 { color: #fff; }
 /* Split & Photo Layout */
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
 @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
-.split .photo { border-radius: 2px; overflow: hidden; box-shadow: 0 16px 36px rgba(31, 35, 40, .16); border-top: 6px solid var(--purple); }
+.split .photo { border-radius: 2px; overflow: hidden; box-shadow: 0 16px 36px rgba(31, 35, 40, .16); }
 
 /* Checklists */
 .checks { list-style: none; padding: 0; margin: 0; }
@@ -115,6 +115,9 @@ section.purple h2 { color: #fff; }
 .checks li::before { content: '\2713'; position: absolute; left: 4px; top: 12px; color: var(--purple); font-weight: 800; background: var(--tint); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 .checks b { display: block; font-size: 15.5px; color: var(--ink); font-weight: 700; }
 .checks span { font-size: 14px; color: var(--muted); display: block; }
+.checks.checks-icon li { padding-left: 40px; }
+.checks.checks-icon li::before { display: none; }
+.checks.checks-icon .check-icon { position: absolute; left: 0; top: 10px; width: 28px; height: 28px; border-radius: 50%; background: #EEE8F7; color: var(--purple); display: flex; align-items: center; justify-content: center; }
 
 /* Forms */
 .form { background: #fff; border: 1px solid var(--line); border-radius: 2px; padding: 28px; box-shadow: 0 14px 34px rgba(31, 35, 40, .08); }

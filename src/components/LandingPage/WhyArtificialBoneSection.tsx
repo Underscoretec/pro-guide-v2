@@ -67,9 +67,9 @@ export const WhyArtificialBoneSection: React.FC<WhyArtificialBoneProps> = ({ dat
           {/* Checks List */}
           <ul className="list-none space-y-2">
             {checkItems.map((item: any, idx: number) => (
-              <li key={idx} className="relative pl-[52px] py-[10px]">
-                <span className="absolute left-0 top-[8px] text-purple bg-[#EEE8F7] w-[38px] h-[38px] rounded-full flex items-center justify-center">
-                  <FiCheck className="w-[20px] h-[20px]" strokeWidth={2.5} />
+              <li key={idx} className="relative pl-[40px] py-[10px]">
+                <span className="absolute left-0 top-[10px] text-purple bg-[#EEE8F7] w-[28px] h-[28px] rounded-full flex items-center justify-center">
+                  <FiCheck className="w-[15px] h-[15px]" strokeWidth={2.5} />
                 </span>
                 <b className="block text-[15.5px] font-bold text-ink mb-1">
                   {item.title}

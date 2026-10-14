@@ -30,11 +30,10 @@ export const TrainingCoursesPage: CollectionConfig = {
       name: 'managementTeam',
       type: 'array',
       fields: [
-        { name: 'initials', type: 'text', required: true },
+        { name: 'photo', label: 'Image', type: 'upload', relationTo: 'media' },
         { name: 'name', type: 'text', required: true },
         { name: 'role', type: 'text', required: true },
         { name: 'bio', type: 'textarea', required: true },
-        { name: 'photo', type: 'upload', relationTo: 'media' },
         { name: 'imageUrl', type: 'text' },
       ],
     },
