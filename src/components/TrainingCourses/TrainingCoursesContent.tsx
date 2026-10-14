@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import { FiCheck } from 'react-icons/fi'
 
 interface TrainingCoursesContentProps {
   data?: any
@@ -9,13 +10,11 @@ interface TrainingCoursesContentProps {
 
 const defaultManagementTeam = [
   {
-    initials: 'PN',
     name: 'Dr. Prashant Naik',
     role: 'MS (ENT), DLO',
     bio: "Dr. Prashant's dedication to the field of otology is commendable. His innovative approach — including the creation of a precise 3D-printed replica of the temporal bone — showcases his commitment to advancing medical education and practice. He is an active member of the AAO-HNSF and the Politzer Society and a peer reviewer for the Otolaryngology–Head and Neck Surgery journal. His hands-on dissection workshops, coupled with his management of an open-access temporal bone dissection lab, offer invaluable resources for both aspiring and established otologists.",
   },
   {
-    initials: 'MK',
     name: 'Dr. Milind Kirtane',
     role: 'MS, DORL, DSc (Hon.) — Padma Shri Awardee',
     bio: "One of India's foremost ENT and cochlear implant surgeons. Consulting ENT Surgeon at P. D. Hinduja National Hospital, Breach Candy and Saifee Hospital, Mumbai, and Honorary Surgeon at King Edward Memorial Hospital. A teacher to generations of otolaryngologists, his guidance anchors the clinical standards of every ProGuide training programme.",
@@ -181,7 +180,7 @@ export const TrainingCoursesContent: React.FC<TrainingCoursesContentProps> = ({ 
       ? whyBoneData.image.url
       : whyBoneData?.imageUrl || '/images/photo_micro.jpg'
 
-  const checks = whyBoneData?.checkList || [
+  const checks = whyBoneData?.checkList?.length ? whyBoneData.checkList : [
     {
       title: 'Essential Skills for Surgical Procedures',
       description: 'Mastering the anatomy of the temporal bone, larynx and paranasal sinuses is crucial before performing surgical procedures.',
@@ -200,7 +199,7 @@ export const TrainingCoursesContent: React.FC<TrainingCoursesContentProps> = ({ 
     },
   ]
 
-  const stats = whyBoneData?.stats || [
+  const stats = whyBoneData?.stats?.length ? whyBoneData.stats : [
     { value: '100%', label: 'Safety in temporal bone laboratory' },
     { value: '90%', label: 'Value for surgical experience' },
     { value: '94%', label: 'External anatomical features' },
@@ -239,7 +238,7 @@ export const TrainingCoursesContent: React.FC<TrainingCoursesContentProps> = ({ 
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={member.photoUrl} alt={member.name} className="avatar" style={{ objectFit: 'cover' }} />
                 ) : (
-                  <div className="avatar">{member.initials}</div>
+                  <div className="avatar" style={{ background: "#EEE8F7" }} />
                 )}
                 <h3>{member.name}</h3>
                 <div className="role">{member.role}</div>
@@ -303,9 +302,12 @@ export const TrainingCoursesContent: React.FC<TrainingCoursesContentProps> = ({ 
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={whyBoneImg} alt={whyBoneTitle} />
             </div>
-            <ul className="checks">
+            <ul className="checks checks-icon">
               {checks.map((check: any, idx: number) => (
                 <li key={idx}>
+                  <span className="check-icon">
+                    <FiCheck size={15} strokeWidth={2.5} />
+                  </span>
                   <b>{check.title}</b>
                   <span>{check.description}</span>
                 </li>

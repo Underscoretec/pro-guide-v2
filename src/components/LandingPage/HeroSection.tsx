@@ -158,7 +158,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
     <div className={`${roboto.className} border-b border-line`}>
       <div className="max-w-[1200px] mx-auto px-6 py-11 pb-12 grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-[42px] items-center">
         {/* Left Column Content */}
-        <div>
+        <div className="lg:self-start lg:pt-12">
           <h1 className="text-[clamp(28px,3.6vw,42px)] font-bold leading-[1.25] text-ink">
             {headline}
           </h1>
@@ -228,7 +228,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
                       return (
                         <div
                           key={itemIdx}
-                          className="rounded-sm overflow-hidden relative aspect-[3/4] bg-white group/card"
+                          className="rounded-sm overflow-hidden relative aspect-square bg-white group/card"
                         >
                           <Image
                             src={src}
