@@ -83,17 +83,48 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ data, 
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {feedbackChips.map((item: any, idx: number) => (
-              <div
-                key={idx}
-                className="bg-white border border-line border-l-4 border-l-purple rounded-sm p-[16px_18px] text-[14px] text-[#3A4048] flex flex-col justify-between shadow-sm"
-              >
-                <p className="leading-relaxed">{item.quote}</p>
-                <span className="block mt-[10px] text-[12px] font-bold text-purple uppercase tracking-[0.6px]">
-                  {item.author}
-                </span>
-              </div>
-            ))}
+            {feedbackChips.map((item: any, idx: number) => {
+              const avatarSrc = item.image?.url || item.imageUrl || null
+              const initials = (item.author || '')
+                .split(/[\s\-—]+/)
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((w: string) => w[0]?.toUpperCase() || '')
+                .join('')
+              return (
+                <div
+                  key={idx}
+                  className="bg-white border border-line border-l-4 border-l-purple rounded-sm p-[16px_18px] text-[14px] text-[#3A4048] flex flex-col justify-between shadow-sm"
+                >
+                  <p className="leading-relaxed">{item.quote}</p>
+                  {/* Author row with avatar */}
+                  <div className="flex items-center gap-3 mt-[12px]">
+                    <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 bg-[#EDE9F6] flex items-center justify-center text-purple font-bold text-[13px]">
+                      {avatarSrc ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={avatarSrc}
+                          alt={item.author || 'Author'}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span>{initials || '?'}</span>
+                      )}
+                    </div>
+                    <div>
+                      <span className="block text-[12px] font-bold text-purple uppercase tracking-[0.6px] leading-snug">
+                        {item.author}
+                      </span>
+                      {item.designation && (
+                        <span className="block text-[11px] text-muted leading-snug mt-[1px]">
+                          {item.designation}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -107,23 +138,57 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ data, 
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
-            {learnerStories.map((story: any, idx: number) => (
-              <div
-                key={idx}
-                className="bg-gradient-to-br from-[#4A148C] to-[#673AB7] rounded-sm text-[#F2E8F6] p-6 relative text-[14.5px] leading-relaxed shadow-md flex flex-col justify-between"
-              >
+            {learnerStories.map((story: any, idx: number) => {
+              const avatarSrc = story.image?.url || story.imageUrl || null
+              const initials = (story.author || '')
+                .split(/[\s\-—]+/)
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((w: string) => w[0]?.toUpperCase() || '')
+                .join('')
+              return (
                 <div
-                  className="absolute top-1 right-4 text-[60px] text-white/25 font-serif select-none pointer-events-none leading-none"
-                  aria-hidden="true"
+                  key={idx}
+                  className="bg-gradient-to-br from-[#4A148C] to-[#673AB7] rounded-sm text-[#F2E8F6] p-6 relative text-[14.5px] leading-relaxed shadow-md flex flex-col justify-between"
                 >
-                  &ldquo;
+                  <div
+                    className="absolute top-1 right-4 text-[60px] text-white/25 font-serif select-none pointer-events-none leading-none"
+                    aria-hidden="true"
+                  >
+                    &ldquo;
+                  </div>
+                  <p className="relative z-10">{story.quote || story.text}</p>
+
+                  {/* Author row with avatar */}
+                  <div className="relative z-10 flex items-center gap-3 mt-[16px]">
+                    {/* Avatar */}
+                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-white/20 flex items-center justify-center text-white font-bold text-[14px] border-2 border-white/30">
+                      {avatarSrc ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={avatarSrc}
+                          alt={story.author || 'Author'}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span>{initials || '?'}</span>
+                      )}
+                    </div>
+                    {/* Name + designation */}
+                    <div>
+                      <span className="block font-bold text-white text-[13px] leading-snug">
+                        {story.author}
+                      </span>
+                      {story.designation && (
+                        <span className="block text-white/70 text-[11.5px] leading-snug mt-[1px]">
+                          {story.designation}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <p className="relative z-10">{story.quote || story.text}</p>
-                <span className="relative z-10 block mt-[14px] font-bold text-white text-[13px]">
-                  {story.author}
-                </span>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>

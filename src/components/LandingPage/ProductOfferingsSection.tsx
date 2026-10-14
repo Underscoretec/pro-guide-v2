@@ -58,7 +58,7 @@ const ProductImageSlider: React.FC<ProductImageSliderProps> = ({ images, alt, de
   return (
     <Link
       href={detailsHref}
-      className="relative bg-card aspect-[4/2.9] flex items-center justify-center overflow-hidden block group/slider"
+      className="relative aspect-[4/2.9] overflow-hidden block group/slider"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false)
@@ -71,7 +71,7 @@ const ProductImageSlider: React.FC<ProductImageSliderProps> = ({ images, alt, de
           key={i}
           src={src}
           alt={`${alt} view ${i + 1}`}
-          className={`absolute inset-0 w-full h-full object-contain mix-blend-multiply transition-opacity duration-500 ease-in-out ${
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${
             i === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
           }`}
         />
@@ -203,7 +203,7 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
   }
 
   return (
-    <section id="products" className={`${roboto.className} py-[52px] bg-[#F8F8FA] border-t border-b border-line`}>
+    <section id="products" className={`${roboto.className} py-[52px] border-t border-b border-line`}>
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Section Heading */}
         <div className="sechead">
@@ -277,8 +277,8 @@ export const ProductOfferingsSection: React.FC<ProductOfferingsProps> = ({ data,
 
                 {/* Product Body */}
                 <div className="p-[14px_16px_16px] flex flex-col gap-1 flex-1">
-                  <h3 className="text-[16.5px] font-bold text-ink leading-snug">
-                    <Link href={detailsHref} className="text-inherit hover:text-purple">
+                  <h3 className="text-[16.5px] font-bold leading-snug">
+                    <Link href={detailsHref} className="text-black" style={{ color: '#000' }}>
                       {prod.title || prod.name}
                     </Link>
                   </h3>

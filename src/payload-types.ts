@@ -624,7 +624,7 @@ export interface HomePage {
             subtitle?: string | null;
             facultyList?:
               | {
-                  initials: string;
+                  image?: (number | null) | Media;
                   name: string;
                   role: string;
                   bio: string;
@@ -641,6 +641,9 @@ export interface HomePage {
               | {
                   quote: string;
                   author: string;
+                  designation?: string | null;
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -649,6 +652,9 @@ export interface HomePage {
               | {
                   quote: string;
                   author: string;
+                  designation?: string | null;
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -1803,7 +1809,7 @@ export interface HomePageSelect<T extends boolean = true> {
               facultyList?:
                 | T
                 | {
-                    initials?: T;
+                    image?: T;
                     name?: T;
                     role?: T;
                     bio?: T;
@@ -1821,6 +1827,9 @@ export interface HomePageSelect<T extends boolean = true> {
                 | {
                     quote?: T;
                     author?: T;
+                    designation?: T;
+                    image?: T;
+                    imageUrl?: T;
                     id?: T;
                   };
               storiesTitle?: T;
@@ -1829,6 +1838,9 @@ export interface HomePageSelect<T extends boolean = true> {
                 | {
                     quote?: T;
                     author?: T;
+                    designation?: T;
+                    image?: T;
+                    imageUrl?: T;
                     id?: T;
                   };
               id?: T;
