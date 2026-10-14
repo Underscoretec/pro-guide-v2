@@ -47,7 +47,7 @@ export default async function HomePage() {
       <WhyArtificialBoneSection data={whyBoneBlock} />
       <FacultySection data={facultyBlock} />
       <TestimonialsSection data={testimonialsBlock} />
-      <BoneVariantsSection data={variantsBlock} />
+      {/* <BoneVariantsSection data={variantsBlock} /> */}
       <LeadFormSection data={leadFormBlock} />
       <BlogSection data={blogBlock} />
     </main>

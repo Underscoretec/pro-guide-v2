@@ -586,6 +586,9 @@ export interface HomePage {
               | {
                   quote: string;
                   author: string;
+                  designation?: string | null;
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -594,6 +597,9 @@ export interface HomePage {
               | {
                   quote: string;
                   author: string;
+                  designation?: string | null;
+                  image?: (number | null) | Media;
+                  imageUrl?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -1739,6 +1745,9 @@ export interface HomePageSelect<T extends boolean = true> {
                 | {
                     quote?: T;
                     author?: T;
+                    designation?: T;
+                    image?: T;
+                    imageUrl?: T;
                     id?: T;
                   };
               storiesTitle?: T;
@@ -1747,6 +1756,9 @@ export interface HomePageSelect<T extends boolean = true> {
                 | {
                     quote?: T;
                     author?: T;
+                    designation?: T;
+                    image?: T;
+                    imageUrl?: T;
                     id?: T;
                   };
               id?: T;

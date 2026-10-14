@@ -250,7 +250,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
       {/* Uniform card image container with hover auto-slide */}
       <Link
         href={`/products/${productSlug}`}
-        className="relative aspect-[16/10] bg-[#F8F9FA] overflow-hidden border-b border-line/60 select-none group/img block"
+        className="relative aspect-[16/10] bg-white overflow-hidden border-b border-line/60 select-none group/img block"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => {
           setIsHovered(false)
@@ -263,7 +263,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
             key={i}
             src={src}
             alt={`${altText} view ${i + 1}`}
-            className={`absolute inset-0 w-full h-full object-contain p-2 mix-blend-multiply transition-opacity duration-500 ease-in-out ${
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${
               i === currentIndex
                 ? 'opacity-100 z-10'
                 : 'opacity-0 z-0 pointer-events-none'

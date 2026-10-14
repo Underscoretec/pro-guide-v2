@@ -370,6 +370,9 @@ export const TestimonialsBlock: Block = {
       fields: [
         { name: 'quote', type: 'textarea', required: true },
         { name: 'author', type: 'text', required: true },
+        { name: 'designation', type: 'text', label: 'Designation / Role' },
+        { name: 'image', type: 'upload', relationTo: 'media', label: 'Author Photo' },
+        { name: 'imageUrl', type: 'text', label: 'Author Photo URL (optional if uploaded above)' },
       ],
     },
     {
@@ -383,6 +386,9 @@ export const TestimonialsBlock: Block = {
       fields: [
         { name: 'quote', type: 'textarea', required: true },
         { name: 'author', type: 'text', required: true },
+        { name: 'designation', type: 'text', label: 'Designation / Role' },
+        { name: 'image', type: 'upload', relationTo: 'media', label: 'Author Photo' },
+        { name: 'imageUrl', type: 'text', label: 'Author Photo URL (optional if uploaded above)' },
       ],
     },
   ],
