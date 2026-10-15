@@ -347,7 +347,7 @@ export function generateInvoiceCardHtml(order: any): string {
     data.taxAmount > 0
       ? `
         <tr>
-          <td colspan="2">IGST @ 18%</td>
+          <td colspan="2">GST @ 18%</td>
           <td class="right">${formatCurrency(data.taxAmount, data.currency)}</td>
         </tr>`
       : data.currency === 'USD'

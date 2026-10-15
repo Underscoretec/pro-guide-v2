@@ -234,7 +234,7 @@ export function generateInvoicePdfBuffer(order: any): Buffer {
     doc.rect(margin, y, descW + qtyW, rowH)
     doc.rect(margin + descW + qtyW, y, amtW, rowH)
     doc.setFont('helvetica', 'normal')
-    doc.text('IGST @ 18%', margin + 6, y + 12)
+    doc.text('GST @ 18%', margin + 6, y + 12)
     doc.text(
       formatPdfPrice(data.taxAmount),
       margin + contentWidth - 6,
