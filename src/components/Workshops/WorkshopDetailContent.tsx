@@ -5,9 +5,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
+import type { WorkshopDetailItem } from '@/lib/payload/workshopDetails'
 
 interface WorkshopDetailProps {
   slug: string
+  data?: WorkshopDetailItem | null
 }
 
 const workshopDataMap: Record<string, {
@@ -223,13 +225,13 @@ const defaultWorkshopDetail = {
   ],
 }
 
-export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) => {
+export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug, data }) => {
   const [activeTab, setActiveTab] = useState<'details' | 'experience' | 'philosophy'>('details')
   const { addToCart, isLoggedIn } = useCart()
   const router = useRouter()
 
   const formattedSlug = slug?.toLowerCase() || ''
-  const details = workshopDataMap[formattedSlug] || {
+  const fallback = workshopDataMap[formattedSlug] || {
     ...defaultWorkshopDetail,
     title: slug
       ? slug
@@ -238,6 +240,29 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug }) =
           .join(' ')
       : defaultWorkshopDetail.title,
   }
+
+  // CMS entry (workshop-details collection) takes priority; empty CMS fields fall back to static content
+  const pick = <T,>(value: T | undefined, fb: T): T =>
+    Array.isArray(value) ? (value.length ? value : fb) : value || fb
+  const details = data
+    ? {
+        ...fallback,
+        title: pick(data.title, fallback.title),
+        subtitle: pick(data.subtitle, fallback.subtitle),
+        category: pick(data.category, fallback.category),
+        imageUrl: pick(data.imageUrl, fallback.imageUrl),
+        duration: pick(data.duration, fallback.duration),
+        learners: pick(data.learners, fallback.learners),
+        designationBullets: pick(data.designationBullets, fallback.designationBullets),
+        academicContent: {
+          heading: pick(data.academicContent.heading, fallback.academicContent.heading),
+          subheadings: pick(data.academicContent.subheadings, fallback.academicContent.subheadings),
+        },
+        whyTrainBullets: pick(data.whyTrainBullets, fallback.whyTrainBullets),
+        experienceContent: pick(data.experienceContent, fallback.experienceContent),
+        teachingPhilosophy: pick(data.teachingPhilosophy, fallback.teachingPhilosophy),
+      }
+    : fallback
 
   const handleAddToCart = () => {
     addToCart({
