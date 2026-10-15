@@ -1,3 +1,4 @@
+import { User } from '@/payload-types'
 import type { CollectionConfig } from 'payload'
 
 export const LeadSubmissions: CollectionConfig = {
@@ -12,7 +13,7 @@ export const LeadSubmissions: CollectionConfig = {
   },
   access: {
     create: () => true, // Allows public form submissions from landing page
-    read: ({ req: { user } }) => Boolean(user),
+    read: ({ req: { user } }) => (user as User)?.role === 'admin',
     update: ({ req: { user } }) => Boolean(user),
     delete: ({ req: { user } }) => Boolean(user),
   },

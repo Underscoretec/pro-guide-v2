@@ -1,3 +1,4 @@
+import { User } from '@/payload-types'
 import type { Block, CollectionConfig } from 'payload'
 
 export const ResourcesHeroBlock: Block = {
@@ -255,7 +256,7 @@ export const ThreeDSimulation: CollectionConfig = {
     defaultColumns: ['title', 'updatedAt'],
   },
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => (user as User)?.role === 'admin',
   },
   fields: [
     {
