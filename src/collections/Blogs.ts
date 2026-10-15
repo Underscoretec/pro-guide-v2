@@ -13,7 +13,7 @@ export const Blogs: CollectionConfig = {
     group: 'Content',
   },
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => (user as User)?.role === 'admin',
     create: ({ req: { user } }) => Boolean(user && ['admin', 'kb_admin'].includes((user as User).role)),
     update: ({ req: { user } }) => Boolean(user && ['admin', 'kb_admin'].includes((user as User).role)),
     delete: ({ req: { user } }) => Boolean(user && ['admin', 'kb_admin'].includes((user as User).role)),

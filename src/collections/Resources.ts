@@ -1,3 +1,4 @@
+import { User } from '@/payload-types'
 import type { CollectionConfig } from 'payload'
 
 export const Resources: CollectionConfig = {
@@ -11,7 +12,7 @@ export const Resources: CollectionConfig = {
     defaultColumns: ['title', 'updatedAt'],
   },
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => (user as User)?.role === 'admin',
   },
   fields: [
     {
