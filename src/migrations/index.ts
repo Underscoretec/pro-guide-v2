@@ -15,6 +15,7 @@ import * as migration_20261014_074000_add_part_number_to_blogs from './20261014_
 import * as migration_20261014_090000_remove_management_initials from './20261014_090000_remove_management_initials';
 import * as migration_20261015_045240_add_workshop_details from './20261015_045240_add_workshop_details';
 import * as migration_20261015_045730 from './20261015_045730';
+import * as migration_20261015_054509 from './20261015_054509';
 
 export const migrations = [
   {
@@ -100,6 +101,11 @@ export const migrations = [
   {
     up: migration_20261015_045730.up,
     down: migration_20261015_045730.down,
-    name: '20261015_045730'
+    name: '20261015_045730',
+  },
+  {
+    up: migration_20261015_054509.up,
+    down: migration_20261015_054509.down,
+    name: '20261015_054509'
   },
 ];
