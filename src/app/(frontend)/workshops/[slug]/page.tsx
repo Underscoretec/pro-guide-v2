@@ -1,7 +1,10 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import { WorkshopDetailContent } from '@/components/Workshops/WorkshopDetailContent'
+import { getWorkshopDetailBySlug } from '@/lib/payload/workshopDetails'
 import { roboto } from '@/font'
+
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({
   params,
@@ -10,12 +13,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const resolvedParams = await params
   const slug = resolvedParams.slug || ''
-  const title = slug
-    ? slug
-        .split('-')
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(' ')
-    : 'Workshop Details'
+  const workshop = await getWorkshopDetailBySlug(slug)
+  const title = workshop?.title
+    ? workshop.title
+    : slug
+      ? slug
+          .split('-')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ')
+      : 'Workshop Details'
 
   return {
     title: `${title} — KBI SkillBridge | ProGuide`,
@@ -29,9 +35,10 @@ export default async function WorkshopDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const resolvedParams = await params
+  const workshop = await getWorkshopDetailBySlug(resolvedParams.slug)
   return (
     <main className={`${roboto.className} flex-1 bg-white`}>
-      <WorkshopDetailContent slug={resolvedParams.slug} />
+      <WorkshopDetailContent slug={resolvedParams.slug} data={workshop} />
     </main>
   )
 }

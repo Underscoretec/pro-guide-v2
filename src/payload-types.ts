@@ -82,6 +82,7 @@ export interface Config {
     'customized-model-page': CustomizedModelPage;
     'customized-model-submissions': CustomizedModelSubmission;
     'workshops-page': WorkshopsPage;
+    'workshop-details': WorkshopDetail;
     'training-courses-page': TrainingCoursesPage;
     'lead-submissions': LeadSubmission;
     'learning-bites-page': LearningBitesPage;
@@ -108,6 +109,7 @@ export interface Config {
     'customized-model-page': CustomizedModelPageSelect<false> | CustomizedModelPageSelect<true>;
     'customized-model-submissions': CustomizedModelSubmissionsSelect<false> | CustomizedModelSubmissionsSelect<true>;
     'workshops-page': WorkshopsPageSelect<false> | WorkshopsPageSelect<true>;
+    'workshop-details': WorkshopDetailsSelect<false> | WorkshopDetailsSelect<true>;
     'training-courses-page': TrainingCoursesPageSelect<false> | TrainingCoursesPageSelect<true>;
     'lead-submissions': LeadSubmissionsSelect<false> | LeadSubmissionsSelect<true>;
     'learning-bites-page': LearningBitesPageSelect<false> | LearningBitesPageSelect<true>;
@@ -1114,6 +1116,63 @@ export interface WorkshopsPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workshop-details".
+ */
+export interface WorkshopDetail {
+  id: number;
+  title: string;
+  /**
+   * URL slug for /workshops/[slug]. Must match the workshop card title on the Workshops page (e.g. "Basic 3D Temporal Bone Dissection Workshop" → basic-3d-temporal-bone-dissection-workshop). Generated from title if left empty.
+   */
+  slug: string;
+  subtitle?: string | null;
+  category?: string | null;
+  image?: (number | null) | Media;
+  imageUrl?: string | null;
+  duration?: string | null;
+  learners?: string | null;
+  designationBullets?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  academicHeading?: string | null;
+  academicSubheadings?:
+    | {
+        title: string;
+        bullets?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  whyTrainBullets?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  experienceContent?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  teachingPhilosophy?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "training-courses-page".
  */
 export interface TrainingCoursesPage {
@@ -1335,6 +1394,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'workshops-page';
         value: number | WorkshopsPage;
+      } | null)
+    | ({
+        relationTo: 'workshop-details';
+        value: number | WorkshopDetail;
       } | null)
     | ({
         relationTo: 'training-courses-page';
@@ -2318,6 +2381,59 @@ export interface WorkshopsPageSelect<T extends boolean = true> {
     | {
         value?: T;
         label?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workshop-details_select".
+ */
+export interface WorkshopDetailsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  subtitle?: T;
+  category?: T;
+  image?: T;
+  imageUrl?: T;
+  duration?: T;
+  learners?: T;
+  designationBullets?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  academicHeading?: T;
+  academicSubheadings?:
+    | T
+    | {
+        title?: T;
+        bullets?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  whyTrainBullets?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  experienceContent?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  teachingPhilosophy?:
+    | T
+    | {
+        text?: T;
         id?: T;
       };
   updatedAt?: T;

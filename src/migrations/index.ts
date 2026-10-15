@@ -13,6 +13,8 @@ import * as migration_20261014_063601 from './20261014_063601';
 import * as migration_20261014_072437 from './20261014_072437';
 import * as migration_20261014_074000_add_part_number_to_blogs from './20261014_074000_add_part_number_to_blogs';
 import * as migration_20261014_090000_remove_management_initials from './20261014_090000_remove_management_initials';
+import * as migration_20261015_045240_add_workshop_details from './20261015_045240_add_workshop_details';
+import * as migration_20261015_045730 from './20261015_045730';
 
 export const migrations = [
   {
@@ -89,5 +91,15 @@ export const migrations = [
     up: migration_20261014_090000_remove_management_initials.up,
     down: migration_20261014_090000_remove_management_initials.down,
     name: '20261014_090000_remove_management_initials',
+  },
+  {
+    up: migration_20261015_045240_add_workshop_details.up,
+    down: migration_20261015_045240_add_workshop_details.down,
+    name: '20261015_045240_add_workshop_details',
+  },
+  {
+    up: migration_20261015_045730.up,
+    down: migration_20261015_045730.down,
+    name: '20261015_045730'
   },
 ];
