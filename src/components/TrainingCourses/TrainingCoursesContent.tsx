@@ -273,21 +273,15 @@ export const TrainingCoursesContent: React.FC<TrainingCoursesContentProps> = ({ 
                 <div className="fmt">{c.fmt}</div>
                 <div className="actions">
                   <a className="btn ghost" href={c.brochureUrl} target="_blank" rel="noopener noreferrer">
-                    Brochure
+                    Download Flyer
                   </a>
-                  <a className="btn" href={c.registrationUrl} target="_blank" rel="noopener noreferrer">
+                  <a className="btn" href="/sign-up">
                     Register
                   </a>
                 </div>
               </div>
             ))}
           </div>
-
-          <p style={{ textAlign: 'center', marginTop: '24px' }}>
-            <a className="btn" href="/ProGuide_3D_Workshops_2026.pdf" target="_blank" rel="noopener noreferrer">
-              Download the 2026 Workshop Brochure (PDF)
-            </a>
-          </p>
         </div>
       </section>
 

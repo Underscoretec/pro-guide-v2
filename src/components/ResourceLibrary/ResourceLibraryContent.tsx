@@ -471,6 +471,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
             <div className="p-4 border-t border-gray-200 bg-white flex flex-wrap items-center justify-between gap-3 text-xs text-gray-500">
               <span>ProGuide Official Educational Publication • Academic Year 2026</span>
               <div className="flex items-center gap-3">
+                {/*
                 <a
                   href={
                     activePdfModal.viewPdfLink ||
@@ -503,6 +504,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
                   </svg>
                   <span>Download PDF</span>
                 </a>
+                */}
 
                 <button
                   onClick={() => setActivePdfModal(null)}
