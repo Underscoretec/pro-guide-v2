@@ -1,3 +1,4 @@
+import { User } from '@/payload-types'
 import type { CollectionConfig } from 'payload'
 
 export const ProductsPage: CollectionConfig = {
@@ -7,7 +8,7 @@ export const ProductsPage: CollectionConfig = {
     plural: 'Products Pages',
   },
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => (user as User)?.role === 'admin',
   },
   admin: {
     useAsTitle: 'title',

@@ -1,9 +1,10 @@
+import { User } from '@/payload-types'
 import type { GlobalConfig } from 'payload'
 
 export const Footer: GlobalConfig = {
   slug: 'footer',
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => (user as User)?.role === 'admin',
   },
   fields: [
     {
