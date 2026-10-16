@@ -52,13 +52,18 @@ interface DetailImageSliderProps {
 const DetailImageSlider: React.FC<DetailImageSliderProps> = ({ images, alt }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
+  const [animate, setAnimate] = useState(true)
+
+  // A clone of the first image sits at the end so the loop keeps moving in one direction
+  const slides = images.length > 1 ? [...images, images[0]] : images
 
   useEffect(() => {
-    if (!isHovered || images.length <= 1) return
+    if (isHovered || images.length <= 1) return
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length)
-    }, 1200)
+      setAnimate(true)
+      setCurrentIndex((prev) => prev + 1)
+    }, 2500)
 
     return () => clearInterval(interval)
   }, [isHovered, images.length])
@@ -67,35 +72,41 @@ const DetailImageSlider: React.FC<DetailImageSliderProps> = ({ images, alt }) =>
     <div
       className="relative aspect-[16/9] bg-[#1a1a1a] overflow-hidden select-none group/slider cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false)
-        setCurrentIndex(0)
-      }}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {images.map((src, i) => (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          key={i}
-          src={src}
-          alt={`${alt} view ${i + 1}`}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${
-            i === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-          }`}
-        />
-      ))}
+      {/* Sliding track: every image sits side by side and the track moves left */}
+      <div
+        className={`flex h-full w-full ${animate ? 'transition-transform duration-700 ease-in-out' : ''}`}
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        onTransitionEnd={() => {
+          // Reached the cloned first image: jump back to the real first one without animation
+          if (currentIndex >= images.length) {
+            setAnimate(false)
+            setCurrentIndex(0)
+          }
+        }}
+      >
+        {slides.map((src, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={i}
+            src={src}
+            alt={`${alt} view ${i + 1}`}
+            className="w-full h-full object-cover shrink-0 grow-0 basis-full"
+          />
+        ))}
+      </div>
 
       {/* Slide indicator pills on hover */}
       {images.length > 1 && (
         <div
-          className={`absolute bottom-2.5 left-0 right-0 z-20 flex justify-center items-center gap-1.5 transition-opacity duration-300 pointer-events-none ${
-            isHovered ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="absolute bottom-2.5 left-0 right-0 z-20 flex justify-center items-center gap-1.5 pointer-events-none"
         >
           {images.map((_, i) => (
             <span
               key={i}
               className={`h-1.5 rounded-full transition-all duration-300 shadow-md ${
-                i === currentIndex ? 'w-4 bg-orange' : 'w-1.5 bg-white/75'
+                i === currentIndex % images.length ? 'w-4 bg-orange' : 'w-1.5 bg-white/75'
               }`}
             />
           ))}
@@ -173,11 +184,11 @@ export const TrueToLifeDetailsSection: React.FC<TrueToLifeDetailsProps> = ({ dat
         )
         .filter(Boolean)
 
-      if (customImages.length === 1) {
-        return customImages
-      }
-      if (customImages.length > 1) {
-        return customImages
+      if (customImages.length > 0) {
+        // Main image first, then the extra images (no duplicates)
+        const mainUploaded = card.image && typeof card.image === 'object' ? card.image.url : ''
+        const main = mainUploaded || (typeof card.imageUrl === 'string' ? card.imageUrl.trim() : '')
+        return main && !customImages.includes(main) ? [main, ...customImages] : customImages
       }
     }
 
