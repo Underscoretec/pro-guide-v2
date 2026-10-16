@@ -26,24 +26,36 @@ interface LearningBitesContentProps {
 const defaultVideoArray = [
   {
     id: '1',
+    videoLink: '/public/Skill_lab/Skill_lab.m3u8',
+    thumbnail: '/public/Skill_lab/Skill_lab.png',
+    title: 'Bengaluru ENT Workshop',
+  },
+  {
+    id: '2',
+    videoLink: '/public/Workshop_02_10_26/Workshop_02_10_26.m3u8',
+    thumbnail: '/public/Workshop_02_10_26/Workshop_02_10_26.png',
+    title: 'Bengaluru ENT Workshop',
+  },
+  {
+    id: '3',
     videoLink: '/public/Bengaluru_ENT_Workshop/Bengaluru_ENT_Workshop.m3u8',
     thumbnail: '/public/Bengaluru_ENT_Workshop/Bengaluru_ENT_Workshop.png',
     title: 'Bengaluru ENT Workshop',
   },
   {
-    id: '2',
+    id: '4',
     videoLink: '/public/Delhi_ENT_Workshop/Delhi_ENT_Workshop.m3u8',
     thumbnail: '/public/Delhi_ENT_Workshop/Delhi_ENT_Workshop.png',
     title: 'Delhi ENT Workshop',
   },
   {
-    id: '3',
+    id: '5',
     videoLink: '/public/Hyderabad_ENT_Workshop/Hyderabad_ENT_Workshop.m3u8',
     thumbnail: '/public/Hyderabad_ENT_Workshop/Hyderabad_ENT_Workshop.png',
     title: 'Hyderabad ENT Workshop',
   },
   {
-    id: '4',
+    id: '6',
     videoLink: '/public/Mumbai_ENT_Workshop/Mumbai_ENT_Workshop.m3u8',
     thumbnail: '/public/Mumbai_ENT_Workshop/Mumbai_ENT_Workshop.png',
     title: 'Mumbai ENT Workshop',
