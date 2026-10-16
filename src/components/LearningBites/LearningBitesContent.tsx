@@ -28,13 +28,13 @@ const defaultVideoArray = [
     id: '1',
     videoLink: '/public/Skill_lab/Skill_lab.m3u8',
     thumbnail: '/public/Skill_lab/Skill_lab.png',
-    title: 'Bengaluru ENT Workshop',
+    title: 'Skill Lab Workshop',
   },
   {
     id: '2',
     videoLink: '/public/Workshop_02_10_26/Workshop_02_10_26.m3u8',
     thumbnail: '/public/Workshop_02_10_26/Workshop_02_10_26.png',
-    title: 'Bengaluru ENT Workshop',
+    title: 'Mumbai Manthan Workshop',
   },
   {
     id: '3',
