@@ -45,7 +45,7 @@ export default async function HomePage() {
   return (
     <main className="flex-1">
       <HeroSection data={heroBlock} />
-      <PartnerLogosSection data={partnersBlock} />
+      {/* <PartnerLogosSection data={partnersBlock} /> */}
       <ProductOfferingsSection data={productsBlock} products={landingProducts} />
       <TrueToLifeDetailsSection data={detailsBlock} />
       <ExploreWorkshopsSection data={workshopsBlock} />
