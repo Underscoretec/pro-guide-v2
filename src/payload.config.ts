@@ -17,6 +17,7 @@ import { CustomizedModelPage } from './collections/CustomizedModelPage'
 import { CustomizedModelSubmissions } from './collections/CustomizedModelSubmissions'
 import { WorkshopsPage } from './collections/WorkshopsPage'
 import { WorkshopDetails } from './collections/WorkshopDetails'
+import { WorkshopRegistrations } from './collections/WorkshopRegistrations'
 import { TrainingCoursesPage } from './collections/TrainingCoursesPage'
 import { LeadSubmissions } from './collections/LeadSubmissions'
 import { LearningBitesPage } from './collections/LearningBitesPage'
@@ -54,6 +55,7 @@ export default buildConfig({
     CustomizedModelSubmissions,
     WorkshopsPage,
     WorkshopDetails,
+    WorkshopRegistrations,
     TrainingCoursesPage,
     LeadSubmissions,
     LearningBitesPage,
