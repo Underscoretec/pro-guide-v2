@@ -495,7 +495,7 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
                 {/* Bottom Link */}
                 <p className="mt-4 text-center text-[14px] text-[#4B5563]">
                   Already have an account ?{' '}
-                  <Link href="/contact" className="text-[#673AB7] font-semibold hover:underline">
+                  <Link href="/sign-in" className="text-[#673AB7] font-semibold hover:underline">
                     Log in here
                   </Link>
                 </p>
