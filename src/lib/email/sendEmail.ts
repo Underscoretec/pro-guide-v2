@@ -3,6 +3,7 @@ import { SendEmailCommand } from '@aws-sdk/client-ses'
 import { logger } from '@/lib/logger'
 import {
   buildEmailVerificationTemplate,
+  buildPasswordResetOtpTemplate,
   buildPasswordResetTemplate,
   buildPaymentFailureTemplate,
   buildPaymentSuccessTemplate,
@@ -102,6 +103,10 @@ export async function sendTransactionalEmail<T extends EmailTemplateType>(
 ): Promise<void> {
   logger.email.info('Transactional email requested', { type, to, cc: options?.cc })
 
+  if (process.env.NODE_ENV !== 'production' && data && typeof data === 'object' && 'otp' in data) {
+    console.log(`\n[DEV OTP] ${type} -> ${to}: ${(data as { otp: string }).otp}\n`)
+  }
+
   let emailContent: { subject: string; html: string; text: string }
 
   switch (type) {
@@ -122,6 +127,9 @@ export async function sendTransactionalEmail<T extends EmailTemplateType>(
       break
     case 'password-reset':
       emailContent = buildPasswordResetTemplate(data as TransactionalEmailData['password-reset'])
+      break
+    case 'password-reset-otp':
+      emailContent = buildPasswordResetOtpTemplate(data as TransactionalEmailData['password-reset-otp'])
       break
     default:
       throw new Error(`Unsupported email template type: ${type}`)
@@ -217,5 +225,17 @@ export async function sendPasswordResetEmail(
     resetUrl,
     fullName,
     expiryMinutes: 60,
+  })
+}
+
+export async function sendPasswordResetOtp(
+  to: string,
+  otp: string,
+  fullName?: string,
+): Promise<void> {
+  await sendTransactionalEmail('password-reset-otp', to, {
+    otp,
+    fullName,
+    expiryMinutes: 10,
   })
 }

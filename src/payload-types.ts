@@ -195,6 +195,8 @@ export interface User {
   emailOtpExpiresAt?: string | null;
   phoneOtpHash?: string | null;
   phoneOtpExpiresAt?: string | null;
+  passwordResetOtpHash?: string | null;
+  passwordResetOtpExpiresAt?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1495,6 +1497,8 @@ export interface UsersSelect<T extends boolean = true> {
   emailOtpExpiresAt?: T;
   phoneOtpHash?: T;
   phoneOtpExpiresAt?: T;
+  passwordResetOtpHash?: T;
+  passwordResetOtpExpiresAt?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

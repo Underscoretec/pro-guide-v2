@@ -176,7 +176,7 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
                       }
                       className="flex-1 py-[9px] px-2 text-[12px] font-bold text-center bg-white text-ink rounded-sm border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
                     >
-                      Download Flyer
+                      View Flyer
                     </button>
                     <Link
                       href={`/workshops/${slug}`}

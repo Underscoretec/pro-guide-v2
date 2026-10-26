@@ -167,5 +167,19 @@ export const Users: CollectionConfig = {
         hidden: true,
       },
     },
+    {
+      name: 'passwordResetOtpHash',
+      type: 'text',
+      admin: {
+        hidden: true,
+      },
+    },
+    {
+      name: 'passwordResetOtpExpiresAt',
+      type: 'date',
+      admin: {
+        hidden: true,
+      },
+    },
   ],
 }

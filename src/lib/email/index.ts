@@ -8,6 +8,7 @@ export {
   sendPaymentSuccessEmail,
   sendPaymentFailureEmail,
   sendPasswordResetEmail,
+  sendPasswordResetOtp,
 } from './sendEmail'
 export {
   buildEmailVerificationTemplate,
@@ -16,6 +17,7 @@ export {
   buildPaymentSuccessTemplate,
   buildPaymentFailureTemplate,
   buildPasswordResetTemplate,
+  buildPasswordResetOtpTemplate,
 } from './templates'
 export type {
   EmailTemplateType,
@@ -27,5 +29,6 @@ export type {
   PaymentSuccessTemplateData,
   PaymentFailureTemplateData,
   PasswordResetTemplateData,
+  PasswordResetOtpTemplateData,
   TransactionalEmailData,
 } from './types'
