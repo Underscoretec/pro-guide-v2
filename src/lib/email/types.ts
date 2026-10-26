@@ -5,6 +5,7 @@ export type EmailTemplateType =
   | 'payment-success'
   | 'payment-failure'
   | 'password-reset'
+  | 'password-reset-otp'
 
 export interface SendEmailOptions {
   to: string | string[]
@@ -65,6 +66,12 @@ export interface PasswordResetTemplateData {
   expiryMinutes?: number
 }
 
+export interface PasswordResetOtpTemplateData {
+  otp: string
+  fullName?: string
+  expiryMinutes?: number
+}
+
 export type TransactionalEmailData = {
   'email-verification': EmailVerificationTemplateData
   'phone-verification': PhoneVerificationTemplateData
@@ -72,4 +79,5 @@ export type TransactionalEmailData = {
   'payment-success': PaymentSuccessTemplateData
   'payment-failure': PaymentFailureTemplateData
   'password-reset': PasswordResetTemplateData
+  'password-reset-otp': PasswordResetOtpTemplateData
 }
