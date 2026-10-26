@@ -212,7 +212,7 @@ export const WorkshopsContent: React.FC<WorkshopsContentProps> = ({ data }) => {
                         className="btn ghost"
                         onClick={() => setActivePdf({ title: ws.title, url: ws.brochureUrl })}
                       >
-                        Download Flyer
+                        View Flyer
                       </button>
                       <a className="btn" href="/sign-up">
                         Register
@@ -255,7 +255,7 @@ export const WorkshopsContent: React.FC<WorkshopsContentProps> = ({ data }) => {
                         className="btn ghost"
                         onClick={() => setActivePdf({ title: ws.title, url: ws.brochureUrl })}
                       >
-                        Download Flyer
+                        View Flyer
                       </button>
                       <a className="btn" href="/sign-up">
                         Register
@@ -298,7 +298,7 @@ export const WorkshopsContent: React.FC<WorkshopsContentProps> = ({ data }) => {
                         className="btn ghost"
                         onClick={() => setActivePdf({ title: ws.title, url: ws.brochureUrl })}
                       >
-                        Download Flyer
+                        View Flyer
                       </button>
                       <a className="btn" href="/sign-up">
                         Register

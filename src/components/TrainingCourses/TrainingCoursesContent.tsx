@@ -273,7 +273,7 @@ export const TrainingCoursesContent: React.FC<TrainingCoursesContentProps> = ({ 
                 <div className="fmt">{c.fmt}</div>
                 <div className="actions">
                   <a className="btn ghost" href={c.brochureUrl} target="_blank" rel="noopener noreferrer">
-                    Download Flyer
+                    View Flyer
                   </a>
                   <a className="btn" href="/sign-up">
                     Register
