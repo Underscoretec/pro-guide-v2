@@ -2,6 +2,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { WorkshopDetailContent } from '@/components/Workshops/WorkshopDetailContent'
 import { getWorkshopDetailBySlug } from '@/lib/payload/workshopDetails'
+import { isRegisteredForWorkshop } from '@/lib/workshops/registration'
 import { roboto } from '@/font'
 
 export const dynamic = 'force-dynamic'
@@ -36,9 +37,10 @@ export default async function WorkshopDetailPage({
 }) {
   const resolvedParams = await params
   const workshop = await getWorkshopDetailBySlug(resolvedParams.slug)
+  const isRegistered = await isRegisteredForWorkshop(resolvedParams.slug.toLowerCase())
   return (
     <main className={`${roboto.className} flex-1 bg-white`}>
-      <WorkshopDetailContent slug={resolvedParams.slug} data={workshop} />
+      <WorkshopDetailContent slug={resolvedParams.slug} data={workshop} isRegistered={isRegistered} />
     </main>
   )
 }
