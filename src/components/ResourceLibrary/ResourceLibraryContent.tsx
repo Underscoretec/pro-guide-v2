@@ -446,12 +446,12 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
             <div className="w-full flex-1 bg-gray-900 flex flex-col items-center justify-center min-h-[450px] relative overflow-hidden">
               {activePdfModal.viewPdfLink || activePdfModal.downloadPdfLink || activePdfModal.pdfUrl ? (
                 <iframe
-                  src={
+                  src={`${(
                     activePdfModal.viewPdfLink ||
                     activePdfModal.downloadPdfLink ||
                     activePdfModal.pdfUrl ||
                     '/files/proguide-workshop-brochure-2026.pdf'
-                  }
+                  ).split('#')[0]}#toolbar=0&navpanes=0`}
                   title={activePdfModal.title}
                   className="w-full h-[65vh] border-0 bg-white"
                 />

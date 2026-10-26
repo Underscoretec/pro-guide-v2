@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { roboto } from '@/font'
+import { TurnstileWidget, isTurnstileEnabled, type TurnstileWidgetHandle } from '@/components/Turnstile/TurnstileWidget'
 
 interface LeadFormProps {
   data?: any
@@ -15,6 +16,8 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
   const [country, setCountry] = useState('India')
   const [mobile, setMobile] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null)
 
   const title = data?.title || 'Let us guide you in your upskilling journey'
   const subtitle =
@@ -26,6 +29,11 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
 
     if (!firstName.trim() || !lastName.trim() || !mobile.trim()) {
       toast.error('Please fill in all required fields.', { position: 'bottom-right' })
+      return
+    }
+
+    if (isTurnstileEnabled && !turnstileToken) {
+      toast.error('Please complete the Cloudflare verification before submitting.', { position: 'bottom-right' })
       return
     }
 
@@ -44,6 +52,7 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
           mobile: mobile.trim(),
           source: 'Landing Page — Upskilling Journey',
           status: 'New',
+          turnstileToken,
         }),
       })
 
@@ -57,12 +66,14 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
         setLastName('')
         setCountry('India')
         setMobile('')
+        turnstileRef.current?.reset()
       } else {
         const errMsg =
           result.errors?.[0]?.message ||
           result.message ||
           'Failed to submit form. Please check your information and try again.'
         toast.error(errMsg, { position: 'bottom-right' })
+        turnstileRef.current?.reset()
       }
     } catch (err) {
       console.error('Lead form submission error:', err)
@@ -135,6 +146,8 @@ export const LeadFormSection: React.FC<LeadFormProps> = ({ data }) => {
             By clicking the button below, you agree to receive communications via Email/Call/WhatsApp/SMS
             from KnowledgeBridge about this programme and other relevant programmes.
           </div>
+
+          <TurnstileWidget ref={turnstileRef} onToken={setTurnstileToken} />
 
           <button
             type="submit"

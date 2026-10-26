@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -18,12 +18,26 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [openDropdownKey, setOpenDropdownKey] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [currentHash, setCurrentHash] = useState('')
+
+  useEffect(() => {
+    const syncHash = () => setCurrentHash(window.location.hash)
+    syncHash()
+    window.addEventListener('hashchange', syncHash)
+    return () => window.removeEventListener('hashchange', syncHash)
+  }, [pathname])
 
   const isUrlActive = (url: string) => {
     if (!url || !pathname) return false
-    const cleanUrl = url.split('#')[0]
+    const [cleanUrl, urlHash] = url.split('#')
+    if (urlHash) {
+      return pathname === cleanUrl && currentHash === `#${urlHash}`
+    }
     if (cleanUrl === '/') {
       return pathname === '/'
+    }
+    if (cleanUrl === '/videos') {
+      return pathname.startsWith('/videos') || pathname.startsWith('/learning-bites')
     }
     return pathname === cleanUrl || pathname.startsWith(cleanUrl)
   }
@@ -35,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
     if (path.startsWith('/3d-simulation')) return 'Why 3D Simulation Models'
     if (path.startsWith('/resources')) return 'Resources'
     if (path.startsWith('/training-courses') || path.startsWith('/workshops')) return 'Training Courses'
-    if (path.startsWith('/videos')) return 'Learning'
+    if (path.startsWith('/videos') || path.startsWith('/learning-bites')) return 'Learning'
     return ''
   }
 
@@ -163,7 +177,10 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
                   <Link
                     key={dropIdx}
                     href={dropItem.url || '#'}
-                    onClick={() => setOpenDropdownKey(null)}
+                    onClick={() => {
+                      setCurrentHash(dropItem.url?.includes('#') ? `#${dropItem.url.split('#')[1]}` : '')
+                      setOpenDropdownKey(null)
+                    }}
                     className={`block px-4 py-[9px] text-[13.5px] transition-colors ${
                       isDropActive
                         ? 'text-purple bg-tint font-bold'
@@ -351,7 +368,10 @@ export const Header: React.FC<HeaderProps> = ({ data, user }) => {
                           <Link
                             key={dropIdx}
                             href={dropItem.url || '#'}
-                            onClick={() => setMobileMenuOpen(false)}
+                            onClick={() => {
+                              setCurrentHash(dropItem.url?.includes('#') ? `#${dropItem.url.split('#')[1]}` : '')
+                              setMobileMenuOpen(false)
+                            }}
                             className={`block py-1 pl-3 text-[13.5px] transition-colors ${
                               isDropActive ? 'text-purple font-bold' : 'text-ink hover:text-purple'
                             }`}
