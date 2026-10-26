@@ -1,5 +1,6 @@
 import type {
   EmailVerificationTemplateData,
+  PasswordResetOtpTemplateData,
   PasswordResetTemplateData,
   PaymentFailureTemplateData,
   PaymentSuccessTemplateData,
@@ -201,6 +202,32 @@ export function buildPaymentFailureTemplate(data: PaymentFailureTemplateData): {
     <a href="${retryUrl}" style="display:inline-block;padding:12px 20px;background:${BRAND_COLOR};color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;">
       Try Again
     </a>
+  `)
+
+  return { subject, html, text }
+}
+
+export function buildPasswordResetOtpTemplate(data: PasswordResetOtpTemplateData): {
+  subject: string
+  html: string
+  text: string
+} {
+  const greeting = data.fullName ? `Hello ${data.fullName},` : 'Hello,'
+  const expiryMinutes = data.expiryMinutes ?? 10
+
+  const subject = `${BRAND_NAME} - Password Reset Code`
+  const text = `${greeting}\n\nYour password reset code is: ${data.otp}\n\nThis code expires in ${expiryMinutes} minutes.\n\nIf you did not request a password reset, you can safely ignore this email.`
+  const html = layout(`
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">${greeting}</p>
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">
+      We received a request to reset your password for your <strong>${BRAND_NAME}</strong> account. Use the code below to continue:
+    </p>
+    <div style="margin:0 0 20px;padding:16px;background:#f7f3ec;border:1px dashed ${BRAND_COLOR};border-radius:8px;text-align:center;">
+      <span style="font-size:28px;font-weight:700;letter-spacing:6px;color:${BRAND_COLOR};">${data.otp}</span>
+    </div>
+    <p style="margin:0;font-size:13px;line-height:1.6;color:#6b7280;">
+      This code expires in ${expiryMinutes} minutes. If you did not request a password reset, you can safely ignore this email.
+    </p>
   `)
 
   return { subject, html, text }
