@@ -1,5 +1,6 @@
 import { User } from '@/payload-types'
 import type { CollectionConfig } from 'payload'
+import { verifyTurnstileOnCreate } from '@/lib/turnstile/hook'
 
 export const LeadSubmissions: CollectionConfig = {
   slug: 'lead-submissions',
@@ -18,6 +19,7 @@ export const LeadSubmissions: CollectionConfig = {
     delete: ({ req: { user } }) => Boolean(user),
   },
   hooks: {
+    beforeValidate: [verifyTurnstileOnCreate],
     beforeChange: [
       ({ data }) => {
         if (data) {

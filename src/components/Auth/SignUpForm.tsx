@@ -3,7 +3,8 @@
 import React, { useActionState } from 'react'
 import Link from 'next/link'
 import { signUp, type AuthState } from '@/lib/auth/actions'
-import { Field, FormError, primaryButtonClass } from './AuthShell'
+import countryList from 'country-list'
+import { Field, FormError, inputClass, primaryButtonClass } from './AuthShell'
 import { FiUser, FiMapPin, FiUserPlus } from 'react-icons/fi'
 
 export const SignUpForm: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
@@ -46,7 +47,26 @@ export const SignUpForm: React.FC<{ redirectTo?: string }> = ({ redirectTo }) =>
           <Field label="City" name="city" required autoComplete="address-level2" placeholder="City" defaultValue={v.city} error={e.city} />
           <Field label="State / Province" name="state" required autoComplete="address-level1" placeholder="State" defaultValue={v.state} error={e.state} />
           <Field label="Postal Code / PIN" name="postalCode" required autoComplete="postal-code" placeholder="Postal Code" defaultValue={v.postalCode} error={e.postalCode} />
-          <Field label="Country" name="country" required autoComplete="country-name" defaultValue={v.country || 'India'} error={e.country} />
+          <div>
+            <label htmlFor="country" className="block text-[13px] font-semibold text-ink mb-1.5">
+              Country<span className="text-orange"> *</span>
+            </label>
+            <select
+              id="country"
+              name="country"
+              required
+              autoComplete="country-name"
+              defaultValue={v.country || 'India'}
+              className={`${inputClass} cursor-pointer`}
+            >
+              {countryList.getNames().map((cName: string) => (
+                <option key={cName} value={cName}>
+                  {cName}
+                </option>
+              ))}
+            </select>
+            {e.country && <p className="text-[12.5px] text-red-600 mt-1 font-medium">{e.country}</p>}
+          </div>
         </div>
       </fieldset>
 

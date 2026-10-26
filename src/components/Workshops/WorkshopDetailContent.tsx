@@ -1,15 +1,17 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useTransition } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
+import { registerForWorkshop } from '@/lib/workshops/registration'
 import type { WorkshopDetailItem } from '@/lib/payload/workshopDetails'
 
 interface WorkshopDetailProps {
   slug: string
   data?: WorkshopDetailItem | null
+  isRegistered?: boolean
 }
 
 const workshopDataMap: Record<string, {
@@ -225,10 +227,12 @@ const defaultWorkshopDetail = {
   ],
 }
 
-export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug, data }) => {
+export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug, data, isRegistered = false }) => {
   const [activeTab, setActiveTab] = useState<'details' | 'experience' | 'philosophy'>('details')
   const { addToCart, isLoggedIn } = useCart()
   const router = useRouter()
+  const [registerPending, startRegister] = useTransition()
+  const [registerError, setRegisterError] = useState('')
 
   const formattedSlug = slug?.toLowerCase() || ''
   const fallback = workshopDataMap[formattedSlug] || {
@@ -273,6 +277,19 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug, dat
       quantity: 1,
     })
     router.push('/cart')
+  }
+
+  const handleRegister = () => {
+    if (!isLoggedIn) {
+      router.push(`/sign-up?redirect=${encodeURIComponent(`/workshops/${formattedSlug}`)}`)
+      return
+    }
+    setRegisterError('')
+    startRegister(async () => {
+      const res = await registerForWorkshop(formattedSlug, details.title)
+      if (res.success) router.refresh()
+      else setRegisterError(res.error || 'Could not register. Please try again.')
+    })
   }
 
   return (
@@ -456,16 +473,17 @@ export const WorkshopDetailContent: React.FC<WorkshopDetailProps> = ({ slug, dat
                 <div className="pt-1">
                   <button
                     type="button"
-                    onClick={isLoggedIn ? undefined : () => router.push('/sign-up')}
-                    disabled={isLoggedIn}
+                    onClick={handleRegister}
+                    disabled={isRegistered || registerPending}
                     className={`w-full text-center font-bold py-3.5 rounded-sm transition-all shadow-md text-sm ${
-                      isLoggedIn
+                      isRegistered
                         ? 'bg-green-800 text-white cursor-not-allowed opacity-90'
-                        : 'bg-[#4A148C] hover:bg-[#380e6b] text-white cursor-pointer hover:shadow-lg active:scale-[0.99]'
+                        : 'bg-[#4A148C] hover:bg-[#380e6b] text-white cursor-pointer hover:shadow-lg active:scale-[0.99] disabled:opacity-70'
                     }`}
                   >
-                    {isLoggedIn ? 'Already Registered' : 'Register your interest'}
+                    {isRegistered ? 'Already Registered' : registerPending ? 'Registering…' : 'Register your interest'}
                   </button>
+                  {registerError && <p className="text-[12.5px] text-red-600 mt-2 font-medium">{registerError}</p>}
                 </div>
               </div>
             </div>

@@ -17,6 +17,7 @@ import * as migration_20261015_045240_add_workshop_details from './20261015_0452
 import * as migration_20261015_045730 from './20261015_045730';
 import * as migration_20261015_054509 from './20261015_054509';
 import * as migration_20261026_120000_add_password_reset_otp_to_users from './20261026_120000_add_password_reset_otp_to_users';
+import * as migration_20261026_083601_add_workshop_registrations from './20261026_083601_add_workshop_registrations';
 
 export const migrations = [
   {
@@ -107,7 +108,12 @@ export const migrations = [
   {
     up: migration_20261015_054509.up,
     down: migration_20261015_054509.down,
-    name: '20261015_054509'
+    name: '20261015_054509',
+  },
+  {
+    up: migration_20261026_083601_add_workshop_registrations.up,
+    down: migration_20261026_083601_add_workshop_registrations.down,
+    name: '20261026_083601_add_workshop_registrations'
   },
   {
     up: migration_20261026_120000_add_password_reset_otp_to_users.up,

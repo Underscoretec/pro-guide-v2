@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { verifyTurnstileOnCreate } from '@/lib/turnstile/hook'
 
 export const ContactSubmissions: CollectionConfig = {
   slug: 'contact-submissions',
@@ -11,6 +12,9 @@ export const ContactSubmissions: CollectionConfig = {
     read: ({ req: { user } }) => Boolean(user),
     update: ({ req: { user } }) => Boolean(user),
     delete: ({ req: { user } }) => Boolean(user),
+  },
+  hooks: {
+    beforeValidate: [verifyTurnstileOnCreate],
   },
   fields: [
     {
