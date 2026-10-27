@@ -79,6 +79,7 @@ const getWorkshopSlug = (title: string) => {
 
 export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data, workshops }) => {
   const [activeTab, setActiveTab] = useState<'temporal' | 'sinus' | 'larynx'>('temporal')
+  const [activePdf, setActivePdf] = useState<{ title: string; url: string } | null>(null)
 
   const title = data?.title || 'Explore Workshops'
   const rawList = data?.workshopsList || workshops || []
@@ -165,14 +166,18 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
                     {ws.meta}
                   </div>
                   <div className="flex gap-2 mt-auto pt-[10px]">
-                    <a
-                      href={ws.brochureUrl || '/ProGuide_3D_Workshops_2026.pdf'}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActivePdf({
+                          title: ws.title,
+                          url: ws.brochureUrl || '/ProGuide_3D_Workshops_2026.pdf',
+                        })
+                      }
                       className="flex-1 py-[9px] px-2 text-[12px] font-bold text-center bg-white text-ink rounded-sm border border-[#C9CDD3] hover:border-purple hover:text-purple hover:bg-tint transition-all"
                     >
-                      Download Flyer
-                    </a>
+                      View Flyer
+                    </button>
                     <Link
                       href={`/workshops/${slug}`}
                       className="flex-1 py-[9px] px-2 text-[12px] font-bold text-center bg-purple text-white rounded-sm border border-purple hover:bg-purple-d hover:border-purple-d transition-all"
@@ -195,6 +200,47 @@ export const ExploreWorkshopsSection: React.FC<ExploreWorkshopsProps> = ({ data,
           </Link>
         </p>
       </div>
+
+      {activePdf && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-sm max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl relative">
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 bg-gray-50">
+              <div>
+                <span className="text-xs font-bold text-purple-700 uppercase tracking-wider">
+                  Workshop Flyer
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mt-0.5">{activePdf.title}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActivePdf(null)}
+                className="text-gray-400 hover:text-gray-600 p-2 rounded-sm hover:bg-gray-200 transition cursor-pointer"
+                aria-label="Close"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="w-full flex-1 bg-gray-900 flex flex-col items-center justify-center min-h-[450px] relative overflow-hidden">
+              <iframe
+                src={`${activePdf.url.split('#')[0]}#toolbar=0&navpanes=0`}
+                title={activePdf.title}
+                className="w-full h-[65vh] border-0 bg-white"
+              />
+            </div>
+            <div className="p-4 border-t border-gray-200 bg-white flex items-center justify-end">
+              <button
+                type="button"
+                onClick={() => setActivePdf(null)}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-sm text-xs font-semibold transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

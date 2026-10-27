@@ -77,7 +77,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
 
   const copyrightText =
     footer?.copyright ||
-    '© 2026. All Rights Reserved · 3D simulation models by OSSA PLUS SIMULATION LLP — ossa.sudors.in'
+    '© 2026. All Rights Reserved · 3D simulation models by OSSA PLUS SIMULATION LLP — ossaplussim.com'
 
   const defaultSocialLinks = [
     { platform: 'facebook', url: '#' },
@@ -240,7 +240,21 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
           </div>
 
           <div className="mt-2">
-            {copyrightText}
+            {copyrightText.split(/(ossa\.sudors\.in|ossaplussim\.com)/i).map((part: string, i: number) =>
+              i % 2 === 1 ? (
+                <a
+                  key={i}
+                  href="https://ossaplussim.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-white"
+                >
+                  ossaplussim.com
+                </a>
+              ) : (
+                part
+              ),
+            )}
           </div>
 
           <div className="flex gap-2.5 justify-center mt-[12px]">

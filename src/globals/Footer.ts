@@ -133,7 +133,7 @@ export const Footer: GlobalConfig = {
       name: 'copyright',
       type: 'text',
       defaultValue:
-        '© 2026. All Rights Reserved · 3D simulation models by OSSA PLUS SIMULATION LLP — ossa.sudors.in',
+        '© 2026. All Rights Reserved · 3D simulation models by OSSA PLUS SIMULATION LLP — ossaplussim.com',
     },
     {
       name: 'socialLinks',

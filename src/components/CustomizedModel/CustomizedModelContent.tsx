@@ -1,10 +1,23 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { toast, ToastContainer } from 'react-toastify'
 import countryList from 'country-list'
 import 'react-toastify/dist/ReactToastify.css'
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (el: HTMLElement, opts: Record<string, unknown>) => string
+      reset: (id?: string) => void
+      remove: (id?: string) => void
+    }
+  }
+}
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''
+const TURNSTILE_SCRIPT = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
 
 interface CustomizedModelContentProps {
   data?: any
@@ -36,7 +49,43 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
   })
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [verifiedHuman, setVerifiedHuman] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const turnstileRef = useRef<HTMLDivElement>(null)
+  const turnstileWidgetId = useRef<string | undefined>(undefined)
+
+  const resetTurnstile = useCallback(() => {
+    setTurnstileToken('')
+    if (turnstileWidgetId.current) window.turnstile?.reset(turnstileWidgetId.current)
+  }, [])
+
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY) return
+    const mount = () => {
+      if (!turnstileRef.current || !window.turnstile || turnstileWidgetId.current) return
+      turnstileWidgetId.current = window.turnstile.render(turnstileRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: (token: string) => setTurnstileToken(token),
+        'expired-callback': () => setTurnstileToken(''),
+        'error-callback': () => setTurnstileToken(''),
+      })
+    }
+    if (window.turnstile) {
+      mount()
+    } else {
+      let script = document.querySelector<HTMLScriptElement>(`script[src="${TURNSTILE_SCRIPT}"]`)
+      if (!script) {
+        script = document.createElement('script')
+        script.src = TURNSTILE_SCRIPT
+        script.async = true
+        document.head.appendChild(script)
+      }
+      script.addEventListener('load', mount)
+    }
+    return () => {
+      if (turnstileWidgetId.current) window.turnstile?.remove(turnstileWidgetId.current)
+      turnstileWidgetId.current = undefined
+    }
+  }, [])
   const [dragActive, setDragActive] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({})
@@ -116,8 +165,8 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
       return
     }
 
-    if (!verifiedHuman) {
-      toast.error('Please check "Verify you are human" before submitting.', {
+    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+      toast.error('Please complete the Cloudflare verification before submitting.', {
         position: 'bottom-right',
       })
       return
@@ -145,6 +194,7 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
           country: formData.country,
           pincode: formData.pincode,
           fileName: selectedFile ? selectedFile.name : '',
+          turnstileToken,
         }),
       })
 
@@ -167,12 +217,13 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
           pincode: '',
         })
         setSelectedFile(null)
-        setVerifiedHuman(false)
+        resetTurnstile()
         setFieldErrors({})
       } else {
         const errData = await response.json().catch(() => null)
         const msg = errData?.errors?.[0]?.message || 'Failed to submit request. Please try again.'
         toast.error(msg, { position: 'bottom-right' })
+        resetTurnstile()
       }
     } catch (err) {
       console.error('Error submitting customized model request:', err)
@@ -426,28 +477,9 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
                   </div>
                 </div>
 
-                {/* Cloudflare Captcha Box */}
-                <div className="mt-4 border border-[#E5E7EB] rounded-sm p-3.5 bg-[#F9FAFB] flex items-center justify-between">
-                  <label className="flex items-center cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={verifiedHuman}
-                      onChange={(e) => setVerifiedHuman(e.target.checked)}
-                      className="w-5 h-5 rounded-sm border-gray-300 text-[#673AB7] focus:ring-[#673AB7] cursor-pointer"
-                    />
-                    <span className="ml-3 text-[14px] text-[#374151] font-medium">Verify you are human</span>
-                  </label>
-
-                  {/* Cloudflare Logo Badge */}
-                  <div className="flex flex-col items-end">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/images/Cloudflare Logo.png"
-                      alt="Cloudflare"
-                      className="h-7 w-auto object-contain"
-                    />
-                    <span className="text-[10px] text-[#9CA3AF] mt-0.5">Privacy • Terms</span>
-                  </div>
+                {/* Cloudflare Turnstile (real widget) */}
+                <div className="mt-4 border border-[#E5E7EB] rounded-sm p-3.5 bg-[#F9FAFB] flex items-center justify-start min-h-[65px]">
+                  <div ref={turnstileRef} />
                 </div>
 
                 {/* Submit Button */}
@@ -463,7 +495,7 @@ export function CustomizedModelContent({ data }: CustomizedModelContentProps) {
                 {/* Bottom Link */}
                 <p className="mt-4 text-center text-[14px] text-[#4B5563]">
                   Already have an account ?{' '}
-                  <Link href="/contact" className="text-[#673AB7] font-semibold hover:underline">
+                  <Link href="/sign-in" className="text-[#673AB7] font-semibold hover:underline">
                     Log in here
                   </Link>
                 </p>

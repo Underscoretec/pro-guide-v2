@@ -83,6 +83,7 @@ export interface Config {
     'customized-model-submissions': CustomizedModelSubmission;
     'workshops-page': WorkshopsPage;
     'workshop-details': WorkshopDetail;
+    'workshop-registrations': WorkshopRegistration;
     'training-courses-page': TrainingCoursesPage;
     'lead-submissions': LeadSubmission;
     'learning-bites-page': LearningBitesPage;
@@ -110,6 +111,7 @@ export interface Config {
     'customized-model-submissions': CustomizedModelSubmissionsSelect<false> | CustomizedModelSubmissionsSelect<true>;
     'workshops-page': WorkshopsPageSelect<false> | WorkshopsPageSelect<true>;
     'workshop-details': WorkshopDetailsSelect<false> | WorkshopDetailsSelect<true>;
+    'workshop-registrations': WorkshopRegistrationsSelect<false> | WorkshopRegistrationsSelect<true>;
     'training-courses-page': TrainingCoursesPageSelect<false> | TrainingCoursesPageSelect<true>;
     'lead-submissions': LeadSubmissionsSelect<false> | LeadSubmissionsSelect<true>;
     'learning-bites-page': LearningBitesPageSelect<false> | LearningBitesPageSelect<true>;
@@ -193,6 +195,8 @@ export interface User {
   emailOtpExpiresAt?: string | null;
   phoneOtpHash?: string | null;
   phoneOtpExpiresAt?: string | null;
+  passwordResetOtpHash?: string | null;
+  passwordResetOtpExpiresAt?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1172,6 +1176,20 @@ export interface WorkshopDetail {
   createdAt: string;
 }
 /**
+ * Users who registered for a specific workshop.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workshop-registrations".
+ */
+export interface WorkshopRegistration {
+  id: number;
+  user: number | User;
+  workshopSlug: string;
+  workshopTitle: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "training-courses-page".
  */
@@ -1400,6 +1418,10 @@ export interface PayloadLockedDocument {
         value: number | WorkshopDetail;
       } | null)
     | ({
+        relationTo: 'workshop-registrations';
+        value: number | WorkshopRegistration;
+      } | null)
+    | ({
         relationTo: 'training-courses-page';
         value: number | TrainingCoursesPage;
       } | null)
@@ -1475,6 +1497,8 @@ export interface UsersSelect<T extends boolean = true> {
   emailOtpExpiresAt?: T;
   phoneOtpHash?: T;
   phoneOtpExpiresAt?: T;
+  passwordResetOtpHash?: T;
+  passwordResetOtpExpiresAt?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -2436,6 +2460,17 @@ export interface WorkshopDetailsSelect<T extends boolean = true> {
         text?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workshop-registrations_select".
+ */
+export interface WorkshopRegistrationsSelect<T extends boolean = true> {
+  user?: T;
+  workshopSlug?: T;
+  workshopTitle?: T;
   updatedAt?: T;
   createdAt?: T;
 }

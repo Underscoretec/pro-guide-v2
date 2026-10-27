@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { TurnstileWidget, isTurnstileEnabled, type TurnstileWidgetHandle } from '@/components/Turnstile/TurnstileWidget'
 
 interface ContactContentProps {
   data?: any
@@ -42,6 +43,8 @@ export function ContactContent({ data }: ContactContentProps) {
     msg: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null)
   const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({})
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,6 +71,11 @@ export function ContactContent({ data }: ContactContentProps) {
       return
     }
 
+    if (isTurnstileEnabled && !turnstileToken) {
+      toast.error('Please complete the Cloudflare verification before submitting.', { position: 'bottom-right' })
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
@@ -82,6 +90,7 @@ export function ContactContent({ data }: ContactContentProps) {
           country: formData.country,
           mobile: formData.mob,
           message: formData.msg,
+          turnstileToken,
         }),
       })
 
@@ -97,10 +106,12 @@ export function ContactContent({ data }: ContactContentProps) {
           msg: '',
         })
         setFieldErrors({})
+        turnstileRef.current?.reset()
       } else {
         const data = await response.json().catch(() => null)
         const msg = data?.errors?.[0]?.message || 'Failed to submit form. Please try again.'
         toast.error(msg, { position: 'bottom-right' })
+        turnstileRef.current?.reset()
       }
     } catch (err) {
       console.error('Error submitting contact form:', err)
@@ -188,6 +199,7 @@ export function ContactContent({ data }: ContactContentProps) {
                 }}
               ></textarea>
               <div className="fnote">{formDisclaimer}</div>
+              <TurnstileWidget ref={turnstileRef} onToken={setTurnstileToken} />
               <button className="btn" type="submit" disabled={isSubmitting} style={{ width: '100%', opacity: isSubmitting ? 0.7 : 1 }}>
                 {isSubmitting ? 'Submitting...' : 'Submit'}
               </button>
