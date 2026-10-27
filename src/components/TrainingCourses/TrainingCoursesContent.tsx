@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { FiCheck } from 'react-icons/fi'
 
@@ -143,6 +143,7 @@ const defaultCourses = [
 ]
 
 export const TrainingCoursesContent: React.FC<TrainingCoursesContentProps> = ({ data }) => {
+  const [activePdf, setActivePdf] = useState<{ title: string; url: string } | null>(null)
   const pageTitle = data?.title || 'About Training Courses — 2026 Workshop Series'
   const heroDesc =
     data?.heroDescription ||
@@ -272,9 +273,13 @@ export const TrainingCoursesContent: React.FC<TrainingCoursesContentProps> = ({ 
                 </details>
                 <div className="fmt">{c.fmt}</div>
                 <div className="actions">
-                  <a className="btn ghost" href={c.brochureUrl} target="_blank" rel="noopener noreferrer">
+                  <button
+                    type="button"
+                    className="btn ghost"
+                    onClick={() => setActivePdf({ title: c.title, url: c.brochureUrl })}
+                  >
                     View Flyer
-                  </a>
+                  </button>
                   <a className="btn" href="/sign-up">
                     Register
                   </a>
@@ -318,6 +323,47 @@ export const TrainingCoursesContent: React.FC<TrainingCoursesContentProps> = ({ 
           </div>
         </div>
       </section>
+
+      {activePdf && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-sm max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl relative">
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 bg-gray-50">
+              <div>
+                <span className="text-xs font-bold text-purple-700 uppercase tracking-wider">
+                  Course Flyer
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mt-0.5">{activePdf.title}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActivePdf(null)}
+                className="text-gray-400 hover:text-gray-600 p-2 rounded-sm hover:bg-gray-200 transition cursor-pointer"
+                aria-label="Close"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="w-full flex-1 bg-gray-900 flex flex-col items-center justify-center min-h-[450px] relative overflow-hidden">
+              <iframe
+                src={`${activePdf.url.split('#')[0]}#toolbar=0&navpanes=0`}
+                title={activePdf.title}
+                className="w-full h-[65vh] border-0 bg-white"
+              />
+            </div>
+            <div className="p-4 border-t border-gray-200 bg-white flex items-center justify-end">
+              <button
+                type="button"
+                onClick={() => setActivePdf(null)}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-sm text-xs font-semibold transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
