@@ -105,12 +105,12 @@ export const TrainingStageTable: React.FC<TrainingStageTableProps> = ({
         <p className="mt-4 text-[13px] text-muted text-center sm:text-left">
           Full model specifications and the material story are on{' '}
           <Link
-            href="https://ossa.sudors.in/products"
+            href="https://ossaplussim.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-purple font-semibold underline hover:text-purple-d"
           >
-            ossa.sudors.in
+            ossaplussim.com
           </Link>{' '}
           · purchases and quotes are handled here on ProGuide.
         </p>
