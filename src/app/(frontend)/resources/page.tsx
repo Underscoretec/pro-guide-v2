@@ -5,6 +5,8 @@ import config from '@/payload.config'
 import ResourceLibraryContent from '@/components/ResourceLibrary/ResourceLibraryContent'
 import { roboto } from '@/font'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Resource Library & PDF Catalogues | ProGuide',
   description:
@@ -18,9 +20,13 @@ export default async function ResourcesPage() {
     const payload = await getPayload({ config })
     const res = await payload.find({
       collection: 'resources',
-      limit: 1,
+      limit: 100,
+      overrideAccess: true,
     })
-    resourcesData = res.docs[0] || null
+    if (res.docs.length > 0) {
+      const allDocuments = res.docs.flatMap((doc: any) => doc.documents ?? [])
+      resourcesData = { ...res.docs[0], documents: allDocuments }
+    }
   } catch (error) {
     console.error('Error fetching resources data from Payload:', error)
   }
