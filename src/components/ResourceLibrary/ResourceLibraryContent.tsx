@@ -102,8 +102,7 @@ export const ResourceLibraryContent: React.FC<{ data?: ResourceLibraryData }> = 
     { label: 'Clinical & Simulation Guides', key: 'clinical' },
   ]
 
-  const rawDocs =
-    data?.documents && data.documents.length > 0 ? data.documents : defaultDocuments
+  const rawDocs = [...defaultDocuments, ...(data?.documents ?? [])]
 
   const filteredDocs =
     activeTab === 'all'
