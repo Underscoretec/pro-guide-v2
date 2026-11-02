@@ -5,12 +5,20 @@ import Link from 'next/link'
 import { signUp, type AuthState } from '@/lib/auth/actions'
 import countryList from 'country-list'
 import { Field, FormError, inputClass, primaryButtonClass } from './AuthShell'
+import { useDetectedCountry } from './useDetectedCountry'
 import { FiUser, FiMapPin, FiUserPlus } from 'react-icons/fi'
 
 export const SignUpForm: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
   const [state, action, pending] = useActionState<AuthState, FormData>(signUp, {})
   const v = state.values ?? {}
   const e = state.fieldErrors ?? {}
+
+  const countryNames = countryList.getNames() as string[]
+  const { country, setCountry, lockCountry } = useDetectedCountry({
+    initialCountry: v.country || 'India',
+    locked: Boolean(v.country),
+    matchNames: countryNames,
+  })
 
   return (
     <form action={action} className="space-y-6">
@@ -56,10 +64,14 @@ export const SignUpForm: React.FC<{ redirectTo?: string }> = ({ redirectTo }) =>
               name="country"
               required
               autoComplete="country-name"
-              defaultValue={v.country || 'India'}
+              value={country}
+              onChange={(ev) => {
+                lockCountry()
+                setCountry(ev.target.value)
+              }}
               className={`${inputClass} cursor-pointer`}
             >
-              {countryList.getNames().map((cName: string) => (
+              {countryNames.map((cName: string) => (
                 <option key={cName} value={cName}>
                   {cName}
                 </option>

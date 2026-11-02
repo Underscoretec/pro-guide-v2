@@ -18,6 +18,17 @@ const str = (fd: FormData, key: string) => String(fd.get(key) ?? '').trim()
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PHONE_RE = /^\+?[0-9]{10,13}$/
 
+const deriveIsIndia = (rawCountry: string) => {
+  const countryLower = rawCountry.trim().toLowerCase()
+  return (
+    !countryLower ||
+    countryLower === 'india' ||
+    countryLower === 'in' ||
+    countryLower === 'bharat' ||
+    countryLower === 'ind'
+  )
+}
+
 export async function signUp(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const values = {
     fullName: str(formData, 'fullName'),
@@ -64,13 +75,7 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   let userId: number | string
   try {
     const rawCountry = (values.country || '').trim()
-    const countryLower = rawCountry.toLowerCase()
-    const isIndia =
-      !rawCountry ||
-      countryLower === 'india' ||
-      countryLower === 'in' ||
-      countryLower === 'bharat' ||
-      countryLower === 'ind'
+    const isIndia = deriveIsIndia(rawCountry)
 
     const otp = generateOtp()
     const user = await payload.create({
@@ -230,6 +235,7 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
   const email = str(formData, 'email').toLowerCase()
   const password = String(formData.get('password') ?? '')
   const redirectTo = str(formData, 'redirectTo')
+  const detectedCountry = str(formData, 'country')
   if (!email || !password) return { error: 'Email and password are required', values: { email } }
 
   const payload = await getPayloadClient()
@@ -239,6 +245,20 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
     result = await payload.login({ collection: 'users', data: { email, password }, overrideAccess: true })
   } catch {
     return { error: 'Invalid email or password', values: { email } }
+  }
+
+  // Re-check location on every login so a traveling/relocated user's pricing stays current
+  if (detectedCountry && detectedCountry !== (result.user as { country?: string }).country) {
+    try {
+      await payload.update({
+        collection: 'users',
+        id: result.user.id,
+        overrideAccess: true,
+        data: { country: detectedCountry, isIndia: deriveIsIndia(detectedCountry) },
+      })
+    } catch {
+      // non-critical; don't block sign-in on this
+    }
   }
 
   if (!result.user.isEmailVerified || !result.user.isPhoneVerified) {
