@@ -4,6 +4,7 @@ import React, { useActionState } from 'react'
 import Link from 'next/link'
 import { signIn, type AuthState } from '@/lib/auth/actions'
 import { Field, FormError, primaryButtonClass } from './AuthShell'
+import { useDetectedCountry } from './useDetectedCountry'
 import { FiLogIn, FiCheckCircle } from 'react-icons/fi'
 
 export const SignInForm: React.FC<{ justVerified?: boolean; justReset?: boolean; redirectTo?: string }> = ({
@@ -12,10 +13,13 @@ export const SignInForm: React.FC<{ justVerified?: boolean; justReset?: boolean;
   redirectTo,
 }) => {
   const [state, action, pending] = useActionState<AuthState, FormData>(signIn, {})
+  // re-detect the user's country on every sign-in attempt so it can be kept in sync server-side
+  const { country } = useDetectedCountry()
 
   return (
     <form action={action} className="space-y-4">
       <input type="hidden" name="redirectTo" value={redirectTo || ''} />
+      <input type="hidden" name="country" value={country} />
       {redirectTo === '/checkout' && (
         <div className="bg-[#4A148C]/10 border border-[#4A148C]/25 text-[#4A148C] text-[13px] rounded-sm px-3.5 py-2.5 font-medium flex items-center gap-2">
           <span>Please sign in or register to complete your order. Your cart items are saved.</span>
