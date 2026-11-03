@@ -201,9 +201,13 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children, user }) =>
         const validServerItems = Array.isArray(serverItems) ? serverItems : []
 
         let finalMerged: CartItem[]
-        if (validServerItems.length > 0) {
-          // If server has items, merge them with any guest or locally cached items
-          finalMerged = mergeCartItems(validServerItems, guestItems.length > 0 ? guestItems : initialMerged)
+        if (guestItems.length > 0) {
+          // Genuine guest-cart migration: fold guest items into the server cart
+          finalMerged = mergeCartItems(validServerItems, guestItems)
+        } else if (validServerItems.length > 0) {
+          // No guest cart to merge: server is authoritative, don't re-merge with
+          // the local cache (which mirrors the same cart) or quantities will double
+          finalMerged = validServerItems
         } else {
           // If server is empty (e.g. brand new user), preserve the user/guest items
           finalMerged = initialMerged
