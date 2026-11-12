@@ -16,8 +16,12 @@ import * as migration_20261014_090000_remove_management_initials from './2026101
 import * as migration_20261015_045240_add_workshop_details from './20261015_045240_add_workshop_details';
 import * as migration_20261015_045730 from './20261015_045730';
 import * as migration_20261015_054509 from './20261015_054509';
-import * as migration_20261026_120000_add_password_reset_otp_to_users from './20261026_120000_add_password_reset_otp_to_users';
 import * as migration_20261026_083601_add_workshop_registrations from './20261026_083601_add_workshop_registrations';
+import * as migration_20261026_120000_add_password_reset_otp_to_users from './20261026_120000_add_password_reset_otp_to_users';
+import * as migration_20261112_063841_add_workshop_process_fields from './20261112_063841_add_workshop_process_fields';
+import * as migration_20261112_070000_add_online_recorded_details from './20261112_070000_add_online_recorded_details';
+import * as migration_20261112_073000_add_admin_sidebar_and_run_details from './20261112_073000_add_admin_sidebar_and_run_details';
+import * as migration_20261112_083000_add_faculty_faq_and_specs from './20261112_083000_add_faculty_faq_and_specs';
 
 export const migrations = [
   {
@@ -113,11 +117,31 @@ export const migrations = [
   {
     up: migration_20261026_083601_add_workshop_registrations.up,
     down: migration_20261026_083601_add_workshop_registrations.down,
-    name: '20261026_083601_add_workshop_registrations'
+    name: '20261026_083601_add_workshop_registrations',
   },
   {
     up: migration_20261026_120000_add_password_reset_otp_to_users.up,
     down: migration_20261026_120000_add_password_reset_otp_to_users.down,
     name: '20261026_120000_add_password_reset_otp_to_users',
+  },
+  {
+    up: migration_20261112_063841_add_workshop_process_fields.up,
+    down: migration_20261112_063841_add_workshop_process_fields.down,
+    name: '20261112_063841_add_workshop_process_fields',
+  },
+  {
+    up: migration_20261112_070000_add_online_recorded_details.up,
+    down: migration_20261112_070000_add_online_recorded_details.down,
+    name: '20261112_070000_add_online_recorded_details',
+  },
+  {
+    up: migration_20261112_073000_add_admin_sidebar_and_run_details.up,
+    down: migration_20261112_073000_add_admin_sidebar_and_run_details.down,
+    name: '20261112_073000_add_admin_sidebar_and_run_details',
+  },
+  {
+    up: migration_20261112_083000_add_faculty_faq_and_specs.up,
+    down: migration_20261112_083000_add_faculty_faq_and_specs.down,
+    name: '20261112_083000_add_faculty_faq_and_specs',
   },
 ];

@@ -1129,11 +1129,107 @@ export interface WorkshopDetail {
    * URL slug for /workshops/[slug]. Must match the workshop card title on the Workshops page (e.g. "Basic 3D Temporal Bone Dissection Workshop" → basic-3d-temporal-bone-dissection-workshop). Generated from title if left empty.
    */
   slug: string;
+  status?: ('published' | 'draft') | null;
+  booking?: boolean | null;
+  /**
+   * Opens the Workshop Registrations list for this workshop.
+   */
+  registeredUsers?: string | null;
+  revenueSample?: string | null;
   subtitle?: string | null;
   category?: string | null;
+  deliveryMode: 'offline' | 'online_live' | 'online_recorded';
   image?: (number | null) | Media;
   imageUrl?: string | null;
   duration?: string | null;
+  description?: string | null;
+  priceINR?: number | null;
+  gstPercent?: number | null;
+  priceUSD?: number | null;
+  seatsPerSession?: number | null;
+  datesAndTimeSlots?:
+    | {
+        date: string;
+        slots?:
+          | {
+              startTime: string;
+              endTime: string;
+              seats?: number | null;
+              /**
+               * Number of registered users for this slot (e.g. 12 registered).
+               */
+              registrationsCount?: number | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  onlineLiveDetails?: {
+    platform?: string | null;
+    /**
+     * Emailed automatically to every registered user.
+     */
+    joinLink?: string | null;
+    sendJoinLink?: string | null;
+  };
+  offlineDetails?: {
+    venueName?: string | null;
+    /**
+     * Shown on the confirmation email and the ticket.
+     */
+    fullAddress?: string | null;
+    googleMapsLink?: string | null;
+    reportingTime?: string | null;
+    /**
+     * Registration closes automatically when full.
+     */
+    seatsPerSessionOffline?: number | null;
+    checkInMethod?: string | null;
+    whatParticipantsShouldBring?: string | null;
+    /**
+     * Number shown in the reminder message.
+     */
+    onSiteContact?: string | null;
+    certificate?: boolean | null;
+    cancellationPolicy?: string | null;
+  };
+  onlineRecordedDetails?: {
+    /**
+     * At least one video, MP4 or MOV. Participants watch them in the order shown.
+     */
+    videos?:
+      | {
+          title: string;
+          duration?: string | null;
+          videoUrl?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * How long a participant can watch after paying.
+     */
+    accessWindowDays?: number | null;
+    /**
+     * PDF, PPT or DOC files that participants can download with the videos.
+     */
+    handouts?:
+      | {
+          title: string;
+          fileSize?: string | null;
+          fileUrl?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * .vtt or .srt file per video, for accessibility and non-native speakers.
+     */
+    subtitles?: string | null;
+    /**
+     * A free 1 to 2 minute teaser (MP4) shown on the workshop page before paying.
+     */
+    previewClip?: string | null;
+  };
   learners?: string | null;
   designationBullets?:
     | {
@@ -1160,15 +1256,29 @@ export interface WorkshopDetail {
         id?: string | null;
       }[]
     | null;
-  experienceContent?:
+  facultyLeadName?: string | null;
+  cluster?: string | null;
+  cmeCredits?: string | null;
+  language?: string | null;
+  faculty?:
+    | {
+        name: string;
+        role?: string | null;
+        bio?: string | null;
+        avatarBg?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  feeInclusions?:
     | {
         text: string;
         id?: string | null;
       }[]
     | null;
-  teachingPhilosophy?:
+  faq?:
     | {
-        text: string;
+        question: string;
+        answer: string;
         id?: string | null;
       }[]
     | null;
@@ -1176,16 +1286,44 @@ export interface WorkshopDetail {
   createdAt: string;
 }
 /**
- * Users who registered for a specific workshop.
+ * Participants registered for workshops.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "workshop-registrations".
  */
 export interface WorkshopRegistration {
   id: number;
-  user: number | User;
   workshopSlug: string;
   workshopTitle: string;
+  user?: (number | null) | User;
+  participantName?: string | null;
+  participantEmail?: string | null;
+  participantPhone?: string | null;
+  institution?: string | null;
+  medicalRegNumber?: string | null;
+  country?: string | null;
+  selectedDate?: string | null;
+  selectedTime?: string | null;
+  /**
+   * Payment currency (INR for India, USD for international).
+   */
+  currency?: ('INR' | 'USD') | null;
+  /**
+   * Amount in Indian Rupees (₹) for delegates billing from India.
+   */
+  amountPaidINR?: number | null;
+  /**
+   * Amount in US Dollars ($) for international delegates.
+   */
+  amountPaidUSD?: number | null;
+  /**
+   * Underlying raw amount paid in the selected currency.
+   */
+  amountPaid?: number | null;
+  razorpayPaymentId?: string | null;
+  razorpayOrderId?: string | null;
+  ticketId?: string | null;
+  status?: ('confirmed' | 'pending' | 'cancelled') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2417,11 +2555,80 @@ export interface WorkshopsPageSelect<T extends boolean = true> {
 export interface WorkshopDetailsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  status?: T;
+  booking?: T;
+  registeredUsers?: T;
+  revenueSample?: T;
   subtitle?: T;
   category?: T;
+  deliveryMode?: T;
   image?: T;
   imageUrl?: T;
   duration?: T;
+  description?: T;
+  priceINR?: T;
+  gstPercent?: T;
+  priceUSD?: T;
+  seatsPerSession?: T;
+  datesAndTimeSlots?:
+    | T
+    | {
+        date?: T;
+        slots?:
+          | T
+          | {
+              startTime?: T;
+              endTime?: T;
+              seats?: T;
+              registrationsCount?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  onlineLiveDetails?:
+    | T
+    | {
+        platform?: T;
+        joinLink?: T;
+        sendJoinLink?: T;
+      };
+  offlineDetails?:
+    | T
+    | {
+        venueName?: T;
+        fullAddress?: T;
+        googleMapsLink?: T;
+        reportingTime?: T;
+        seatsPerSessionOffline?: T;
+        checkInMethod?: T;
+        whatParticipantsShouldBring?: T;
+        onSiteContact?: T;
+        certificate?: T;
+        cancellationPolicy?: T;
+      };
+  onlineRecordedDetails?:
+    | T
+    | {
+        videos?:
+          | T
+          | {
+              title?: T;
+              duration?: T;
+              videoUrl?: T;
+              id?: T;
+            };
+        accessWindowDays?: T;
+        handouts?:
+          | T
+          | {
+              title?: T;
+              fileSize?: T;
+              fileUrl?: T;
+              id?: T;
+            };
+        subtitles?: T;
+        previewClip?: T;
+      };
   learners?: T;
   designationBullets?:
     | T
@@ -2448,16 +2655,30 @@ export interface WorkshopDetailsSelect<T extends boolean = true> {
         text?: T;
         id?: T;
       };
-  experienceContent?:
+  facultyLeadName?: T;
+  cluster?: T;
+  cmeCredits?: T;
+  language?: T;
+  faculty?:
+    | T
+    | {
+        name?: T;
+        role?: T;
+        bio?: T;
+        avatarBg?: T;
+        id?: T;
+      };
+  feeInclusions?:
     | T
     | {
         text?: T;
         id?: T;
       };
-  teachingPhilosophy?:
+  faq?:
     | T
     | {
-        text?: T;
+        question?: T;
+        answer?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -2468,9 +2689,25 @@ export interface WorkshopDetailsSelect<T extends boolean = true> {
  * via the `definition` "workshop-registrations_select".
  */
 export interface WorkshopRegistrationsSelect<T extends boolean = true> {
-  user?: T;
   workshopSlug?: T;
   workshopTitle?: T;
+  user?: T;
+  participantName?: T;
+  participantEmail?: T;
+  participantPhone?: T;
+  institution?: T;
+  medicalRegNumber?: T;
+  country?: T;
+  selectedDate?: T;
+  selectedTime?: T;
+  currency?: T;
+  amountPaidINR?: T;
+  amountPaidUSD?: T;
+  amountPaid?: T;
+  razorpayPaymentId?: T;
+  razorpayOrderId?: T;
+  ticketId?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }
