@@ -23,11 +23,14 @@ export async function POST(req: NextRequest) {
       selectedTime,
       amount,
       isTestMock,
+      appliedCoupon,
+      discountPercent,
     } = body
 
-    // Verify signature unless simulated test mock
+    // Verify signature unless 100% free coupon or simulated test mock
+    const isFreeWithCoupon = typeof amount === 'number' && amount === 0 && Boolean(appliedCoupon)
     let verified = false
-    if (isTestMock) {
+    if (isFreeWithCoupon || isTestMock) {
       verified = true
     } else if (razorpayOrderId && razorpayPaymentId && razorpaySignature) {
       try {
@@ -77,13 +80,41 @@ export async function POST(req: NextRequest) {
           amountPaidINR: isIndia ? numAmount : null,
           amountPaidUSD: !isIndia ? numAmount : null,
           amountPaid: numAmount,
-          razorpayPaymentId: razorpayPaymentId || `pay_sim_${Date.now()}`,
-          razorpayOrderId: razorpayOrderId || `order_sim_${Date.now()}`,
+          appliedCoupon: appliedCoupon ? String(appliedCoupon).toUpperCase().trim() : null,
+          discountPercent: typeof discountPercent === 'number' ? discountPercent : null,
+          razorpayPaymentId: razorpayPaymentId || (isFreeWithCoupon ? `free_coupon_${Date.now()}` : `pay_sim_${Date.now()}`),
+          razorpayOrderId: razorpayOrderId || (isFreeWithCoupon ? `free_order_${Date.now()}` : `order_sim_${Date.now()}`),
           ticketId,
           status: 'confirmed',
         },
         overrideAccess: true,
       })
+
+      // Increment usedCount on coupon if applied
+      if (appliedCoupon) {
+        try {
+          const couponRes = await payload.find({
+            collection: 'redeem-codes',
+            where: { code: { equals: String(appliedCoupon).toUpperCase().trim() } },
+            limit: 1,
+            overrideAccess: true,
+          })
+          if (couponRes.totalDocs > 0) {
+            const couponDoc = couponRes.docs[0]
+            const currentUsed = typeof couponDoc.usedCount === 'number' ? couponDoc.usedCount : 0
+            await payload.update({
+              collection: 'redeem-codes',
+              id: couponDoc.id,
+              data: {
+                usedCount: currentUsed + 1,
+              },
+              overrideAccess: true,
+            })
+          }
+        } catch (couponErr) {
+          console.error('Error incrementing coupon usedCount:', couponErr)
+        }
+      }
 
       if (workshopSlug) {
         try {

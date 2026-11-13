@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import type { WorkshopDetailItem } from '@/lib/payload/workshopDetails'
 
@@ -94,41 +95,188 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
   }
 
   // Form State
-  const [fullName, setFullName] = useState('Dr. Anita Sharma')
-  const [email, setEmail] = useState('name@hospital.org')
-  const [phone, setPhone] = useState('+91 98765 43210')
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [institution, setInstitution] = useState('')
   const [regNumber, setRegNumber] = useState('')
   const [country, setCountry] = useState('India')
 
+  interface FormErrors {
+    fullName?: string
+    email?: string
+    phone?: string
+    institution?: string
+    regNumber?: string
+    country?: string
+    general?: string
+  }
+
+  const [formErrors, setFormErrors] = useState<FormErrors>({})
+
+  const handleFieldChange = (field: keyof FormErrors, value: string, setter: (val: string) => void) => {
+    setter(value)
+    if (formErrors[field] || formErrors.general) {
+      setFormErrors((prev) => {
+        const next = { ...prev }
+        delete next[field]
+        if (Object.keys(next).filter((k) => k !== 'general').length === 0) {
+          delete next.general
+        }
+        return next
+      })
+    }
+  }
+
+  const validateForm = (): boolean => {
+    const errors: FormErrors = {}
+    const trimmedName = fullName.trim()
+    const trimmedEmail = email.trim()
+    const trimmedPhone = phone.trim()
+    const trimmedInstitution = institution.trim()
+    const trimmedRegNumber = regNumber.trim()
+    const trimmedCountry = country.trim()
+
+    // 1. Full name: required
+    if (!trimmedName) {
+      errors.fullName = 'You must enter your full name.'
+    } else if (trimmedName.length < 2) {
+      errors.fullName = 'Full name must be at least 2 characters.'
+    }
+
+    // 2. Email address: required
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!trimmedEmail) {
+      errors.email = 'You must enter your email address.'
+    } else if (!emailRegex.test(trimmedEmail)) {
+      errors.email = 'Please enter a valid email address (e.g. name@hospital.org).'
+    }
+
+    // 3. Mobile number: required
+    const phoneDigits = trimmedPhone.replace(/\D/g, '')
+    if (!trimmedPhone) {
+      errors.phone = 'You must enter your mobile number.'
+    } else if (isIndia) {
+      if (phoneDigits.length < 10) {
+        errors.phone = 'Mobile number for India must be at least 10 digits.'
+      }
+    } else {
+      if (trimmedPhone.length < 6 || phoneDigits.length < 5) {
+        errors.phone = 'Please enter a valid phone number (at least 6 characters).'
+      }
+    }
+
+    // 4. Institution / Hospital: required
+    if (!trimmedInstitution) {
+      errors.institution = 'You must enter your institution or hospital.'
+    } else if (trimmedInstitution.length < 2) {
+      errors.institution = 'Please enter a valid hospital or clinic name.'
+    }
+
+    // 5. Medical registration number: required
+    if (!trimmedRegNumber) {
+      errors.regNumber = 'You must enter your medical registration number.'
+    } else if (trimmedRegNumber.length < 2) {
+      errors.regNumber = 'Please enter a valid registration number.'
+    }
+
+    // 6. Billing country: required
+    if (!trimmedCountry) {
+      errors.country = 'You must select your billing country.'
+    }
+
+    if (Object.keys(errors).length > 0) {
+      errors.general = 'You must fill in all required fields before proceeding with payment.'
+    }
+
+    setFormErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
   // Dynamic currency and pricing based on Billing country
   const isIndia = country.trim().toLowerCase() === 'india'
-  const activeFeeFormatted = isIndia ? details.feeFormatted : `$${details.priceUSD}`
-  const activeGstFormatted = isIndia ? details.gstFormatted : '$0'
-  const activeTotalFormatted = isIndia ? details.totalFormatted : `$${details.priceUSD}`
-  const activePayAmount = isIndia ? details.totalINR : details.priceUSD
   const activeCurrency = isIndia ? 'INR' : 'USD'
+  const basePrice = isIndia ? details.priceINR : details.priceUSD
 
   // Coupon state
   const [couponCode, setCouponCode] = useState('')
-  const [couponApplied, setCouponApplied] = useState(false)
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
+  const [discountPercent, setDiscountPercent] = useState<number>(0)
   const [couponMessage, setCouponMessage] = useState('')
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false)
 
-  const handleApplyCoupon = () => {
+  // Calculate discounted amounts
+  const discountAmount = appliedCoupon ? Math.round((basePrice * discountPercent) / 100) : 0
+  const discountedBaseFee = Math.max(0, basePrice - discountAmount)
+  const gstAmount = isIndia ? Math.round((discountedBaseFee * 18) / 100) : 0
+  const activePayAmount = discountedBaseFee + gstAmount
+
+  // Formatted displays
+  const activeFeeFormatted = isIndia ? `₹${discountedBaseFee.toLocaleString('en-IN')}` : `$${discountedBaseFee.toLocaleString('en-US')}`
+  const activeGstFormatted = isIndia ? `₹${gstAmount.toLocaleString('en-IN')}` : '$0'
+  const activeTotalFormatted = isIndia ? `₹${activePayAmount.toLocaleString('en-IN')}` : `$${activePayAmount.toLocaleString('en-US')}`
+
+  const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return
-    if (couponCode.toUpperCase() === 'PROGUIDE10' || couponCode.toUpperCase() === 'SURGERY') {
-      setCouponApplied(true)
-      setCouponMessage('Coupon applied successfully!')
-    } else {
-      setCouponMessage('Invalid or expired coupon code.')
+    setIsApplyingCoupon(true)
+    setCouponMessage('')
+
+    try {
+      const res = await fetch('/api/workshops/validate-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: couponCode.trim(),
+          workshopSlug: slug,
+          institution: institution.trim(),
+        }),
+      })
+
+      const data = await res.json()
+      if (res.ok && data.valid) {
+        setAppliedCoupon(data.code)
+        setDiscountPercent(data.discountPercent)
+        setCouponMessage(data.message || `${data.discountPercent}% discount applied!`)
+      } else {
+        setAppliedCoupon(null)
+        setDiscountPercent(0)
+        setCouponMessage(data.message || 'Invalid or expired coupon code.')
+      }
+    } catch {
+      setCouponMessage('Error validating coupon. Please try again.')
+    } finally {
+      setIsApplyingCoupon(false)
     }
+  }
+
+  const handleRemoveCoupon = () => {
+    setCouponCode('')
+    setAppliedCoupon(null)
+    setDiscountPercent(0)
+    setCouponMessage('')
   }
 
   // Razorpay Payment Handler
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsProcessingPayment(true)
     setPaymentError('')
+
+    const isValid = validateForm()
+    if (!isValid) {
+      const detailsCard = document.getElementById('participant-details-card')
+      if (detailsCard) {
+        detailsCard.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+      return
+    }
+
+    setIsProcessingPayment(true)
+
+    // Handle 100% Free registration via coupon without Razorpay
+    if (activePayAmount === 0) {
+      await verifyAndConfirmPayment('free_order', 'free_coupon_payment', '', false)
+      return
+    }
 
     try {
       // 1. Create Order via server API
@@ -176,6 +324,13 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
           color: '#4F1787',
         },
         handler: async function (response: any) {
+          // Immediately navigate directly to ticket page upon payment completion
+          setStep('ticket')
+          window.scrollTo({ top: 0, behavior: 'instant' })
+          if (response.razorpay_payment_id) {
+            setPaymentRef(response.razorpay_payment_id)
+          }
+
           await verifyAndConfirmPayment(
             response.razorpay_order_id || orderData.orderId,
             response.razorpay_payment_id,
@@ -209,6 +364,13 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
     signature: string,
     isTestMock = false
   ) => {
+    // Immediately ensure step is set to 'ticket'
+    setStep('ticket')
+    window.scrollTo({ top: 0, behavior: 'instant' })
+    if (paymentId) {
+      setPaymentRef(paymentId)
+    }
+
     try {
       const verifyRes = await fetch('/api/workshops/verify-payment', {
         method: 'POST',
@@ -228,6 +390,8 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
           selectedDate: `${monthShort} ${selectedDay}, ${selectedYear}`,
           selectedTime: selectedTimeSlot,
           amount: activePayAmount,
+          appliedCoupon: appliedCoupon || null,
+          discountPercent: discountPercent || null,
           isTestMock,
         }),
       })
@@ -236,12 +400,11 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
       if (verifyData.ticketId) {
         setTicketId(verifyData.ticketId)
       }
-      setPaymentRef(paymentId || `pay_Nk3x9sample`)
-      setStep('ticket')
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      if (verifyData.paymentId || paymentId) {
+        setPaymentRef(verifyData.paymentId || paymentId)
+      }
     } catch (err: any) {
       console.warn('Verify fallback:', err)
-      setStep('ticket')
     } finally {
       setIsProcessingPayment(false)
     }
@@ -350,20 +513,16 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
       <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* ProGuide Logo */}
-          <Link href="/" className="inline-flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 96" className="h-7 w-auto">
-              <g transform="translate(-8,6) scale(0.3)">
-                <rect x="50" y="210" width="40" height="70" rx="12" fill="#d2c4e3" />
-                <rect x="105" y="140" width="40" height="140" rx="12" fill="#9c82be" />
-                <path d="M 160 268 L 160 100 C 160 85, 175 70, 190 70 L 200 70 L 200 268 Z" fill="#673ab7" />
-                <path d="M 150 95 L 180 50 L 210 95 Z" fill="#673ab7" />
-                <circle cx="180" cy="20" r="18" fill="#e67e22" />
-              </g>
-              <text x="66" y="64" fontFamily="Arial, Helvetica, sans-serif" fontWeight="bold" fontSize="46">
-                <tspan fill="#4a148c">Pro</tspan>
-                <tspan fill="#d35400">Guide</tspan>
-              </text>
-            </svg>
+          <Link href="/" className="inline-flex items-center">
+            <Image
+              src="/images/logo.svg"
+              alt="ProGuide"
+              width={180}
+              height={52}
+              priority
+              unoptimized
+              className="h-10 sm:h-11 md:h-12 w-auto object-contain cursor-pointer"
+            />
           </Link>
 
           {/* Back to workshop link */}
@@ -457,7 +616,7 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
       {/* 3. Main Content: STEP 2 (Complete your enrollment) */}
       {step === 'details' && (
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <form onSubmit={handlePayment} className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
+          <form onSubmit={handlePayment} noValidate className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
             {/* Left Column: Workshop Summary + Participant Details + Sponsorship */}
             <div className="space-y-6">
               {/* Workshop Summary Card */}
@@ -520,7 +679,7 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
               </div>
 
               {/* Participant Details Card */}
-              <div className="bg-white rounded-xl border border-gray-200 p-6 sm:p-7 shadow-xs">
+              <div id="participant-details-card" className="bg-white rounded-xl border border-gray-200 p-6 sm:p-7 shadow-xs">
                 {/* Header */}
                 <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-gray-100">
                   <span className="w-6 h-6 rounded-full bg-[#4F1787] text-white text-xs font-bold flex items-center justify-center shrink-0">
@@ -530,6 +689,14 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
                     Participant details
                   </h2>
                 </div>
+
+                {/* Validation Notification Banner */}
+                {formErrors.general && (
+                  <div className="mb-5 p-3.5 bg-red-50 border border-red-200 text-red-700 rounded-lg text-xs font-semibold flex items-center gap-2">
+                    <span className="text-base shrink-0">⚠️</span>
+                    <span>{formErrors.general}</span>
+                  </div>
+                )}
 
                 {paymentError && (
                   <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-xs font-medium">
@@ -548,80 +715,116 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-5">
                   <div>
                     <label className="text-xs font-semibold text-gray-700 mb-1.5 block">
-                      Full name
+                      Full name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
-                      required
                       value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
+                      onChange={(e) => handleFieldChange('fullName', e.target.value, setFullName)}
                       placeholder="Dr. Anita Sharma"
-                      className="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787] transition"
+                      className={`w-full border rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none transition ${
+                        formErrors.fullName
+                          ? 'border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                          : 'border-gray-300 focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787]'
+                      }`}
                     />
+                    {formErrors.fullName && (
+                      <p className="text-[11px] text-red-600 mt-1 font-medium">{formErrors.fullName}</p>
+                    )}
                   </div>
 
                   <div>
                     <label className="text-xs font-semibold text-gray-700 mb-1.5 block">
-                      Email address
+                      Email address <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="email"
-                      required
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => handleFieldChange('email', e.target.value, setEmail)}
                       placeholder="name@hospital.org"
-                      className="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787] transition"
+                      className={`w-full border rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none transition ${
+                        formErrors.email
+                          ? 'border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                          : 'border-gray-300 focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787]'
+                      }`}
                     />
+                    {formErrors.email && (
+                      <p className="text-[11px] text-red-600 mt-1 font-medium">{formErrors.email}</p>
+                    )}
                   </div>
 
                   <div>
                     <label className="text-xs font-semibold text-gray-700 mb-1.5 block">
-                      Mobile number
+                      Mobile number {isIndia ? '(10 digits)' : '(min. 6 characters)'} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="tel"
-                      required
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="+91 98765 43210"
-                      className="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787] transition"
+                      onChange={(e) => handleFieldChange('phone', e.target.value, setPhone)}
+                      placeholder={isIndia ? '+91 98765 43210' : '+1 555 123 4567'}
+                      className={`w-full border rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none transition ${
+                        formErrors.phone
+                          ? 'border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                          : 'border-gray-300 focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787]'
+                      }`}
                     />
+                    {formErrors.phone && (
+                      <p className="text-[11px] text-red-600 mt-1 font-medium">{formErrors.phone}</p>
+                    )}
                   </div>
 
                   <div>
                     <label className="text-xs font-semibold text-gray-700 mb-1.5 block">
-                      Institution / Hospital
+                      Institution / Hospital <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       value={institution}
-                      onChange={(e) => setInstitution(e.target.value)}
+                      onChange={(e) => handleFieldChange('institution', e.target.value, setInstitution)}
                       placeholder="Hospital or clinic name"
-                      className="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787] transition"
+                      className={`w-full border rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none transition ${
+                        formErrors.institution
+                          ? 'border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                          : 'border-gray-300 focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787]'
+                      }`}
                     />
+                    {formErrors.institution && (
+                      <p className="text-[11px] text-red-600 mt-1 font-medium">{formErrors.institution}</p>
+                    )}
                   </div>
 
                   <div>
                     <label className="text-xs font-semibold text-gray-700 mb-1.5 block">
-                      Medical registration number
+                      Medical registration number <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       value={regNumber}
-                      onChange={(e) => setRegNumber(e.target.value)}
+                      onChange={(e) => handleFieldChange('regNumber', e.target.value, setRegNumber)}
                       placeholder="Registration no."
-                      className="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787] transition"
+                      className={`w-full border rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none transition ${
+                        formErrors.regNumber
+                          ? 'border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                          : 'border-gray-300 focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787]'
+                      }`}
                     />
+                    {formErrors.regNumber && (
+                      <p className="text-[11px] text-red-600 mt-1 font-medium">{formErrors.regNumber}</p>
+                    )}
                   </div>
 
                   <div>
                     <label className="text-xs font-semibold text-gray-700 mb-1.5 block">
-                      Billing country
+                      Billing country <span className="text-red-500">*</span>
                     </label>
                     <select
                       value={country}
-                      onChange={(e) => setCountry(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white focus:outline-none focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787] transition"
+                      onChange={(e) => handleFieldChange('country', e.target.value, setCountry)}
+                      className={`w-full border rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white focus:outline-none transition ${
+                        formErrors.country
+                          ? 'border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                          : 'border-gray-300 focus:border-[#4F1787] focus:ring-1 focus:ring-[#4F1787]'
+                      }`}
                     >
                       <option value="India">India</option>
                       <option value="United States">United States</option>
@@ -634,6 +837,9 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
                       <option value="Singapore">Singapore</option>
                       <option value="Other">Other</option>
                     </select>
+                    {formErrors.country && (
+                      <p className="text-[11px] text-red-600 mt-1 font-medium">{formErrors.country}</p>
+                    )}
                   </div>
                 </div>
 
@@ -682,21 +888,33 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
                         type="text"
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value)}
-                        placeholder="Coupon code"
-                        className="flex-1 border border-gray-300 rounded-l-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-[#4F1787]"
+                        placeholder="Enter redeem code"
+                        disabled={Boolean(appliedCoupon) || isApplyingCoupon}
+                        className="flex-1 border border-gray-300 rounded-l-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-[#4F1787] uppercase placeholder:normal-case"
                       />
-                      <button
-                        type="button"
-                        onClick={handleApplyCoupon}
-                        className="bg-white hover:bg-gray-50 border border-l-0 border-gray-300 rounded-r-lg px-4 py-2 text-xs font-semibold text-gray-700 transition cursor-pointer"
-                      >
-                        Apply
-                      </button>
+                      {appliedCoupon ? (
+                        <button
+                          type="button"
+                          onClick={handleRemoveCoupon}
+                          className="bg-red-50 hover:bg-red-100 border border-l-0 border-red-200 rounded-r-lg px-3.5 py-2 text-xs font-semibold text-red-700 transition cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleApplyCoupon}
+                          disabled={isApplyingCoupon || !couponCode.trim()}
+                          className="bg-white hover:bg-gray-50 border border-l-0 border-gray-300 rounded-r-lg px-4 py-2 text-xs font-semibold text-gray-700 transition cursor-pointer disabled:opacity-50"
+                        >
+                          {isApplyingCoupon ? 'Checking…' : 'Apply'}
+                        </button>
+                      )}
                     </div>
                     {couponMessage && (
                       <p
                         className={`text-[11px] mt-1.5 font-medium ${
-                          couponApplied ? 'text-green-700' : 'text-red-600'
+                          appliedCoupon ? 'text-green-700' : 'text-red-600'
                         }`}
                       >
                         {couponMessage}
@@ -710,8 +928,22 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
                       <span className="text-gray-600">
                         {isIndia ? 'Workshop fee' : 'Workshop fee (USD)'}
                       </span>
-                      <span className="font-semibold text-gray-900">{activeFeeFormatted}</span>
+                      <span className="font-semibold text-gray-900">
+                        {isIndia ? `₹${basePrice.toLocaleString('en-IN')}` : `$${basePrice.toLocaleString('en-US')}`}
+                      </span>
                     </div>
+
+                    {appliedCoupon && (
+                      <div className="flex justify-between items-center text-green-700 font-medium">
+                        <span className="flex items-center gap-1">
+                          <span>Discount ({appliedCoupon} • {discountPercent}%)</span>
+                        </span>
+                        <span>
+                          -{isIndia ? `₹${discountAmount.toLocaleString('en-IN')}` : `$${discountAmount.toLocaleString('en-US')}`}
+                        </span>
+                      </div>
+                    )}
+
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">
                         {isIndia ? 'GST (18%)' : 'GST (Outside India)'}
@@ -733,27 +965,47 @@ export const WorkshopEnrollmentView: React.FC<WorkshopEnrollmentViewProps> = ({ 
                             : 'International delegate fee. No GST applied.'}
                         </span>
                       </div>
-                      <span className="text-2xl font-bold text-gray-900">
-                        {activeTotalFormatted}
-                      </span>
+                      <div className="text-right">
+                        <span className={`text-2xl font-bold ${activePayAmount === 0 ? 'text-green-700' : 'text-gray-900'}`}>
+                          {activePayAmount === 0 ? 'FREE' : activeTotalFormatted}
+                        </span>
+                        {appliedCoupon && activePayAmount === 0 && (
+                          <span className="block text-[11px] text-green-600 font-semibold">100% Institute Waiver</span>
+                        )}
+                      </div>
                     </div>
                   </div>
 
                   {/* Pay Button CTA */}
-                  <div className="pt-2">
+                  <div className="pt-2 space-y-2">
+                    {/* Notification if validation fails */}
+                    {formErrors.general && (
+                      <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-xs font-semibold flex items-start gap-1.5 leading-snug">
+                        <span className="shrink-0 text-sm">⚠️</span>
+                        <span>You must fill in all required participant details to proceed with payment.</span>
+                      </div>
+                    )}
+
                     <button
                       type="submit"
                       disabled={isProcessingPayment || details.booking === false}
                       className={`w-full font-semibold py-3.5 px-4 rounded-lg text-sm transition shadow-md text-center flex items-center justify-center gap-1.5 ${
                         details.booking === false
                           ? 'bg-gray-200 text-gray-500 cursor-not-allowed opacity-60'
-                          : 'bg-[#4F1787] hover:bg-[#3D0F6B] text-white cursor-pointer'
+                          : activePayAmount === 0
+                            ? 'bg-green-700 hover:bg-green-800 text-white cursor-pointer'
+                            : 'bg-[#4F1787] hover:bg-[#3D0F6B] text-white cursor-pointer'
                       }`}
                     >
                       {details.booking === false ? (
                         <span>Booking Paused</span>
                       ) : isProcessingPayment ? (
-                        <span>Connecting to Razorpay...</span>
+                        <span>{activePayAmount === 0 ? 'Confirming free registration...' : 'Connecting to Razorpay...'}</span>
+                      ) : activePayAmount === 0 ? (
+                        <>
+                          <span>Complete Free Registration</span>
+                          <span>→</span>
+                        </>
                       ) : (
                         <>
                           <span>Pay {activeTotalFormatted} securely</span>

@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload'
 import type { User } from '../payload-types'
 import { updateWorkshopStats } from '../lib/payload/workshopStats'
 
-const isStaff = (user: unknown) => Boolean(user && ['admin', 'kb_admin'].includes((user as User).role))
+const isStaff = (user: unknown) => Boolean(user && ['admin', 'kb_admin', 'doctor'].includes((user as User).role))
 
 export const WorkshopRegistrations: CollectionConfig = {
   slug: 'workshop-registrations',
@@ -65,8 +65,8 @@ export const WorkshopRegistrations: CollectionConfig = {
   access: {
     create: () => true, // Allows server-side and client payment webhook/verification
     read: ({ req: { user } }) => isStaff(user),
-    update: ({ req: { user } }) => (user as User)?.role === 'admin',
-    delete: ({ req: { user } }) => (user as User)?.role === 'admin',
+    update: ({ req: { user } }) => isStaff(user),
+    delete: ({ req: { user } }) => isStaff(user),
   },
   fields: [
     {
@@ -176,6 +176,22 @@ export const WorkshopRegistrations: CollectionConfig = {
       name: 'razorpayOrderId',
       type: 'text',
       label: 'Razorpay Order ID',
+    },
+    {
+      name: 'appliedCoupon',
+      type: 'text',
+      label: 'Applied Redeem / Coupon Code',
+      admin: {
+        description: 'Redeem or institute coupon code applied during registration (e.g. AIIMS50, FREE100).',
+      },
+    },
+    {
+      name: 'discountPercent',
+      type: 'number',
+      label: 'Discount Percentage (%)',
+      admin: {
+        description: 'Discount applied (e.g. 50 for 50%, 100 for 100% full free).',
+      },
     },
     {
       name: 'ticketId',

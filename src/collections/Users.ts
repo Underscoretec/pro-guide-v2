@@ -16,7 +16,7 @@ export const Users: CollectionConfig = {
     lockTime: 60, 
   },
   access: {
-    admin: ({ req: { user } }) => Boolean(user && ['admin', 'kb_admin'].includes((user as User).role)),
+    admin: ({ req: { user } }) => Boolean(user && ['admin', 'kb_admin', 'doctor'].includes((user as User).role)),
     // read: ({ req: { user } }) => Boolean(user && ['admin', 'kb_admin'].includes((user as User).role)),
     read: ({ req: { user } }) => {
       if (!user) return false
@@ -35,6 +35,11 @@ export const Users: CollectionConfig = {
             not_equals: 'admin',
           },
         }
+      }
+
+      // Doctor can see users (read-only)
+      if (currentUser.role === 'doctor') {
+        return true
       }
 
       return false
@@ -59,9 +64,13 @@ export const Users: CollectionConfig = {
           value: 'kb_admin',
         },
         {
+          label: 'Doctor',
+          value: 'doctor',
+        },
+        {
           label: 'User',
           value: 'user',
-        }
+        },
       ],
       admin: {
         position: 'sidebar',

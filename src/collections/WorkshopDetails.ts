@@ -2,8 +2,8 @@ import type { CollectionConfig } from 'payload'
 import type { User } from '../payload-types'
 import { parseDayNumber, timesMatch } from '../lib/payload/workshopStats'
 
-const isAdmin = ({ req: { user } }: { req: { user: unknown } }) =>
-  Boolean(user && ['admin', 'kb_admin'].includes((user as User).role))
+const isAuthorized = ({ req: { user } }: { req: { user: unknown } }) =>
+  Boolean(user && ['admin', 'kb_admin', 'doctor'].includes((user as User).role))
 
 const textList = (name: string, label: string) => ({
   name,
@@ -24,9 +24,9 @@ export const WorkshopDetails: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    create: isAuthorized,
+    update: isAuthorized,
+    delete: isAuthorized,
   },
   hooks: {
     afterRead: [
@@ -59,33 +59,36 @@ export const WorkshopDetails: CollectionConfig = {
             }
             doc.registeredUsers = `${count} users`
             doc.revenueSample = `₹${totalRevenue.toLocaleString('en-IN')}`
+          } else {
+            doc.registeredUsers = '0 users'
+            doc.revenueSample = '₹0'
+          }
 
-            // Live calculate each slot's registrationsCount
-            if (Array.isArray(doc.datesAndTimeSlots) && doc.datesAndTimeSlots.length > 0) {
-              doc.datesAndTimeSlots = doc.datesAndTimeSlots.map((d: any) => {
-                const slotDay = parseDayNumber(d?.date)
-                const slots = Array.isArray(d?.slots)
-                  ? d.slots.map((s: any) => {
-                      const matchingCount = regRes.docs.filter((r: any) => {
-                        const rDate = String(r.selectedDate || '')
-                        const rDay = parseDayNumber(rDate)
-                        const dateMatch =
-                          (slotDay !== null && rDay !== null && slotDay === rDay) ||
-                          rDate.includes(d?.date) ||
-                          String(d?.date).includes(rDate)
-                        const timeMatch = timesMatch(s?.startTime, s?.endTime, r.selectedTime)
-                        return dateMatch && timeMatch
-                      }).length
+          // Live calculate each slot's registrationsCount
+          if (Array.isArray(doc.datesAndTimeSlots) && doc.datesAndTimeSlots.length > 0) {
+            doc.datesAndTimeSlots = doc.datesAndTimeSlots.map((d: any) => {
+              const slotDay = parseDayNumber(d?.date)
+              const slots = Array.isArray(d?.slots)
+                ? d.slots.map((s: any) => {
+                    const matchingCount = regRes.docs.filter((r: any) => {
+                      const rDate = String(r.selectedDate || '')
+                      const rDay = parseDayNumber(rDate)
+                      const dateMatch =
+                        (slotDay !== null && rDay !== null && slotDay === rDay) ||
+                        rDate.includes(d?.date) ||
+                        String(d?.date).includes(rDate)
+                      const timeMatch = timesMatch(s?.startTime, s?.endTime, r.selectedTime)
+                      return dateMatch && timeMatch
+                    }).length
 
-                      return {
-                        ...s,
-                        registrationsCount: matchingCount,
-                      }
-                    })
-                  : []
-                return { ...d, slots }
-              })
-            }
+                    return {
+                      ...s,
+                      registrationsCount: matchingCount,
+                    }
+                  })
+                : []
+              return { ...d, slots }
+            })
           }
         } catch {
           // preserve doc values if query fails
@@ -125,33 +128,36 @@ export const WorkshopDetails: CollectionConfig = {
             }
             data.registeredUsers = `${count} users`
             data.revenueSample = `₹${totalRevenue.toLocaleString('en-IN')}`
+          } else {
+            data.registeredUsers = '0 users'
+            data.revenueSample = '₹0'
+          }
 
-            // Also sync slot counts on save
-            if (Array.isArray(data?.datesAndTimeSlots) && data.datesAndTimeSlots.length > 0) {
-              data.datesAndTimeSlots = data.datesAndTimeSlots.map((d: any) => {
-                const slotDay = parseDayNumber(d?.date)
-                const slots = Array.isArray(d?.slots)
-                  ? d.slots.map((s: any) => {
-                      const matchingCount = regRes.docs.filter((r: any) => {
-                        const rDate = String(r.selectedDate || '')
-                        const rDay = parseDayNumber(rDate)
-                        const dateMatch =
-                          (slotDay !== null && rDay !== null && slotDay === rDay) ||
-                          rDate.includes(d?.date) ||
-                          String(d?.date).includes(rDate)
-                        const timeMatch = timesMatch(s?.startTime, s?.endTime, r.selectedTime)
-                        return dateMatch && timeMatch
-                      }).length
+          // Also sync slot counts on save
+          if (Array.isArray(data?.datesAndTimeSlots) && data.datesAndTimeSlots.length > 0) {
+            data.datesAndTimeSlots = data.datesAndTimeSlots.map((d: any) => {
+              const slotDay = parseDayNumber(d?.date)
+              const slots = Array.isArray(d?.slots)
+                ? d.slots.map((s: any) => {
+                    const matchingCount = regRes.docs.filter((r: any) => {
+                      const rDate = String(r.selectedDate || '')
+                      const rDay = parseDayNumber(rDate)
+                      const dateMatch =
+                        (slotDay !== null && rDay !== null && slotDay === rDay) ||
+                        rDate.includes(d?.date) ||
+                        String(d?.date).includes(rDate)
+                      const timeMatch = timesMatch(s?.startTime, s?.endTime, r.selectedTime)
+                      return dateMatch && timeMatch
+                    }).length
 
-                      return {
-                        ...s,
-                        registrationsCount: matchingCount,
-                      }
-                    })
-                  : []
-                return { ...d, slots }
-              })
-            }
+                    return {
+                      ...s,
+                      registrationsCount: matchingCount,
+                    }
+                  })
+                : []
+              return { ...d, slots }
+            })
           }
         } catch {
           // ignore

@@ -22,6 +22,7 @@ import * as migration_20261112_063841_add_workshop_process_fields from './202611
 import * as migration_20261112_070000_add_online_recorded_details from './20261112_070000_add_online_recorded_details';
 import * as migration_20261112_073000_add_admin_sidebar_and_run_details from './20261112_073000_add_admin_sidebar_and_run_details';
 import * as migration_20261112_083000_add_faculty_faq_and_specs from './20261112_083000_add_faculty_faq_and_specs';
+import * as migration_20261113_090000_add_redeem_codes from './20261113_090000_add_redeem_codes';
 
 export const migrations = [
   {
@@ -143,5 +144,10 @@ export const migrations = [
     up: migration_20261112_083000_add_faculty_faq_and_specs.up,
     down: migration_20261112_083000_add_faculty_faq_and_specs.down,
     name: '20261112_083000_add_faculty_faq_and_specs',
+  },
+  {
+    up: migration_20261113_090000_add_redeem_codes.up,
+    down: migration_20261113_090000_add_redeem_codes.down,
+    name: '20261113_090000_add_redeem_codes',
   },
 ];

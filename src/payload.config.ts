@@ -18,6 +18,7 @@ import { CustomizedModelSubmissions } from './collections/CustomizedModelSubmiss
 import { WorkshopsPage } from './collections/WorkshopsPage'
 import { WorkshopDetails } from './collections/WorkshopDetails'
 import { WorkshopRegistrations } from './collections/WorkshopRegistrations'
+import { RedeemCodes } from './collections/RedeemCodes'
 import { TrainingCoursesPage } from './collections/TrainingCoursesPage'
 import { LeadSubmissions } from './collections/LeadSubmissions'
 import { LearningBitesPage } from './collections/LearningBitesPage'
@@ -31,6 +32,54 @@ import Footer from './globals/Footer'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const doctorAccessibleSlugs = ['workshop-details', 'workshop-registrations', 'redeem-codes', 'media', 'users']
+
+const rawCollections = [
+  Users,
+  ShippingAddresses,
+  Orders,
+  Products,
+  Blogs,
+  Media,
+  HomePage,
+  Resources,
+  ThreeDSimulation,
+  ContactPage,
+  ContactSubmissions,
+  ProductsPage,
+  CustomizedModelPage,
+  CustomizedModelSubmissions,
+  WorkshopsPage,
+  WorkshopDetails,
+  WorkshopRegistrations,
+  RedeemCodes,
+  TrainingCoursesPage,
+  LeadSubmissions,
+  LearningBitesPage,
+  Carts,
+]
+
+const collections = rawCollections.map((col) => {
+  if (doctorAccessibleSlugs.includes(col.slug)) {
+    return col
+  }
+  return {
+    ...col,
+    admin: {
+      ...col.admin,
+      hidden: ({ user }: { user?: any }) => user?.role === 'doctor',
+    },
+  }
+})
+
+const globals = [Header, Footer].map((gl) => ({
+  ...gl,
+  admin: {
+    ...gl.admin,
+    hidden: ({ user }: { user?: any }) => user?.role === 'doctor',
+  },
+}))
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -38,30 +87,8 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [
-    Users,
-    ShippingAddresses,
-    Orders,
-    Products,
-    Blogs,
-    Media,
-    HomePage,
-    Resources,
-    ThreeDSimulation,
-    ContactPage,
-    ContactSubmissions,
-    ProductsPage,
-    CustomizedModelPage,
-    CustomizedModelSubmissions,
-    WorkshopsPage,
-    WorkshopDetails,
-    WorkshopRegistrations,
-    TrainingCoursesPage,
-    LeadSubmissions,
-    LearningBitesPage,
-    Carts,
-  ],
-  globals: [Header, Footer],
+  collections,
+  globals,
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || 'fallback-secret-key-change-in-env',
   typescript: {

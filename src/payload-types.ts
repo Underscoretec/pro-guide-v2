@@ -84,6 +84,7 @@ export interface Config {
     'workshops-page': WorkshopsPage;
     'workshop-details': WorkshopDetail;
     'workshop-registrations': WorkshopRegistration;
+    'redeem-codes': RedeemCode;
     'training-courses-page': TrainingCoursesPage;
     'lead-submissions': LeadSubmission;
     'learning-bites-page': LearningBitesPage;
@@ -112,6 +113,7 @@ export interface Config {
     'workshops-page': WorkshopsPageSelect<false> | WorkshopsPageSelect<true>;
     'workshop-details': WorkshopDetailsSelect<false> | WorkshopDetailsSelect<true>;
     'workshop-registrations': WorkshopRegistrationsSelect<false> | WorkshopRegistrationsSelect<true>;
+    'redeem-codes': RedeemCodesSelect<false> | RedeemCodesSelect<true>;
     'training-courses-page': TrainingCoursesPageSelect<false> | TrainingCoursesPageSelect<true>;
     'lead-submissions': LeadSubmissionsSelect<false> | LeadSubmissionsSelect<true>;
     'learning-bites-page': LearningBitesPageSelect<false> | LearningBitesPageSelect<true>;
@@ -167,7 +169,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
-  role: 'admin' | 'kb_admin' | 'user';
+  role: 'admin' | 'kb_admin' | 'doctor' | 'user';
   fullName: string;
   phoneNumber?: string | null;
   institution?: string | null;
@@ -1322,8 +1324,61 @@ export interface WorkshopRegistration {
   amountPaid?: number | null;
   razorpayPaymentId?: string | null;
   razorpayOrderId?: string | null;
+  /**
+   * Redeem or institute coupon code applied during registration (e.g. AIIMS50, FREE100).
+   */
+  appliedCoupon?: string | null;
+  /**
+   * Discount applied (e.g. 50 for 50%, 100 for 100% full free).
+   */
+  discountPercent?: number | null;
   ticketId?: string | null;
   status?: ('confirmed' | 'pending' | 'cancelled') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redeem-codes".
+ */
+export interface RedeemCode {
+  id: number;
+  /**
+   * Code used by participants at checkout (e.g., AIIMS50, TATA100, SURGERY2026). Stored in uppercase.
+   */
+  code: string;
+  /**
+   * Enter percentage discount (e.g., 50 for 50% half price, 100 for 100% full free).
+   */
+  discountPercent: number;
+  /**
+   * If specified, only participants entering this hospital/institute name can use this code (e.g., "AIIMS" or "Tata Memorial"). Leave blank to allow any institute.
+   */
+  allowedInstitute?: string | null;
+  /**
+   * Select specific workshops this code applies to. Leave empty to allow for ALL workshops.
+   */
+  applicableWorkshops?: (number | WorkshopDetail)[] | null;
+  /**
+   * Maximum number of times this code can be redeemed across all users. Leave blank for unlimited.
+   */
+  maxUses?: number | null;
+  /**
+   * Automatically incremented each time a registration completes using this code.
+   */
+  usedCount?: number | null;
+  /**
+   * Uncheck to temporarily or permanently disable this code.
+   */
+  isActive?: boolean | null;
+  /**
+   * Optional date after which this code will no longer be accepted.
+   */
+  expiresAt?: string | null;
+  /**
+   * Internal notes about who requested or was granted this coupon code.
+   */
+  notes?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1558,6 +1613,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'workshop-registrations';
         value: number | WorkshopRegistration;
+      } | null)
+    | ({
+        relationTo: 'redeem-codes';
+        value: number | RedeemCode;
       } | null)
     | ({
         relationTo: 'training-courses-page';
@@ -2706,8 +2765,27 @@ export interface WorkshopRegistrationsSelect<T extends boolean = true> {
   amountPaid?: T;
   razorpayPaymentId?: T;
   razorpayOrderId?: T;
+  appliedCoupon?: T;
+  discountPercent?: T;
   ticketId?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redeem-codes_select".
+ */
+export interface RedeemCodesSelect<T extends boolean = true> {
+  code?: T;
+  discountPercent?: T;
+  allowedInstitute?: T;
+  applicableWorkshops?: T;
+  maxUses?: T;
+  usedCount?: T;
+  isActive?: T;
+  expiresAt?: T;
+  notes?: T;
   updatedAt?: T;
   createdAt?: T;
 }
